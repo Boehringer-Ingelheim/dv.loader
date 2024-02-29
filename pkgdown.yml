@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   loading-data-into-memory: loading-data-into-memory.html
-last_built: 2024-02-29T12:17Z
+last_built: 2024-02-29T12:19Z
 urls:
   reference: https://boehringer-ingelheim.github.io/dv.loader/reference
   article: https://boehringer-ingelheim.github.io/dv.loader/articles
