@@ -1,10 +1,12 @@
-# Data Loading Module 
+# Data Loading Module
+
 [![Checks 🧩](https://github.com/Boehringer-Ingelheim/dv.loader/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Boehringer-Ingelheim/dv.loader/actions/workflows/ci.yml)
 
 ## Installation
 
 ```r
-install.packages("dv.loader")
+install.packages("devtools") # if you have not installed "devtools" package
+devtools::install_github("Boehringer-Ingelheim/dv.loader")
 ```
 
 ## Basic usage
