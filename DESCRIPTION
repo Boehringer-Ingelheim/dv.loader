@@ -1,0 +1,22 @@
+Package: dv.loader
+Type: Package
+Title: Data loading module 
+Version: 1.1.0
+Authors@R: c(
+        person( "Boehringer-Ingelheim Pharma GmbH & Co.KG", role = c("cph", "fnd")),
+        person( given = "Ming", family = "Yang", role = c("aut", "cre"), email = "ming.yang.ext@boehringer-ingelheim.com"),
+        person( given = "Steven", family = "Brooks", role = "aut", email = "steven.brooks@boehringer-ingelheim.com"),
+        person( given = "Sorin", family = "Voicu", role = "aut", email = "sorin.voicu.ext@boehringer-ingelheim.com")
+    )
+Description: This is a module for loading .RDS / .sas7bdat data files from a network file storage environment. It also allows loading data locally.
+License: Apache License (>= 2)
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.5.0)
+Imports: haven
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
+RoxygenNote: 7.3.0
+VignetteBuilder: knitr
