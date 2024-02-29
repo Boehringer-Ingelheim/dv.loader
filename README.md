@@ -3,7 +3,7 @@
 ## Installation
 
 ```r
-install.packages("dv.loader", repos = TODO)
+install.packages("dv.loader")
 ```
 
 ## Basic usage
