@@ -81,12 +81,12 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dv.loader</span><span class="op">)</span></span></code></pre></div>
-<p>Note: <code>use_wd = T</code> can be used to source from local folder. Just set your working directory before using with <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd()</a></code>, or use an explicit path in <code>sub_dir</code>.</p>
+<p>Note: <code>use_wd = TRUE</code> can be used to source from local folder. Just set your working directory before using with <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd()</a></code>, or use an explicit path in <code>sub_dir</code>.</p>
 <div class="section level2">
 <h2 id="usage-load_data">Usage: <code>load_data()</code><a class="anchor" aria-label="anchor" href="#usage-load_data"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">test_data_path</span> <span class="op">&lt;-</span> <span class="st">"../inst/extdata"</span></span>
+<code class="sourceCode R"><span><span class="va">test_data_path</span> <span class="op">&lt;-</span> <span class="st">"../tests/testthat/inst/extdata"</span></span>
 <span><span class="va">data_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_data.html">load_data</a></span><span class="op">(</span></span>
 <span>  sub_dir <span class="op">=</span> <span class="va">test_data_path</span>,</span>
 <span>  file_names <span class="op">=</span> <span class="st">"dummyads2"</span>,</span>
@@ -112,9 +112,11 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data_list</span><span class="op">[[</span><span class="st">"dummyads2"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"meta"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   size isdir mode               mtime               ctime               atime</span></span>
-<span><span class="co">#&gt; 1  449 FALSE  644 2024-03-25 11:39:50 2024-03-25 11:39:50 2024-03-25 11:39:51</span></span>
-<span><span class="co">#&gt;                                                               path file_name</span></span>
-<span><span class="co">#&gt; 1 /__w/dv.loader/dv.loader/vignettes/../inst/extdata/dummyads2.RDS dummyads2</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  449 FALSE  644 2024-03-25 15:58:09 2024-03-25 15:58:09 2024-03-25 15:58:09</span></span>
+<span><span class="co">#&gt;                                                                              path</span></span>
+<span><span class="co">#&gt; 1 /__w/dv.loader/dv.loader/vignettes/../tests/testthat/inst/extdata/dummyads2.RDS</span></span>
+<span><span class="co">#&gt;   file_name</span></span>
+<span><span class="co">#&gt; 1 dummyads2</span></span></code></pre></div>
 </div>
   </main>
 </div>
