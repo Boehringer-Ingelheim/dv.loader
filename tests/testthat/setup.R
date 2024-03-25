@@ -1,7 +1,7 @@
 # testthat setup file
 
-base_path <- Sys.getenv("RXD_DATA")
-local_test_path <- "./../../inst/extdata"
+Sys.setenv("RXD_DATA" = find.package(package = "dv.loader"))
+local_test_path <- "inst/extdata"
 
 test_file_path <- "test/"
 cre_test_files <- c("adsl.sas7bdat", "adae.sas7bdat")

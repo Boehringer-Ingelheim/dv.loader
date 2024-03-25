@@ -18,12 +18,12 @@ knitr::opts_chunk$set(
 library(dv.loader)
 ```
 
-Note: `use_wd = T` can be used to source from local folder. Just set your working directory before using with `setwd()`, or use an explicit path in `sub_dir`.
+Note: `use_wd = TRUE` can be used to source from local folder. Just set your working directory before using with `setwd()`, or use an explicit path in `sub_dir`.
 
 ## Usage: `load_data()`
 
 ```{r}
-test_data_path <- "../inst/extdata"
+test_data_path <- "../tests/testthat/inst/extdata"
 data_list <- load_data(
   sub_dir = test_data_path,
   file_names = "dummyads2",

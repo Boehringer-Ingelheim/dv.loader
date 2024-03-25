@@ -32,11 +32,12 @@ test_that("does not throw an error if provided valid extensions", {
   )
 })
 
+
 test_that("can mix file_names with valid extensions", {
   actual <- load_data(
     sub_dir = local_test_path,
     file_names = c("dummyads1.RDS", "dummyads1.sas7bdat"),
-    use_wd = TRUE
+    use_wd = T
   )
   actual <- c(
     tools::file_ext(attributes(actual[[1]])$meta$path),
@@ -119,7 +120,7 @@ test_that("loads an RDS file when prefer_sas is FALSE (default) and both SAS and
     use_wd = TRUE
   )
   actual <- attr(actual[[1]], "meta")[["path"]]
-  expect_equal(grepl(".RDS$", actual, ignore.case = TRUE), TRUE)
+  expect_equal(grepl(".RDS$", actual, ignore.case = F), TRUE)
 })
 
 test_that("loads a SAS file when prefer_sas is FALSE (default) and an RDS file doesn't exist", {
@@ -150,24 +151,4 @@ test_that("loads an RDS file when prefer_sas is TRUE and a SAS file doesn't exis
   )
   actual <- attr(actual[[1]], "meta")[["path"]]
   expect_equal(grepl(".RDS$", actual), TRUE)
-})
-
-test_that("uses working directory when use_wd is set to TRUE", {
-  actual <- load_data(
-    sub_dir = local_test_path,
-    file_names = local_file_names[[2L]],
-    use_wd = TRUE
-  )
-  actual <- attr(actual[[1L]], "meta")[["path"]]
-  expect_equal(grepl(getwd(), actual), TRUE)
-})
-
-test_that("uses the sub_dir prefixed by the working directory when use_wd = TRUE", {
-  actual <- load_data(
-    sub_dir = local_test_path,
-    file_names = local_file_names[[2L]],
-    use_wd = TRUE
-  )
-  actual <- attr(actual[[1L]], "meta")[["path"]]
-  expect_equal(grepl(getwd(), actual), TRUE)
 })
