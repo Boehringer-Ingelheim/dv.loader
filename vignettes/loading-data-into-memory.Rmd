@@ -24,9 +24,11 @@ Note: `use_wd = T` can be used to source from local folder. Just set your workin
 
 ```{r}
 test_data_path <- "../inst/extdata"
-data_list <- load_data(sub_dir = test_data_path,
-                       file_names = "dummyads2",
-                       use_wd = TRUE)
+data_list <- load_data(
+  sub_dir = test_data_path,
+  file_names = "dummyads2",
+  use_wd = TRUE
+)
 
 
 class(data_list)
@@ -34,7 +36,6 @@ class(data_list)
 class(data_list[["dummyads2"]])
 
 head(data_list[["dummyads2"]])
-
 ```
 
 Get the dataframe's metadata through its attributes:

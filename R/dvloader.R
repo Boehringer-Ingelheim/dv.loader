@@ -55,7 +55,7 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
   }
 
   # create the output
-  data_list <- create_data_list(study_path, file_names, prefer_sas) #nolint
+  data_list <- create_data_list(study_path, file_names, prefer_sas) # nolint
 
   return(data_list)
 }
