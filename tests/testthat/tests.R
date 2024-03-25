@@ -37,7 +37,7 @@ test_that("can mix file_names with valid extensions", {
   actual <- load_data(
     sub_dir = local_test_path,
     file_names = c("dummyads1.RDS", "dummyads1.sas7bdat"),
-    use_wd = T
+    use_wd = TRUE
   )
   actual <- c(
     tools::file_ext(attributes(actual[[1]])$meta$path),
@@ -120,7 +120,7 @@ test_that("loads an RDS file when prefer_sas is FALSE (default) and both SAS and
     use_wd = TRUE
   )
   actual <- attr(actual[[1]], "meta")[["path"]]
-  expect_equal(grepl(".RDS$", actual, ignore.case = F), TRUE)
+  expect_equal(grepl(".RDS$", actual, ignore.case = FALSE), TRUE)
 })
 
 test_that("loads a SAS file when prefer_sas is FALSE (default) and an RDS file doesn't exist", {
