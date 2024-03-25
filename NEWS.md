@@ -1,3 +1,7 @@
+# dv.loader 1.1.1
+
+- General package maintenance.
+
 # dv.loader 1.1.0
 
 - Bugfix release that disables problematic dv.loader::load_data file name partial matching.
