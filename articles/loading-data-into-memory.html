@@ -87,9 +87,11 @@
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">test_data_path</span> <span class="op">&lt;-</span> <span class="st">"../inst/extdata"</span></span>
-<span><span class="va">data_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_data.html">load_data</a></span><span class="op">(</span>sub_dir <span class="op">=</span> <span class="va">test_data_path</span>,</span>
-<span>                       file_names <span class="op">=</span> <span class="st">"dummyads2"</span>,</span>
-<span>                       use_wd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">data_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_data.html">load_data</a></span><span class="op">(</span></span>
+<span>  sub_dir <span class="op">=</span> <span class="va">test_data_path</span>,</span>
+<span>  file_names <span class="op">=</span> <span class="st">"dummyads2"</span>,</span>
+<span>  use_wd <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">data_list</span><span class="op">)</span></span>
@@ -110,7 +112,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data_list</span><span class="op">[[</span><span class="st">"dummyads2"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"meta"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   size isdir mode               mtime               ctime               atime</span></span>
-<span><span class="co">#&gt; 1  449 FALSE  644 2024-03-15 08:51:47 2024-03-15 08:51:47 2024-03-15 08:51:59</span></span>
+<span><span class="co">#&gt; 1  449 FALSE  644 2024-03-25 11:32:29 2024-03-25 11:32:29 2024-03-25 11:32:30</span></span>
 <span><span class="co">#&gt;                                                               path file_name</span></span>
 <span><span class="co">#&gt; 1 /__w/dv.loader/dv.loader/vignettes/../inst/extdata/dummyads2.RDS dummyads2</span></span></code></pre></div>
 </div>
