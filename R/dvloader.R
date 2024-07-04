@@ -18,12 +18,13 @@ get_nfs_path <- function() {
 get_cre_path <- get_nfs_path
 
 #' Loads data into memory based on study directory and one or more file_names.
-#' @param sub_dir Study directory, which will be appended to its internal base_path.
-#' If left as NULL, it will use the working directory as the sub_dir.
+#' @param sub_dir A relative directory/folder that will be appended to a base path defined by `Sys.getenv("RXD_DATA")`. 
+#' If the argument is left as NULL (environment variable "RXD_DATA" not pre-defined), the function 
+#' will use the working directory as the `sub_dir`.
 #' @param file_names Study file or file_names name(s) - can be a vector of strings.
 #' This is the only required argument.
 #' @param use_wd for "use working directory" - a flag used when importing local files
-#' not on NFS - default value is False
+#' not on NFS - default value is FALSE
 #' @param prefer_sas if set to TRUE, imports sas7bdat files first before looking for
 #' RDS files (the opposite of default behavior)
 #' @return a list of dataframes
