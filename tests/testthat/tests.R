@@ -1,18 +1,22 @@
-test_that("defaults to using the working directory when sub_dir arg is NULL", {
+test_that(
+  "defaults to using the working directory when sub_dir arg is NULL" %>% 
+    vdoc[["add_spec"]](specs$default_dir), {
   expect_error(
-    load_data(
-      file_names = local_file_names
-    )
+    load_data(file_names = local_file_names)
   )
 })
 
-test_that("throws an error if you don't provide 'file_names'", {
+test_that(
+  "throws an error if you don't provide 'file_names'" %>% 
+    vdoc[["add_spec"]](specs$file_names), {
   expect_error(
     load_data(file_names = NULL)
   )
 })
 
-test_that("throws an error if you provide a non CRE file type", {
+test_that(
+  "throws an error if you provide a non CRE file type" %>% 
+    vdoc[["add_spec"]](specs$file_type), {
   expect_error(
     load_data(
       sub_dir = local_test_path,
@@ -21,7 +25,9 @@ test_that("throws an error if you provide a non CRE file type", {
   )
 })
 
-test_that("does not throw an error if provided valid extensions", {
+test_that(
+  "does not throw an error if provided valid extensions" %>% 
+    vdoc[["add_spec"]](specs$file_extensions), {
   expect_error(
     load_data(
       sub_dir = local_test_path,
@@ -33,7 +39,9 @@ test_that("does not throw an error if provided valid extensions", {
 })
 
 
-test_that("can mix file_names with valid extensions", {
+test_that(
+  "can mix file_names with valid extensions" %>% 
+    vdoc[["add_spec"]](specs$file_extensions), {
   actual <- load_data(
     sub_dir = local_test_path,
     file_names = c("dummyads1.RDS", "dummyads1.sas7bdat"),
@@ -47,7 +55,9 @@ test_that("can mix file_names with valid extensions", {
   expect_equal(actual, expected)
 })
 
-test_that("can mix file_names with and without valid extensions", {
+test_that(
+  "can mix file_names with and without valid extensions" %>% 
+    vdoc[["add_spec"]](specs$file_extensions), {
   expect_error(
     load_data(
       sub_dir = local_test_path,
@@ -58,7 +68,9 @@ test_that("can mix file_names with and without valid extensions", {
   )
 })
 
-test_that("does not throw an error if you provide valid extensions", {
+test_that(
+  "does not throw an error if you provide valid extensions" %>% 
+    vdoc[["add_spec"]](specs$file_extensions), {
   expect_error(
     load_data(
       sub_dir = local_test_path,
@@ -75,11 +87,14 @@ test_that("does not throw an error if you provide valid extensions", {
   )
 })
 
-test_that("maintains integrity of data from producing system to consuming system", {
+test_that(
+  "maintains integrity of data from producing system to consuming system" %>% 
+    vdoc[["add_spec"]](specs$data_integrity), {
   actual <- load_data(
     sub_dir = local_test_path,
     file_names = local_file_names[2],
-    use_wd = TRUE, prefer_sas = TRUE
+    use_wd = TRUE,
+    prefer_sas = TRUE
   )
 
   actual <- actual[[1]]
@@ -96,7 +111,9 @@ test_that("maintains integrity of data from producing system to consuming system
   )
 })
 
-test_that("has correct metadata", {
+test_that(
+  "has correct metadata" %>% 
+    vdoc[["add_spec"]](specs$meta_data), {
   actual <- load_data(
     sub_dir = local_test_path,
     file_names = local_file_names[2],
@@ -113,7 +130,9 @@ test_that("has correct metadata", {
   )
 })
 
-test_that("loads an RDS file when prefer_sas is FALSE (default) and both SAS and RDS files exist", {
+test_that(
+  "loads an RDS file when prefer_sas is FALSE (default) and both SAS and RDS files exist" %>% 
+    vdoc[["add_spec"]](specs$prefer_sas), {
   actual <- load_data(
     sub_dir = local_test_path,
     file_names = local_file_names[2],
@@ -123,7 +142,9 @@ test_that("loads an RDS file when prefer_sas is FALSE (default) and both SAS and
   expect_equal(grepl(".RDS$", actual, ignore.case = FALSE), TRUE)
 })
 
-test_that("loads a SAS file when prefer_sas is FALSE (default) and an RDS file doesn't exist", {
+test_that(
+  "loads a SAS file when prefer_sas is FALSE (default) and an RDS file doesn't exist" %>% 
+    vdoc[["add_spec"]](specs$prefer_sas), {
   actual <- load_data(
     sub_dir = file.path(local_test_path, "just_sas"),
     file_names = local_file_names[2],
@@ -133,21 +154,27 @@ test_that("loads a SAS file when prefer_sas is FALSE (default) and an RDS file d
   expect_equal(grepl(".sas7bdat$", actual, ignore.case = TRUE), TRUE)
 })
 
-test_that("loads a SAS file when prefer_sas is TRUE and both SAS and RDS files exist", {
+test_that(
+  "loads a SAS file when prefer_sas is TRUE and both SAS and RDS files exist" %>% 
+    vdoc[["add_spec"]](specs$prefer_sas), {
   actual <- load_data(
     sub_dir = local_test_path,
     file_names = local_file_names[2],
-    use_wd = TRUE, prefer_sas = TRUE
+    use_wd = TRUE,
+    prefer_sas = TRUE
   )
   actual <- attr(actual[[1]], "meta")[["path"]]
   expect_equal(grepl(".sas7bdat$", actual), TRUE)
 })
 
-test_that("loads an RDS file when prefer_sas is TRUE and a SAS file doesn't exist", {
+test_that(
+  "loads an RDS file when prefer_sas is TRUE and a SAS file doesn't exist" %>% 
+    vdoc[["add_spec"]](specs$prefer_sas), {
   actual <- load_data(
     sub_dir = file.path(local_test_path, "just_rds"),
     file_names = local_file_names[2],
-    use_wd = TRUE, prefer_sas = TRUE
+    use_wd = TRUE,
+    prefer_sas = TRUE
   )
   actual <- attr(actual[[1]], "meta")[["path"]]
   expect_equal(grepl(".RDS$", actual), TRUE)
