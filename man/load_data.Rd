@@ -8,8 +8,7 @@ load_data(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE)
 }
 \arguments{
 \item{sub_dir}{A relative directory/folder that will be appended to a base path defined by `Sys.getenv("RXD_DATA")`. 
-If the argument is left as NULL (environment variable "RXD_DATA" not pre-defined), the function 
-will use the working directory as the `sub_dir`.}
+If the argument is left as NULL, the function will load data from the working directory `getwd()`.}
 
 \item{file_names}{Study file or file_names name(s) - can be a vector of strings.
 This is the only required argument.}
