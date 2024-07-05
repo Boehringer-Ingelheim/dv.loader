@@ -18,7 +18,7 @@ get_nfs_path <- function() {
 get_cre_path <- get_nfs_path
 
 #' Loads data into memory based on study directory and one or more file_names.
-#' @param sub_dir A relative directory/folder that will be appended to a base path defined by `Sys.getenv("RXD_DATA")`. 
+#' @param sub_dir A relative directory/folder that will be appended to a base path defined by `Sys.getenv("RXD_DATA")`.
 #' If the argument is left as NULL, the function will load data from the working directory `getwd()`.
 #' @param file_names Study file or file_names name(s) - can be a vector of strings.
 #' This is the only required argument.
