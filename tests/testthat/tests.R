@@ -19,7 +19,7 @@ test_that(
 )
 
 test_that(
-  "throws an error if you provide a non CRE file type" %>%
+  "throws an error if you provide a file type which is not supported" %>%
     vdoc[["add_spec"]](specs$file_type),
   {
     expect_error(
