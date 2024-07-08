@@ -7,3 +7,4 @@
 ^\.github
 ^\.lintr$
 ^NEWS\.md$
+^inst/validation/results/\.gitempty$

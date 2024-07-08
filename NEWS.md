@@ -1,3 +1,8 @@
+# dv.loader 2.0.0
+
+- GitHub release with QC report
+- Update package documentation
+
 # dv.loader 1.1.1
 
 - General package maintenance.
