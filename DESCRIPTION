@@ -15,15 +15,15 @@ Encoding: UTF-8
 LazyData: true
 Depends: R (>= 4.0.0)
 Imports:
-    checkmate (>= 2.3.2),
+    checkmate (>= 2.3.1),
     haven (>= 2.5.4),
     lifecycle (>= 1.0.4)
 Suggests: 
-    knitr (>= 1.48),
-    pharmaverseadam (>= 1.0.0),
-    pharmaversesdtm (>= 1.0.0),
-    rmarkdown (>= 2.38),
-    testthat (>= 3.2.1.1)
-RoxygenNote: 7.3.2
+    knitr (>= 1.45),
+    pharmaverseadam (>= 0.2.0),
+    pharmaversesdtm (>= 0.2.0),
+    rmarkdown (>= 2.25),
+    testthat (>= 3.2.1)
+RoxygenNote: 7.3.0
 VignetteBuilder: knitr
 Config/testthat/edition: 3
