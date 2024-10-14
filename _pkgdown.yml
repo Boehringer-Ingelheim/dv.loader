@@ -9,8 +9,9 @@ navbar:
     qc:
       text: Quality Control
       href: articles/qc.html
+
 home:
-  title: dv.loader
+  title: Data Loader for DaVinci Modular Applications
   links:
   - text: Browse source code
     href: https://github.com/Boehringer-Ingelheim/dv.loader

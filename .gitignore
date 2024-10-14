@@ -2,9 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
-*.sqlite
-*.sqlite-journal
-*.rds
+.Rprofile
+
 .vscode
+
 docs
-pkgdown
