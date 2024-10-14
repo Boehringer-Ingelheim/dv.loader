@@ -1,6 +1,7 @@
 test_that(
   desc = vdoc[["add_spec"]](
-    desc = "Ensures that the data integrity is maintained across different file types and loading methods, comparing the loaded data against a known reference dataset.",
+    desc = "Ensures that the data integrity is maintained across different file types and loading methods, 
+    comparing the loaded data against a known reference dataset.",
     spec = specs$data_integrity
   ), 
   code = { 

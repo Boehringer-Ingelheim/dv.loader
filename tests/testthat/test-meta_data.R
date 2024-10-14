@@ -1,6 +1,7 @@
 test_that(
   desc = vdoc[["add_spec"]](
-    desc = "load_data(), load_rds(), load_sas(), and load_xpt() functions correctly extract and attach metadata of the file to the loaded data",
+    desc = "load_data(), load_rds(), load_sas(), and load_xpt() functions correctly extract and 
+    attach metadata of the file to the loaded data",
     spec = specs$meta_data
   ),
   code = {

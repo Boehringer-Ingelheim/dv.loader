@@ -1,6 +1,7 @@
 test_that(  
   desc = vdoc[["add_spec"]](
-    desc = "Verifies that load_data() can correctly locate and load data files using relative paths from the current working directory.",
+    desc = "Verifies that load_data() can correctly locate and load data files using 
+    relative paths from the current working directory.",
     spec = specs$default_dir
   ), 
   code = {

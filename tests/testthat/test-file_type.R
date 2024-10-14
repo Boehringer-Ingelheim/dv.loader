@@ -1,6 +1,7 @@
 test_that(
   desc = vdoc[["add_spec"]](
-    desc = "appropriate error messages are thrown when attempting to load or read file with types that are not supported.",
+    desc = "appropriate error messages are thrown when attempting to load or 
+    read file with types that are not supported.",
     spec = specs$file_type
   ), 
   code = {   
