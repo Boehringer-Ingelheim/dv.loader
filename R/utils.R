@@ -1,81 +1,55 @@
-#' For each file name provided, reads in the first matching file and its meta data/attributes.
-#' Preference is given to RDS because its faster
-#' @param file_path the folder where the files are
-#' @param file_names CDISC names for the files
-#' @param prefer_sas if TRUE, imports .sas7bdat files first instead of .RDS files
-#' @return returns a list of dataframes with metadata as an attribute on each dataframe
-create_data_list <- function(file_path, file_names, prefer_sas) {
-  data_list <- lapply(file_names, function(x) {
-    extensions <- c("", ".rds", ".sas7bdat")
-    if (prefer_sas) {
-      extensions <- c("", ".sas7bdat", ".rds")
-    }
+#' Check if a file has a specific extension (case-insensitive)
+#'
+#' This function checks if a given file has a specific extension, ignoring case.
+#'
+#' @param file A character string specifying the path to the file.
+#' @param extension A character string specifying the expected file extension (without the dot).
+#' @return A logical value: TRUE if the file has the specified extension, FALSE otherwise.
+check_file_ext <- function(file, extension) {
+  # Check input types
+  checkmate::assert_string(file)
+  checkmate::assert_string(extension)
+  
+  # Extract file extension (case-insensitive)
+  file_ext <- tolower(tools::file_ext(file))
 
-    file_name_to_load <- NULL
+  # Check that the file extension is not empty
+  checkmate::assert_true(file_ext != "")
 
-    candidates <- list.files(file_path)
-    uppercase_candidates <- Map(toupper, candidates)
-
-    for (ext in extensions) {
-      # Case insensitive file name match
-      uppercase_file_name <- toupper(paste0(x, ext))
-
-      match_count <- sum(uppercase_candidates == uppercase_file_name)
-      if (match_count > 1) {
-        stop(paste("create_data_list(): More than one case-insensitive file name match for", file_path, x))
-      }
-
-      index <- match(uppercase_file_name, uppercase_candidates)
-      if (!is.na(index)) {
-        file_name_to_load <- candidates[[index]]
-        break
-      }
-    }
-
-    if (is.null(file_name_to_load)) {
-      stop(paste("create_data_list(): No RDS or SAS files found for", file_path, x))
-    }
-
-    output <- read_file(file_path, file_name_to_load)
-
-    return(output)
-  })
-
-  names(data_list) <- file_names
-
-  return(data_list)
+  # Check that the file extension is one of the allowed choices
+  checkmate::assert_choice(file_ext, choices = c("rds", "sas7bdat", "xpt"))
+  
+  # Compare with the given extension (case-insensitive)
+  return(file_ext == tolower(extension))
 }
 
 
-#' Reads RDS/SAS file and metadatas from first 6 items from file.info() its file path
-#' @param file_path a path to a file
-#' @param file_name name of a file
-#' @return a data object with an extra attribute of metadata
-read_file <- function(file_path, file_name) {
-  ext <- tools::file_ext(file_name)
+#' Extract file information based on file.info()
+#'
+#' This function extracts file information from a given file.
+#'
+#' @param file A character string specifying the path to the file.
+#' @return A list containing file information from file.info(file, extra_cols = FALSE) and the path and file name.
+file_info <- function(file) {
+  # Check if the file exists
+  checkmate::assert_file_exists(file)
 
-  if (!(toupper(ext) %in% c("RDS", "SAS7BDAT"))) {
-    stop("Usage error: read_file: file_name: file must either be RDS or SAS7BDAT.")
-  }
+  # Get file information from file.info()
+  info <- file.info(file, extra_cols = FALSE)
 
-  is_rds <- toupper(ext) == "RDS"
+  # Get the path from the rownames
+  path <- rownames(info)
+  
+  # Check file and path are the same
+  checkmate::assert_true(file == path)
 
-  file <- file.path(file_path, file_name)
-  file_name <- tools::file_path_sans_ext(file_name)
+  # Add path and file name
+  info[["path"]] <- path
+  info[["file_name"]] <- basename(path)
 
-  # grab file info
-  meta <- file.info(file)[1L:6L]
-  meta[["path"]] <- row.names(meta)
-  meta[["file_name"]] <- file_name
-  meta <- data.frame(meta, stringsAsFactors = FALSE)
-  row.names(meta) <- NULL
-
-  if (is_rds) {
-    out <- readRDS(file)
-  } else {
-    out <- haven::read_sas(file)
-  }
-  attr(out, "meta") <- meta
-
-  return(out)
+  # Convert to list to remove row names
+  info <- as.list(info)
+    
+  # Return the file information as a list
+  return(info)
 }
