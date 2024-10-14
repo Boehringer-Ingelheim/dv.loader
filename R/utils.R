@@ -9,7 +9,7 @@ check_file_ext <- function(file, extension) {
   # Check input types
   checkmate::assert_string(file)
   checkmate::assert_string(extension)
-  
+
   # Extract file extension (case-insensitive)
   file_ext <- tolower(tools::file_ext(file))
 
@@ -18,7 +18,7 @@ check_file_ext <- function(file, extension) {
 
   # Check that the file extension is one of the allowed choices
   checkmate::assert_choice(file_ext, choices = c("rds", "sas7bdat", "xpt"))
-  
+
   # Compare with the given extension (case-insensitive)
   return(file_ext == tolower(extension))
 }
@@ -39,7 +39,7 @@ file_info <- function(file) {
 
   # Get the path from the rownames
   path <- rownames(info)
-  
+
   # Check file and path are the same
   checkmate::assert_true(file == path)
 
@@ -49,7 +49,7 @@ file_info <- function(file) {
 
   # Convert to list to remove row names
   info <- as.list(info)
-    
+
   # Return the file information as a list
   return(info)
 }

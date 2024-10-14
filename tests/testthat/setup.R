@@ -47,7 +47,7 @@ Sys.setenv(RXD_DATA = temp_dir)
 # Load RDS data via load_data()
 lifecycle::expect_deprecated(
   iris_data_rds <- dv.loader::load_data(
-    sub_dir = ".", 
+    sub_dir = ".",
     file_names = "iris.rds"
   )
 )
@@ -55,7 +55,7 @@ lifecycle::expect_deprecated(
 # Load SAS data via load_data()
 lifecycle::expect_deprecated(
   iris_data_sas <- dv.loader::load_data(
-    sub_dir = ".", 
+    sub_dir = ".",
     file_names = "iris.sas7bdat"
   )
 )
