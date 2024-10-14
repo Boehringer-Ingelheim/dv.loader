@@ -1,3 +1,8 @@
+# dv.loader 3.0.0
+
+- Introduced a new set of functions `load_rds()`, `load_sas()`, and `load_xpt()`.
+- Deprecated the function `load_data()`.
+
 # dv.loader 2.0.0
 
 - GitHub release with QC report

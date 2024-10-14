@@ -1,0 +1,74 @@
+---
+title: "Integration Guide"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Integration Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette showcases the integration of the {dv.loader} package with other packages from the DaVinci framework. It guides you through the process of combining {dv.loader} with {dv.manager} and {dv.listings} to create a modular Shiny application.
+
+```{r, eval=FALSE}
+# Install the {remotes} package if you haven't already
+if (!require("remotes")) install.packages("remotes")
+
+# Define the packages to install
+pkgs <- c("dv.loader", "dv.manager", "dv.listings")
+
+# Install the packages from GitHub
+remotes::install_github(repo = paste0("Boehringer-Ingelheim/", pkgs))
+```
+
+## Step 1: Load data files
+
+Use the `dv.loader::load_sas()` function to import two example SAS data files included in the `dv.loader` package.
+
+```{r, eval=FALSE}
+# Define the directory containing the data files
+data_dir <- system.file("extdata", "pharmaverseadam", package = "dv.loader")
+
+# Define the file names
+file_names <- paste0(c("adsl", "adae"), ".sas7bdat")
+
+# Import the data files
+data_list <- dv.loader::load_sas(files = file.path(data_dir, file_names))
+
+# Remove file extensions from the dataset names
+names(data_list) <- tools::file_path_sans_ext(names(data_list))
+```
+
+## Step 2: Create a module list
+
+Utilize `dv.listings::mod_listings()` to generate a module that presents tabular views of the two datasets imported in the preceding step.
+
+```{r, eval=FALSE}
+# Include a module containing two data listings
+module_list <- list(
+  "Data Listings" = dv.listings::mod_listings(
+    module_id = "data_listings",
+    dataset_names = c("adsl", "adae")
+  )
+)
+```
+
+## Step 3: Run the DaVinci application
+
+Execute the `dv.manager::run_app()` function to initiate the DaVinci application, incorporating the data and module lists prepared in the preceding steps.
+
+```{r, eval=FALSE}
+# Run the DaVinci application with data and module lists defined earlier
+dv.manager::run_app(
+  data = list("pharmaverseadam" = data_list), 
+  module_list = module_list,
+  filter_data = "adsl",
+  title = "DaVinci Application"
+)
+```

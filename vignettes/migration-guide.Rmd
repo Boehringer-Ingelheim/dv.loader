@@ -1,0 +1,118 @@
+---
+title: "Migration Guide"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Migration Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+In version 3.0.0 of {dv.loader}, significant changes have been made to improve the data loading functionality. The `load_data()` function, which was previously used for multiple file types, has been deprecated. In its place, a set of specialized functions have been introduced to handle specific file types more efficiently. This change aims to simplify the data loading process and make it more intuitive for users.
+
+The new functions introduced in version 3.0.0 are:
+
+1. `load_rds()`: Specifically designed to load RDS files (.rds)
+2. `load_sas()`: Dedicated to loading SAS data files (.sas7bdat)
+3. `load_xpt()`: A new addition to support loading XPT files (.xpt), which wasn't available in previous versions
+
+These changes bring several benefits:
+
+- Improved clarity: Each function clearly indicates the type of file it's meant to handle.
+- Enhanced performance: Specialized functions can be optimized for their specific file types.
+- Extended functionality: Support for XPT files has been added, expanding the package's capabilities.
+
+## Migration Steps
+
+To migrate from the deprecated `load_data()` function to the new specialized functions in {dv.loader} 3.0.0, follow these steps:
+
+1. Identify the file types you're working with:
+   - RDS files (.rds)
+   - SAS data files (.sas7bdat)
+   - XPT files (.xpt)
+
+2. Replace `load_data()` calls with the appropriate new function:
+   - For RDS files: Use `load_rds()`
+   - For SAS data files: Use `load_sas()`
+   - For XPT files: Use `load_xpt()`
+
+3. Update function arguments:
+   - Remove arguments `sub_dir`, `file_names`, `use_wd`, and `prefer_sas`.
+   - Specify the path to the file(s) using the `files` argument in the new functions.
+
+Test your code thoroughly to ensure all data is loaded correctly.
+
+## Example
+
+Let's walk through a detailed example of migrating from the old `load_data()` function to the new specialized functions in {dv.loader} 3.0.0. This example will demonstrate how to load SAS data files (.sas7bdat) using both the old and new methods.
+
+### Set up the data directory
+
+First, we'll set up our data directory `data_dir` using a sample dataset provided by the {dv.loader} package. The `data_dir` is the path to the directory containing the data files and it will be used in both the old and new methods.
+
+```{r}
+# Set the data directory
+data_dir <- system.file("extdata", package = "dv.loader")
+data_dir
+
+# List the files in the data directory
+list.files(data_dir)
+```
+
+### Load data using the old method
+
+In the old method, we need to set the environment variable `RXD_DATA` to the path of the data directory. The `sub_dir` and `file_names` arguments are used to specify the subdirectory and file names within the data directory. The `use_wd` and `prefer_sas` argument are optional and can be used to specify the working directory and the preference for SAS data files.
+
+```{r}
+# Set the RXD_DATA environment variable
+Sys.setenv(RXD_DATA = data_dir)
+
+# Load the data using the old method
+data_list1 <- dv.loader::load_data(
+  sub_dir = "pharmaverseadam",
+  file_names = c("adsl", "adae"),
+  use_wd = FALSE,
+  prefer_sas = TRUE
+)
+
+# Check the names of the data list
+names(data_list1)
+
+# Check the contents of the adsl data
+data_list1[["adsl"]]
+
+# Check the metadata of the adsl data
+attr(data_list1[["adsl"]], "meta")
+```
+
+### Load data using the new method
+
+In the new method, we need to specify the path to the file(s) using the `files` argument. File extension is not required in the file name to load the corresponding data. Unlike the old method, there is no need to set the environment variable `RXD_DATA`.
+
+```{r}
+# Set the files argument
+files <- file.path(data_dir, "pharmaverseadam", c("adsl.sas7bdat", "adae.sas7bdat"))
+files
+
+# Load the data using the new method
+data_list2 <- dv.loader::load_sas(files = files)
+
+# Check the names of the data list
+names(data_list2)
+
+# Check the contents of the adsl data
+data_list2[["adsl.sas7bdat"]]
+
+# Check the metadata of the adsl data
+attr(data_list2[["adsl.sas7bdat"]], "meta")
+
+# Remove the file extension from the names if needed
+names(data_list2) <- tools::file_path_sans_ext(names(data_list2))
+names(data_list2)
+```
