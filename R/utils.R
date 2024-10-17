@@ -1,81 +1,129 @@
-#' For each file name provided, reads in the first matching file and its meta data/attributes.
-#' Preference is given to RDS because its faster
-#' @param file_path the folder where the files are
-#' @param file_names CDISC names for the files
-#' @param prefer_sas if TRUE, imports .sas7bdat files first instead of .RDS files
-#' @return returns a list of dataframes with metadata as an attribute on each dataframe
-create_data_list <- function(file_path, file_names, prefer_sas) {
-  data_list <- lapply(file_names, function(x) {
-    extensions <- c("", ".rds", ".sas7bdat")
-    if (prefer_sas) {
-      extensions <- c("", ".sas7bdat", ".rds")
-    }
+#' Get File Paths
+#'
+#' This function constructs file paths for given file names, handling both RDS and SAS7BDAT files.
+#' It can prioritize SAS files over RDS files based on the `prefer_sas` parameter.
+#'
+#' @param dir_path [character(1)] The directory path where the files are located.
+#' @param file_names [character(1+)] A vector of file names to process.
+#' @param prefer_sas [logical(1)] Whether to prefer SAS files over RDS files. Default is FALSE.
+#'
+#' @return [character] A vector of normalized file paths.
+#'
+#' @examples
+#' temp_dir <- tempdir()
+#' 
+#' file_names <- c("adsl", "adae")
+#' 
+#' file.create(file.path(temp_dir, paste0(file_names, ".rds")))
+#' file.create(file.path(temp_dir, paste0(file_names, ".sas7bdat")))
+#' 
+#' list.files(temp_dir)
+#' 
+#' get_file_paths(dir_path = temp_dir, file_names = file_names)
+#' get_file_paths(dir_path = temp_dir, file_names = file_names, prefer_sas = TRUE)
+#' 
+#' unlink(temp_dir, recursive = TRUE)
+#'
+#' @export
+get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
+  # Input validation
+  checkmate::assert_character(dir_path, len = 1)
+  checkmate::assert_character(file_names, min.len = 1)
+  checkmate::assert_logical(prefer_sas, len = 1)
 
-    file_name_to_load <- NULL
-
-    candidates <- list.files(file_path)
-    uppercase_candidates <- Map(toupper, candidates)
-
-    for (ext in extensions) {
-      # Case insensitive file name match
-      uppercase_file_name <- toupper(paste0(x, ext))
-
-      match_count <- sum(uppercase_candidates == uppercase_file_name)
-      if (match_count > 1) {
-        stop(paste("create_data_list(): More than one case-insensitive file name match for", file_path, x))
+  file_paths <- lapply(file_names, function(file_name) {
+    file_path <- file.path(dir_path, file_name)
+    file_ext <- tools::file_ext(file_name)
+    
+    if (file_ext == "") {
+      # If no extension is provided, check for both RDS and SAS files
+      rds_file_name <- paste0(file_name, ".rds")
+      sas_file_name <- paste0(file_name, ".sas7bdat")
+      rds_file_path <- file.path(dir_path, rds_file_name)
+      sas_file_path <- file.path(dir_path, sas_file_name)
+      
+      if (isTRUE(prefer_sas)) {
+        # Prefer SAS file if it exists, otherwise use RDS
+        if (file.exists(sas_file_path)) {
+          return(sas_file_path)
+        } else if (file.exists(rds_file_path)) {
+          return(rds_file_path)
+        } else {
+          stop(dir_path, " does not contain: ", rds_file_name, " or ", sas_file_name)
+        }
+      } else if (isFALSE(prefer_sas)) {
+        # Prefer RDS file if it exists, otherwise use SAS
+        if (file.exists(rds_file_path)) {
+          return(rds_file_path)
+        } else if (file.exists(sas_file_path)) {
+          return(sas_file_path)
+        } else {
+          stop(dir_path, " does not contain: ", rds_file_name, " or ", sas_file_name)
+        }
       }
-
-      index <- match(uppercase_file_name, uppercase_candidates)
-      if (!is.na(index)) {
-        file_name_to_load <- candidates[[index]]
-        break
+    } else {
+      # If an extension is provided, use the exact file name
+      if (file.exists(file_path)) {
+        return(file_path)
+      } else {
+        stop(dir_path, " does not contain: ", file_name)
       }
     }
-
-    if (is.null(file_name_to_load)) {
-      stop(paste("create_data_list(): No RDS or SAS files found for", file_path, x))
-    }
-
-    output <- read_file(file_path, file_name_to_load)
-
-    return(output)
   })
 
-  names(data_list) <- file_names
-
-  return(data_list)
+  # Normalize all file paths
+  return(normalizePath(unlist(file_paths)))
 }
 
 
-#' Reads RDS/SAS file and metadatas from first 6 items from file.info() its file path
-#' @param file_path a path to a file
-#' @param file_name name of a file
-#' @return a data object with an extra attribute of metadata
-read_file <- function(file_path, file_name) {
-  ext <- tools::file_ext(file_name)
 
-  if (!(toupper(ext) %in% c("RDS", "SAS7BDAT"))) {
-    stop("Usage error: read_file: file_name: file must either be RDS or SAS7BDAT.")
-  }
+#' Load Data Files
+#'
+#' This function reads data from multiple file paths and returns a list of data frames.
+#' It supports reading RDS and SAS7BDAT files.
+#'
+#' @param file_paths [character(1+)] A vector of file paths to read.
+#'
+#' @return [list] A named list of data frames, where each name is the basename of the corresponding file path.
+#'
+#' @examples
+#' path <- system.file("examples", "iris.sas7bdat", package = "haven")
+#' data_list <- load_data_files(file_paths = path)
+#' str(data_list)
+#' 
+#' @export
+load_data_files <- function(file_paths) {
+  # Validate input parameters
+  checkmate::assert_character(file_paths, min.len = 1)
+  checkmate::assert_file_exists(file_paths)
 
-  is_rds <- toupper(ext) == "RDS"
+  # Read each file and store in a list
+  data_list <- lapply(file_paths, function(file_path) {
+    # Get file extension
+    extension <- tools::file_ext(file_path)
 
-  file <- file.path(file_path, file_name)
-  file_name <- tools::file_path_sans_ext(file_name)
+    # Read file based on its extension
+    if (tolower(extension) == "rds") {
+      data <- readRDS(file_path)
+    } else if (tolower(extension) == "sas7bdat") {
+      data <- haven::read_sas(file_path)
+    } else {
+      stop("Unsupported file extension: ", extension)
+    }
 
-  # grab file info
-  meta <- file.info(file)[1L:6L]
-  meta[["path"]] <- row.names(meta)
-  meta[["file_name"]] <- file_name
-  meta <- data.frame(meta, stringsAsFactors = FALSE)
-  row.names(meta) <- NULL
+    # Get file metadata
+    meta <- file.info(file_path, extra_cols = FALSE)
+    meta[["path"]] <- file_path
+    meta[["file_name"]] <- basename(file_path)
 
-  if (is_rds) {
-    out <- readRDS(file)
-  } else {
-    out <- haven::read_sas(file)
-  }
-  attr(out, "meta") <- meta
+    # Add metadata as an attribute to the data
+    attr(data, "meta") <- as.list(meta)
 
-  return(out)
+    return(data)
+  })
+
+  # Set names of the list elements to the basenames of the file paths
+  names(data_list) <- basename(file_paths)
+
+  return(data_list)
 }
