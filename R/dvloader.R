@@ -102,6 +102,10 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
   # Get the full file paths
   file_paths <- get_file_paths(dir_path = dir_path, file_names = file_names, prefer_sas = prefer_sas)
 
+  # Print the directory path and file names
+  cat("Loading data from", dir_path, "\n")
+  cat("Loading data file(s):", basename(file_paths), "\n")
+
   # Load the data files
   data_list <- load_data_files(file_paths)
 
