@@ -65,25 +65,17 @@ get_cre_path <- function() {
 #' @return A named list of data frames, where each name corresponds to a loaded file.
 #'
 #' @examples
-#' \dontrun{
-#' # Load RDS files from the directory specified by RXD_DATA environment variable
-#' data_list <- load_data(file_names = c("adsl", "adae"))
-#'
-#' # Load SAS files from a subdirectory in the current working directory
-#' data_list <- load_data(sub_dir = "adam", file_names = c("adsl", "adae"), use_wd = TRUE, prefer_sas = TRUE)
-#' }
+#' # Get the current value of the RXD_DATA environment variable
+#' base_dir <- Sys.getenv("RXD_DATA")
 #' 
-#' # Set the BASE_DIR environment variable
-#' Sys.setenv(BASE_DIR = find.package("haven"))
+#' # Set the RXD_DATA environment variable to the path of the haven package
+#' Sys.setenv(RXD_DATA = find.package("haven"))
 #' 
-#' # Get the base directory path
-#' base_dir <- get_base_dir("BASE_DIR")
-#' list.files(base_dir)
-#' list.files(file.path(base_dir, "examples"))
-#' 
-#' # Load data files
-#' data_list <- load_data(sub_dir = "examples", file_names = "iris.sas7bdat", env_var = "BASE_DIR")
+#' data_list <- load_data(sub_dir = "examples", file_names = c("iris.sas7bdat"))
 #' str(data_list)
+#' 
+#' # Reset the RXD_DATA environment variable to its original value
+#' Sys.setenv(RXD_DATA = base_dir)
 #' 
 #' @export
 load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE, env_var = "RXD_DATA") {
