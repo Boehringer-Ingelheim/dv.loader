@@ -117,7 +117,8 @@ load_data_files <- function(file_paths) {
     meta[["file_name"]] <- basename(file_path)
 
     # Add metadata as an attribute to the data
-    attr(data, "meta") <- as.list(meta)
+    rownames(data) <- NULL
+    attr(data, "meta") <- meta
 
     return(data)
   })
