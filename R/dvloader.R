@@ -16,8 +16,7 @@
 #' 
 #' # Get the base directory path
 #' get_base_dir("BASE_DIR")
-#'
-#' @export
+#' 
 get_base_dir <- function(env_var) {
   # Ensure env_var is a single character string
   checkmate::assert_character(env_var, len = 1)
