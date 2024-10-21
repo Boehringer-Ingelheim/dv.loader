@@ -61,6 +61,7 @@ get_cre_path <- function() {
 #' @param use_wd [logical(1)] Logical indicating whether to use the current working directory. Default is FALSE.
 #' @param prefer_sas [logical(1)] Logical indicating whether to prefer SAS7BDAT files over RDS. Default is FALSE.
 #' @param env_var [character(1)] The environment variable name for the base directory. Default is "RXD_DATA".
+#' @param print_file_paths [logical(1)] Logical indicating whether to print the directory path and file names. Default is FALSE.
 #'
 #' @return A named list of data frames, where each name corresponds to a loaded file.
 #'
@@ -78,7 +79,7 @@ get_cre_path <- function() {
 #' Sys.setenv(RXD_DATA = base_dir)
 #' 
 #' @export
-load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE, env_var = "RXD_DATA") {
+load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE, env_var = "RXD_DATA", print_file_paths = FALSE) {
   # Input validation
   checkmate::assert_character(sub_dir, len = 1, null.ok = TRUE)
   checkmate::assert_character(file_names, min.len = 1)
@@ -102,9 +103,11 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
   # Get the full file paths
   file_paths <- get_file_paths(dir_path = dir_path, file_names = file_names, prefer_sas = prefer_sas)
 
-  # Print the directory path and file names
-  cat("Loading data from", dir_path, "\n")
-  cat("Loading data file(s):", basename(file_paths), "\n")
+  # Print the directory path and file names if requested
+  if (isTRUE(print_file_paths)) { 
+    cat("Loading data from", dir_path, "\n")
+    cat("Loading data file(s):", basename(file_paths), "\n")
+  }
 
   # Load the data files
   data_list <- load_data_files(file_paths)
