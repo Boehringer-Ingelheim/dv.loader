@@ -36,12 +36,25 @@ get_base_dir <- function(env_var) {
   return(normalizePath(base_dir))
 }
 
+#' Get NFS Path
+#'
+#' This function retrieves the path to the NFS (Network File System) directory.
+#'
+#' @param env_var [character(1)] The environment variable name for the base directory. Default is "RXD_DATA".
+#' 
+#' @return [character(1)] The path to the NFS directory.
+#'
+#' @export
+get_nfs_path <- function(env_var = "RXD_DATA") {
+    get_base_dir(env_var = env_var)
+}
+
 
 #' Get CRE Path
 #'
 #' This function retrieves the path to the CRE (Clinical Research Environment) directory.
 #' It uses the "RXD_DATA" environment variable as the base directory.
-#'
+#' 
 #' @return [character(1)] The path to the CRE directory.
 #'
 #' @export
