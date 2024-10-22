@@ -1,0 +1,65 @@
+---
+title: "Integration Guide"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Integration Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette showcases the integration of the {dv.loader} package with other packages from the DaVinci framework. It guides you through the process of combining {dv.loader} with {dv.manager} and {dv.listings} to create a modular Shiny application.
+
+```{r, eval=FALSE}
+# Install the {remotes} package if you haven't already
+if (!require("remotes")) install.packages("remotes")
+
+# Define the packages to install
+pkgs <- c("dv.loader", "dv.manager", "dv.listings")
+
+# Install the packages from GitHub
+remotes::install_github(repo = paste0("Boehringer-Ingelheim/", pkgs))
+```
+
+## Step 1: Load data files
+
+```{r, eval=FALSE}
+# Set the NFS path as an environment variable
+Sys.setenv(RXD_DATA = "path/to/network-file-system")
+
+# Load data files from the specified sub-directory of a network file system (NFS)
+data_list <- dv.loader::load_data(
+    sub_dir = "sub-directory/of/network-file-system",
+    file_names = c("adsl.sas7bdat", "adae.sas7bdat")
+)
+```
+
+## Step 2: Create a module list
+
+```{r, eval=FALSE}
+# Include a module containing two data listings
+module_list <- list(
+  "Data Listings" = dv.listings::mod_listings(
+    module_id = "data_listings",
+    dataset_names = c("adsl.sas7bdat", "adae.sas7bdat")
+  )
+)
+```
+
+## Step 3: Run the DaVinci application
+
+```{r, eval=FALSE}
+# Run the DaVinci application with data and module lists defined earlier
+dv.manager::run_app(
+  data = list("Datasets" = data_list),
+  module_list = module_list,
+  filter_data = "adsl.sas7bdat",
+  title = "DaVinci Application"
+)
+```
