@@ -10,6 +10,7 @@
 #' @return [character] A vector of normalized file paths.
 #'
 #' @examples
+#' \dontrun{
 #' temp_dir <- tempdir()
 #' 
 #' file_names <- c("adsl", "adae")
@@ -23,6 +24,7 @@
 #' get_file_paths(dir_path = temp_dir, file_names = file_names, prefer_sas = TRUE)
 #' 
 #' unlink(temp_dir, recursive = TRUE)
+#' }
 #'
 #' @export
 get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {

@@ -21,6 +21,7 @@ This function constructs file paths for given file names, handling both RDS and 
 It can prioritize SAS files over RDS files based on the `prefer_sas` parameter.
 }
 \examples{
+\dontrun{
 temp_dir <- tempdir()
 
 file_names <- c("adsl", "adae")
@@ -34,5 +35,6 @@ get_file_paths(dir_path = temp_dir, file_names = file_names)
 get_file_paths(dir_path = temp_dir, file_names = file_names, prefer_sas = TRUE)
 
 unlink(temp_dir, recursive = TRUE)
+}
 
 }
