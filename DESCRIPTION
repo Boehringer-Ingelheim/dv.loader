@@ -1,7 +1,7 @@
 Package: dv.loader
 Type: Package
 Title: Data loading module 
-Version: 2.0.0
+Version: 2.1.0
 Authors@R: c(
         person( "Boehringer-Ingelheim Pharma GmbH & Co.KG", role = c("cph", "fnd")),
         person( given = "Ming", family = "Yang", role = c("aut", "cre"), email = "ming.yang.ext@boehringer-ingelheim.com"),
@@ -13,10 +13,13 @@ License: Apache License (>= 2)
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.5.0)
-Imports: haven
+Imports:
+    checkmate,
+    haven
 Suggests: 
-    testthat,
+    testthat (>= 3.0.0),
     knitr,
     rmarkdown
 RoxygenNote: 7.3.0
 VignetteBuilder: knitr
+Config/testthat/edition: 3
