@@ -43,7 +43,7 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
 
       # Find matching RDS files
       rds_match <- grep(
-        pattern = paste0("^", file_name, "\\.rds$"), 
+        pattern = paste0("^", file_name, "\\.rds$"),
         x = candidates,
         ignore.case = TRUE,
         value = TRUE
@@ -51,8 +51,8 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
 
       # Find matching SAS files
       sas_match <- grep(
-        pattern = paste0("^", file_name, "\\.sas7bdat$"), 
-        x = candidates, 
+        pattern = paste0("^", file_name, "\\.sas7bdat$"),
+        x = candidates,
         ignore.case = TRUE,
         value = TRUE
       )

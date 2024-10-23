@@ -24,7 +24,8 @@ load_data(
 
 \item{env_var}{[character(1)] The environment variable name for the base directory. Default is "RXD_DATA".}
 
-\item{print_file_paths}{[logical(1)] Logical indicating whether to print the directory path and file names. Default is FALSE.}
+\item{print_file_paths}{[logical(1)] Logical indicating whether to print the directory path and file names.
+Default is FALSE.}
 }
 \value{
 A named list of data frames, where each name corresponds to a loaded file.
