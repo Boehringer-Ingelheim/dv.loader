@@ -31,12 +31,13 @@ remotes::install_github(repo = paste0("Boehringer-Ingelheim/", pkgs))
 
 ```{r, eval=FALSE}
 # Set the NFS path as an environment variable
-Sys.setenv(RXD_DATA = "path/to/network-file-system")
+Sys.setenv(RXD_DATA = find.package("dv.loader"))
 
 # Load data files from the specified sub-directory of a network file system (NFS)
 data_list <- dv.loader::load_data(
-    sub_dir = "sub-directory/of/network-file-system",
-    file_names = c("adsl.sas7bdat", "adae.sas7bdat")
+    sub_dir = "extdata/pharmaverseadam",
+    file_names = c("adsl_sample", "adae_sample"),
+    print_file_paths = TRUE
 )
 ```
 
@@ -47,7 +48,7 @@ data_list <- dv.loader::load_data(
 module_list <- list(
   "Data Listings" = dv.listings::mod_listings(
     module_id = "data_listings",
-    dataset_names = c("adsl.sas7bdat", "adae.sas7bdat")
+    dataset_names = c("adsl_sample", "adae_sample")
   )
 )
 ```
@@ -57,9 +58,9 @@ module_list <- list(
 ```{r, eval=FALSE}
 # Run the DaVinci application with data and module lists defined earlier
 dv.manager::run_app(
-  data = list("Datasets" = data_list),
+  data = list("Demo Data" = data_list),
   module_list = module_list,
-  filter_data = "adsl.sas7bdat",
+  filter_data = "adsl_sample",
   title = "DaVinci Application"
 )
 ```
