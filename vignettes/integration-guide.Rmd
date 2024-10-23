@@ -35,9 +35,9 @@ Sys.setenv(RXD_DATA = find.package("dv.loader"))
 
 # Load data files from the specified sub-directory of a network file system (NFS)
 data_list <- dv.loader::load_data(
-    sub_dir = "extdata/pharmaverseadam",
-    file_names = c("adsl_sample", "adae_sample"),
-    print_file_paths = TRUE
+  sub_dir = "extdata/pharmaverseadam",
+  file_names = c("adsl_sample", "adae_sample"),
+  print_file_paths = TRUE
 )
 ```
 

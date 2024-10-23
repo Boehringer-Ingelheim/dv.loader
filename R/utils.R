@@ -12,17 +12,17 @@
 #' @examples
 #' \dontrun{
 #' temp_dir <- tempdir()
-#' 
+#'
 #' file_names <- c("adsl", "adae")
-#' 
+#'
 #' file.create(file.path(temp_dir, paste0(file_names, ".rds")))
 #' file.create(file.path(temp_dir, paste0(file_names, ".sas7bdat")))
-#' 
+#'
 #' list.files(temp_dir)
-#' 
+#'
 #' get_file_paths(dir_path = temp_dir, file_names = file_names)
 #' get_file_paths(dir_path = temp_dir, file_names = file_names, prefer_sas = TRUE)
-#' 
+#'
 #' unlink(temp_dir, recursive = TRUE)
 #' }
 #'
@@ -36,14 +36,14 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
   file_paths <- lapply(file_names, function(file_name) {
     file_path <- file.path(dir_path, file_name)
     file_ext <- tools::file_ext(file_name)
-    
+
     if (file_ext == "") {
       # If no extension is provided, check for both RDS and SAS files
       rds_file_name <- paste0(file_name, ".rds")
       sas_file_name <- paste0(file_name, ".sas7bdat")
       rds_file_path <- file.path(dir_path, rds_file_name)
       sas_file_path <- file.path(dir_path, sas_file_name)
-      
+
       if (isTRUE(prefer_sas)) {
         # Prefer SAS file if it exists, otherwise use RDS
         if (file.exists(sas_file_path)) {
@@ -92,7 +92,7 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
 #' path <- system.file("examples", "iris.sas7bdat", package = "haven")
 #' data_list <- load_data_files(file_paths = path)
 #' str(data_list)
-#' 
+#'
 #' @export
 load_data_files <- function(file_paths) {
   # Validate input parameters

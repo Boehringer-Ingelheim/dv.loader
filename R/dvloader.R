@@ -10,13 +10,13 @@
 #' @examples
 #' # Create a temporary directory
 #' temp_dir <- tempdir()
-#' 
+#'
 #' # Set the BASE_DIR environment variable
 #' Sys.setenv(BASE_DIR = temp_dir)
-#' 
+#'
 #' # Get the base directory path
 #' dv.loader:::get_base_dir("BASE_DIR")
-#' 
+#'
 #' @keywords internal
 get_base_dir <- function(env_var) {
   # Ensure env_var is a single character string
@@ -42,12 +42,12 @@ get_base_dir <- function(env_var) {
 #' This function retrieves the path to the NFS (Network File System) directory.
 #'
 #' @param env_var [character(1)] The environment variable name for the base directory. Default is "RXD_DATA".
-#' 
+#'
 #' @return [character(1)] The path to the NFS directory.
 #'
 #' @export
 get_nfs_path <- function(env_var = "RXD_DATA") {
-    get_base_dir(env_var = env_var)
+  get_base_dir(env_var = env_var)
 }
 
 
@@ -55,12 +55,12 @@ get_nfs_path <- function(env_var = "RXD_DATA") {
 #'
 #' This function retrieves the path to the CRE (Clinical Research Environment) directory.
 #' It uses the "RXD_DATA" environment variable as the base directory.
-#' 
+#'
 #' @return [character(1)] The path to the CRE directory.
 #'
 #' @export
 get_cre_path <- function() {
-    get_base_dir(env_var = "RXD_DATA")
+  get_base_dir(env_var = "RXD_DATA")
 }
 
 
@@ -74,7 +74,7 @@ get_cre_path <- function() {
 #' @param use_wd [logical(1)] Logical indicating whether to use the current working directory. Default is FALSE.
 #' @param prefer_sas [logical(1)] Logical indicating whether to prefer SAS7BDAT files over RDS. Default is FALSE.
 #' @param env_var [character(1)] The environment variable name for the base directory. Default is "RXD_DATA".
-#' @param print_file_paths [logical(1)] Logical indicating whether to print the directory path and file names. 
+#' @param print_file_paths [logical(1)] Logical indicating whether to print the directory path and file names.
 #' Default is FALSE.
 #'
 #' @return A named list of data frames, where each name corresponds to a loaded file.
@@ -82,25 +82,24 @@ get_cre_path <- function() {
 #' @examples
 #' # Get the current value of the RXD_DATA environment variable
 #' base_dir <- Sys.getenv("RXD_DATA")
-#' 
+#'
 #' # Set the RXD_DATA environment variable to the path of the haven package
 #' Sys.setenv(RXD_DATA = find.package("haven"))
-#' 
+#'
 #' data_list <- load_data(sub_dir = "examples", file_names = c("iris.sas7bdat"))
 #' str(data_list)
-#' 
+#'
 #' # Reset the RXD_DATA environment variable to its original value
 #' Sys.setenv(RXD_DATA = base_dir)
-#' 
+#'
 #' @export
 load_data <- function(
-    sub_dir = NULL, 
-    file_names, 
-    use_wd = FALSE, 
-    prefer_sas = FALSE, 
-    env_var = "RXD_DATA", 
-    print_file_paths = FALSE
-  ) {
+    sub_dir = NULL,
+    file_names,
+    use_wd = FALSE,
+    prefer_sas = FALSE,
+    env_var = "RXD_DATA",
+    print_file_paths = FALSE) {
   # Input validation
   checkmate::assert_character(sub_dir, len = 1, null.ok = TRUE)
   checkmate::assert_character(file_names, min.len = 1)
@@ -114,7 +113,7 @@ load_data <- function(
   } else {
     base_dir <- get_base_dir(env_var = env_var)
   }
-  
+
   # Construct the full directory path
   dir_path <- if (is.null(sub_dir)) base_dir else file.path(base_dir, sub_dir)
 
@@ -125,7 +124,7 @@ load_data <- function(
   file_paths <- get_file_paths(dir_path = dir_path, file_names = file_names, prefer_sas = prefer_sas)
 
   # Print the directory path and file names if requested
-  if (isTRUE(print_file_paths)) { 
+  if (isTRUE(print_file_paths)) {
     cat("Loading data from", dir_path, "\n")
     cat("Loading data file(s):", basename(file_paths), "\n")
   }
