@@ -38,29 +38,41 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
     file_ext <- tools::file_ext(file_name)
 
     if (file_ext == "") {
-      # If no extension is provided, check for both RDS and SAS files
-      rds_file_name <- paste0(file_name, ".RDS")
-      sas_file_name <- paste0(file_name, ".sas7bdat")
-      rds_file_path <- file.path(dir_path, rds_file_name)
-      sas_file_path <- file.path(dir_path, sas_file_name)
+      # Get all files in the directory
+      candidates <- basename(list.files(dir_path))
 
+      # Find matching RDS files
+      rds_match <- grep(
+        pattern = paste0("^", file_name, "\\.rds$"), 
+        x = candidates,
+        ignore.case = TRUE,
+        value = TRUE
+      )
+
+      # Find matching SAS files
+      sas_match <- grep(
+        pattern = paste0("^", file_name, "\\.sas7bdat$"), 
+        x = candidates, 
+        ignore.case = TRUE,
+        value = TRUE
+      )
+
+      # Prefer SAS file if it exists, otherwise use RDS
       if (isTRUE(prefer_sas)) {
-        # Prefer SAS file if it exists, otherwise use RDS
-        if (file.exists(sas_file_path)) {
-          return(sas_file_path)
-        } else if (file.exists(rds_file_path)) {
-          return(rds_file_path)
+        if (length(sas_match) > 0) {
+          return(file.path(dir_path, sas_match[1]))
+        } else if (length(rds_match) > 0) {
+          return(file.path(dir_path, rds_match[1]))
         } else {
-          stop(dir_path, " does not contain: ", rds_file_name, " or ", sas_file_name)
+          stop(dir_path, " does not contain SAS or RDS file: ", file_name)
         }
       } else if (isFALSE(prefer_sas)) {
-        # Prefer RDS file if it exists, otherwise use SAS
-        if (file.exists(rds_file_path)) {
-          return(rds_file_path)
-        } else if (file.exists(sas_file_path)) {
-          return(sas_file_path)
+        if (length(rds_match) > 0) {
+          return(file.path(dir_path, rds_match[1]))
+        } else if (length(sas_match) > 0) {
+          return(file.path(dir_path, sas_match[1]))
         } else {
-          stop(dir_path, " does not contain: ", rds_file_name, " or ", sas_file_name)
+          stop(dir_path, " does not contain RDS or SAS file: ", file_name)
         }
       }
     } else {
