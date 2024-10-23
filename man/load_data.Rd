@@ -2,36 +2,48 @@
 % Please edit documentation in R/dvloader.R
 \name{load_data}
 \alias{load_data}
-\title{Loads data into memory based on study directory and one or more file_names.}
+\title{Load Data Files}
 \usage{
-load_data(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE)
-}
-\arguments{
-\item{sub_dir}{A relative directory/folder that will be appended to a base path defined by `Sys.getenv("RXD_DATA")`. 
-If the argument is left as NULL, the function will load data from the working directory `getwd()`.}
-
-\item{file_names}{Study file or file_names name(s) - can be a vector of strings.
-This is the only required argument.}
-
-\item{use_wd}{for "use working directory" - a flag used when importing local files
-not on NFS - default value is FALSE}
-
-\item{prefer_sas}{if set to TRUE, imports sas7bdat files first before looking for
-RDS files (the opposite of default behavior)}
-}
-\value{
-a list of dataframes
-}
-\description{
-Loads data into memory based on study directory and one or more file_names.
-}
-\examples{
-\dontrun{
-test_data_path <- "../inst/extdata/"
-data_list <- load_data(
-  sub_dir = test_data_path,
-  file_names = "dummyads2",
-  use_wd = TRUE
+load_data(
+  sub_dir = NULL,
+  file_names,
+  use_wd = FALSE,
+  prefer_sas = FALSE,
+  env_var = "RXD_DATA",
+  print_file_paths = FALSE
 )
 }
+\arguments{
+\item{sub_dir}{[character(1)] Optional character string specifying a subdirectory. Default is NULL.}
+
+\item{file_names}{[character(1+)] Character vector of file names to load (without extension).}
+
+\item{use_wd}{[logical(1)] Logical indicating whether to use the current working directory. Default is FALSE.}
+
+\item{prefer_sas}{[logical(1)] Logical indicating whether to prefer SAS7BDAT files over RDS. Default is FALSE.}
+
+\item{env_var}{[character(1)] The environment variable name for the base directory. Default is "RXD_DATA".}
+
+\item{print_file_paths}{[logical(1)] Logical indicating whether to print the directory path and file names. Default is FALSE.}
+}
+\value{
+A named list of data frames, where each name corresponds to a loaded file.
+}
+\description{
+This function loads data files from a specified directory or the current working directory.
+It supports loading both RDS and SAS7BDAT files.
+}
+\examples{
+# Get the current value of the RXD_DATA environment variable
+base_dir <- Sys.getenv("RXD_DATA")
+
+# Set the RXD_DATA environment variable to the path of the haven package
+Sys.setenv(RXD_DATA = find.package("haven"))
+
+data_list <- load_data(sub_dir = "examples", file_names = c("iris.sas7bdat"))
+str(data_list)
+
+# Reset the RXD_DATA environment variable to its original value
+Sys.setenv(RXD_DATA = base_dir)
+
 }

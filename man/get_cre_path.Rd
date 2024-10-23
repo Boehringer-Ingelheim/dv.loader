@@ -2,12 +2,14 @@
 % Please edit documentation in R/dvloader.R
 \name{get_cre_path}
 \alias{get_cre_path}
-\title{gets the NFS base path from an env var
-alias for get_nfs_path to maintain backwards compatibility}
+\title{Get CRE Path}
 \usage{
 get_cre_path()
 }
+\value{
+[character(1)] The path to the CRE directory.
+}
 \description{
-gets the NFS base path from an env var
-alias for get_nfs_path to maintain backwards compatibility
+This function retrieves the path to the CRE (Clinical Research Environment) directory.
+It uses the "RXD_DATA" environment variable as the base directory.
 }
