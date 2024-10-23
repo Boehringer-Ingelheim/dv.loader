@@ -1,3 +1,11 @@
+# dv.loader 2.1.0
+
+- Refactored code to improve readability and maintainability.
+
+- Fixed issue of partial matching when the `file_names` argument contains no file extensions.
+
+- Added arguments `env_var` and `print_file_paths` in `load_data()` function to provide more flexibility and control.
+
 # dv.loader 2.0.0
 
 - GitHub release with QC report

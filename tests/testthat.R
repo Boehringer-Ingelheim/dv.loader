@@ -1,3 +1,6 @@
 pkg_name <- "dv.loader"
+
+library(testthat)
 library(pkg_name, character.only = TRUE)
-testthat::test_check(pkg_name)
+
+test_check(pkg_name)

@@ -2,17 +2,16 @@
 % Please edit documentation in R/dvloader.R
 \name{get_nfs_path}
 \alias{get_nfs_path}
-\title{gets the NFS base path from an env var
-It assumes there is an env var
-called RXD_DATA which holds the path suffix.}
+\title{Get NFS Path}
 \usage{
-get_nfs_path()
+get_nfs_path(env_var = "RXD_DATA")
+}
+\arguments{
+\item{env_var}{[character(1)] The environment variable name for the base directory. Default is "RXD_DATA".}
 }
 \value{
-the NFS base path
+[character(1)] The path to the NFS directory.
 }
 \description{
-gets the NFS base path from an env var
-It assumes there is an env var
-called RXD_DATA which holds the path suffix.
+This function retrieves the path to the NFS (Network File System) directory.
 }

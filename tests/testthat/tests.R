@@ -205,3 +205,18 @@ test_that(
     expect_equal(grepl(".RDS$", actual), TRUE)
   }
 )
+
+test_that(
+  "prefer_sas is not used if file extension is included in file_names" %>%
+    vdoc[["add_spec"]](specs$prefer_sas),
+  {
+    data_list <- load_data(
+      sub_dir = local_test_path,
+      file_names = c("dummyads1.RDS", "dummyads2.sas7bdat"),
+      use_wd = TRUE,
+      prefer_sas = FALSE
+    )
+    expect_equal(tools::file_ext(attr(data_list[[1]], "meta")$path), "RDS")
+    expect_equal(tools::file_ext(attr(data_list[[2]], "meta")$path), "sas7bdat")
+  }
+)
