@@ -15,8 +15,9 @@
 #' Sys.setenv(BASE_DIR = temp_dir)
 #' 
 #' # Get the base directory path
-#' get_base_dir("BASE_DIR")
+#' dv.loader:::get_base_dir("BASE_DIR")
 #' 
+#' @keywords internal
 get_base_dir <- function(env_var) {
   # Ensure env_var is a single character string
   checkmate::assert_character(env_var, len = 1)
