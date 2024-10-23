@@ -39,7 +39,7 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
 
     if (file_ext == "") {
       # If no extension is provided, check for both RDS and SAS files
-      rds_file_name <- paste0(file_name, ".rds")
+      rds_file_name <- paste0(file_name, ".RDS")
       sas_file_name <- paste0(file_name, ".sas7bdat")
       rds_file_path <- file.path(dir_path, rds_file_name)
       sas_file_path <- file.path(dir_path, sas_file_name)
