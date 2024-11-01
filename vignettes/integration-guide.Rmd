@@ -27,16 +27,31 @@ pkgs <- c("dv.loader", "dv.manager", "dv.listings")
 remotes::install_github(repo = paste0("Boehringer-Ingelheim/", pkgs))
 ```
 
+For the purpose of this vignette, we will use the data from the {pharmaverseadam} package and save the `adsl` and `adae` datasets as .sas7bdat files in a temporary directory.
+
+```{r, eval=FALSE}
+# Create a temporary directory
+temp_dir <- tempdir()
+
+# Create a sub-directory for saving the pharmaverseadam data
+data_dir <- file.path(temp_dir, "pharmaverseadam")
+dir.create(data_dir)
+
+# Save the adsl and adae datasets to the temporary directory
+haven::write_sas(pharmaverseadam::adsl, file.path(data_dir, "adsl.sas7bdat"))
+haven::write_sas(pharmaverseadam::adae, file.path(data_dir, "adae.sas7bdat"))
+```
+
 ## Step 1: Load data files
 
 ```{r, eval=FALSE}
 # Set the NFS path as an environment variable
-Sys.setenv(RXD_DATA = find.package("dv.loader"))
+Sys.setenv(RXD_DATA = temp_dir)
 
 # Load data files from the specified sub-directory of a network file system (NFS)
 data_list <- dv.loader::load_data(
-  sub_dir = "extdata/pharmaverseadam",
-  file_names = c("adsl_sample", "adae_sample"),
+  sub_dir = "pharmaverseadam",
+  file_names = c("adsl", "adae"),
   print_file_paths = TRUE
 )
 ```
@@ -48,7 +63,7 @@ data_list <- dv.loader::load_data(
 module_list <- list(
   "Data Listings" = dv.listings::mod_listings(
     module_id = "data_listings",
-    dataset_names = c("adsl_sample", "adae_sample")
+    dataset_names = c("adsl", "adae")
   )
 )
 ```
@@ -60,7 +75,7 @@ module_list <- list(
 dv.manager::run_app(
   data = list("Demo Data" = data_list),
   module_list = module_list,
-  filter_data = "adsl_sample",
+  filter_data = "adsl",
   title = "DaVinci Application"
 )
 ```
