@@ -25,50 +25,30 @@ remotes::install_github("Boehringer-Ingelheim/dv.loader")
 
 ## Examples
 
-The main function is `dv.loader::load_data()`, which loads data files from sub-directories of a network file system (NFS) or the working directory.
+The `dv.loader` package provides two main functions for loading data:
 
-### Example 1: Sub-directory of Network File System (NFS)
+1. `load_data_files()`: A flexible function that loads multiple data files from any specified file paths, regardless of whether they are in the same directory or not.
 
-To load data files from a NFS, you need to set the NFS path as an environment variable. By default, the environment variable name is `RXD_DATA`.
+2. `load_data()`: A convenience wrapper around `load_data_files()` that simplifies loading multiple files from a single sub-directory of a base path.
 
-You can run the following command to check the NFS path if it is already set.
-
-```r
-# Check the NFS path
-dv.loader::get_nfs_path()
-```
-
-If the NFS path is not set, you can set it by running the following command.
+### Example 1: `load_data_files()`
 
 ```r
-# Set the NFS path as an environment variable
-Sys.setenv(RXD_DATA = "path/to/network-file-system")
-```
-
-The environment variable setup is not needed if you have already set the NFS path as an environment variable in your `.Renviron` or `.Rprofile` file. 
-
-If the NFS path has been properly set, you can load data files from the NFS and its sub-directories.
-
-```r
-# Load data files from the specified sub-directory of a network file system (NFS)
-dv.loader::load_data(
-    sub_dir = "sub-directory/of/network-file-system",
-    file_names = c("adsl.sas7bdat", "adae.sas7bdat")
+# Load data files from the specified file paths
+dv.loader::load_data_files(
+    file_paths = c("path/to/adsl.sas7bdat", "path/to/adae.sas7bdat")
 )
 ```
 
-For the `file_names` argument, it is recommended to use the full file names including the file extension. 
+### Example 2: `load_data()`
 
-### Example 2: Sub-directory of the Working Directory
-
-To load data files from a local directory, there is no need to set an environment variable. You use `use_wd = TRUE` to indicate that the data files are loaded from a sub-directory of the working directory.
+In order to use `load_data()`, you need to set the base path as an environment variable called `RXD_DATA`.
 
 ```r
-# Load data files from the specified sub-directory of the working directory
+# Load data files from the specified sub-directory of a base path
 dv.loader::load_data(
-    sub_dir = "sub-directory/of/working-directory",
-    file_names = c("adsl.sas7bdat", "adae.sas7bdat"),
-    use_wd = TRUE
+    sub_dir = "sub-directory/of/base-path",
+    file_names = c("adsl.sas7bdat", "adae.sas7bdat")
 )
 ```
 
