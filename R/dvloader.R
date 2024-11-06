@@ -1,62 +1,32 @@
-#' Get Base Directory Path
+#' Get NFS Base Path from an Environment Variable
 #'
-#' This function retrieves the base directory path from a specified environment variable.
-#' It checks if the environment variable is set and if the directory exists.
+#' This function assumes that there is an environment variable called `RXD_DATA` 
+#' which is set to the base path of the NFS directory.
 #'
-#' @param env_var [character(1)] The name of the environment variable containing the base directory path.
+#' @return [character(1)] The normalized path to the NFS directory.
 #'
-#' @return [character(1)] The normalized path to the base directory.
-#'
-#' @examples
-#' # Create a temporary directory
-#' temp_dir <- tempdir()
-#'
-#' # Set the BASE_DIR environment variable
-#' Sys.setenv(BASE_DIR = temp_dir)
-#'
-#' # Get the base directory path
-#' dv.loader:::get_base_dir("BASE_DIR")
-#'
-#' @keywords internal
-get_base_dir <- function(env_var) {
-  checkmate::assert_character(env_var, len = 1)
+#' @export
+get_nfs_path <- function() {
+  base_path <- Sys.getenv("RXD_DATA")
 
-  base_dir <- Sys.getenv(env_var)
-
-  if (base_dir == "") {
-    stop("Environment variable ", env_var, " is not set")
+  if (base_path == "") {
+    stop("Environment variable RXD_DATA must be set")
   }
 
-  checkmate::assert_directory_exists(base_dir)
+  checkmate::assert_directory_exists(base_path)
 
-  return(normalizePath(base_dir))
+  return(normalizePath(base_path))
 }
 
-#' Get NFS Path
+
+#' Get CRE Base Path from an Environment Variable
 #'
-#' This function retrieves the path to the NFS (Network File System) directory.
+#' This function is an alias for `get_nfs_path()` to maintain backwards compatibility.  
 #'
-#' @param env_var [character(1)] The environment variable name for the base directory. Default is "RXD_DATA".
-#'
-#' @return [character(1)] The path to the NFS directory.
+#' @return [character(1)] The normalized path to the CRE directory.
 #'
 #' @export
-get_nfs_path <- function(env_var = "RXD_DATA") {
-  get_base_dir(env_var = env_var)
-}
-
-
-#' Get CRE Path
-#'
-#' This function retrieves the path to the CRE (Clinical Research Environment) directory.
-#' It uses the "RXD_DATA" environment variable as the base directory.
-#'
-#' @return [character(1)] The path to the CRE directory.
-#'
-#' @export
-get_cre_path <- function() {
-  get_base_dir(env_var = "RXD_DATA")
-}
+get_cre_path <- get_nfs_path
 
 
 #' Load Data Files
@@ -68,7 +38,6 @@ get_cre_path <- function() {
 #' @param file_names [character(1+)] Character vector of file names to load (without extension).
 #' @param use_wd [logical(1)] Logical indicating whether to use the current working directory. Default is FALSE.
 #' @param prefer_sas [logical(1)] Logical indicating whether to prefer SAS7BDAT files over RDS. Default is FALSE.
-#' @param env_var [character(1)] The environment variable name for the base directory. Default is "RXD_DATA".
 #' @param print_file_paths [logical(1)] Logical indicating whether to print the directory path and file names.
 #' Default is FALSE.
 #'
@@ -93,18 +62,16 @@ load_data <- function(
     file_names,
     use_wd = FALSE,
     prefer_sas = FALSE,
-    env_var = "RXD_DATA",
     print_file_paths = FALSE) {
   checkmate::assert_character(sub_dir, len = 1, null.ok = TRUE)
   checkmate::assert_character(file_names, min.len = 1)
   checkmate::assert_logical(use_wd, len = 1)
   checkmate::assert_logical(prefer_sas, len = 1)
-  checkmate::assert_character(env_var, len = 1)
 
   if (use_wd) {
     base_dir <- getwd()
   } else {
-    base_dir <- get_base_dir(env_var = env_var)
+    base_dir <- get_nfs_path()
   }
 
   dir_path <- if (is.null(sub_dir)) base_dir else file.path(base_dir, sub_dir)
