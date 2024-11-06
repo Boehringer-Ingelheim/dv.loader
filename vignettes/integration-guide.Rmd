@@ -45,14 +45,9 @@ haven::write_sas(pharmaverseadam::adae, file.path(data_dir, "adae.sas7bdat"))
 ## Step 1: Load data files
 
 ```{r, eval=FALSE}
-# Set the NFS path as an environment variable
-Sys.setenv(RXD_DATA = temp_dir)
-
-# Load data files from the specified sub-directory of a network file system (NFS)
-data_list <- dv.loader::load_data(
-  sub_dir = "pharmaverseadam",
-  file_names = c("adsl", "adae"),
-  print_file_paths = TRUE
+# Load data files from the specified file paths
+data_list <- dv.loader::load_data_files(
+  file_paths = file.path(data_dir, c("adsl.sas7bdat", "adae.sas7bdat"))
 )
 ```
 
@@ -63,7 +58,7 @@ data_list <- dv.loader::load_data(
 module_list <- list(
   "Data Listings" = dv.listings::mod_listings(
     module_id = "data_listings",
-    dataset_names = c("adsl", "adae")
+    dataset_names = c("adsl.sas7bdat", "adae.sas7bdat")
   )
 )
 ```
@@ -75,7 +70,7 @@ module_list <- list(
 dv.manager::run_app(
   data = list("Demo Data" = data_list),
   module_list = module_list,
-  filter_data = "adsl",
+  filter_data = "adsl.sas7bdat",
   title = "DaVinci Application"
 )
 ```
