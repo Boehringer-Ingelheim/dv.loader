@@ -1,6 +1,6 @@
 #' Get Base Path from an Environment Variable
 #'
-#' This function assumes that there is an environment variable called `RXD_DATA` 
+#' This function assumes that there is an environment variable called `RXD_DATA`
 #' which is set to the base path of the data directory.
 #'
 #' @return [character(1)] The normalized base path.
@@ -20,7 +20,7 @@ get_nfs_path <- function() {
 
 #' Get Base Path from an Environment Variable
 #'
-#' This function is an alias for `get_nfs_path()` to maintain backwards compatibility.  
+#' This function is an alias for `get_nfs_path()` to maintain backwards compatibility.
 #'
 #' @return [character(1)] The normalized base path.
 #'
