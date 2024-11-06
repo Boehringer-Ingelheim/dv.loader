@@ -19,21 +19,16 @@
 #'
 #' @keywords internal
 get_base_dir <- function(env_var) {
-  # Ensure env_var is a single character string
   checkmate::assert_character(env_var, len = 1)
 
-  # Get the value of the environment variable
   base_dir <- Sys.getenv(env_var)
 
-  # Stop if the environment variable is not set
   if (base_dir == "") {
     stop("Environment variable ", env_var, " is not set")
   }
 
-  # Ensure the directory exists
   checkmate::assert_directory_exists(base_dir)
 
-  # Return the normalized path
   return(normalizePath(base_dir))
 }
 
@@ -100,36 +95,29 @@ load_data <- function(
     prefer_sas = FALSE,
     env_var = "RXD_DATA",
     print_file_paths = FALSE) {
-  # Input validation
   checkmate::assert_character(sub_dir, len = 1, null.ok = TRUE)
   checkmate::assert_character(file_names, min.len = 1)
   checkmate::assert_logical(use_wd, len = 1)
   checkmate::assert_logical(prefer_sas, len = 1)
   checkmate::assert_character(env_var, len = 1)
 
-  # Determine the base directory
   if (use_wd) {
     base_dir <- getwd()
   } else {
     base_dir <- get_base_dir(env_var = env_var)
   }
 
-  # Construct the full directory path
   dir_path <- if (is.null(sub_dir)) base_dir else file.path(base_dir, sub_dir)
 
-  # Determine the file extension based on preference
   file_ext <- if (prefer_sas) "sas7bdat" else "rds"
 
-  # Get the full file paths
   file_paths <- get_file_paths(dir_path = dir_path, file_names = file_names, prefer_sas = prefer_sas)
 
-  # Print the directory path and file names if requested
   if (isTRUE(print_file_paths)) {
     cat("Loading data from", dir_path, "\n")
     cat("Loading data file(s):", basename(file_paths), "\n")
   }
 
-  # Load the data files
   data_list <- load_data_files(file_paths)
 
   names(data_list) <- file_names

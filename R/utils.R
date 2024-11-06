@@ -28,7 +28,6 @@
 #'
 #' @export
 get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
-  # Input validation
   checkmate::assert_character(dir_path, len = 1)
   checkmate::assert_character(file_names, min.len = 1)
   checkmate::assert_logical(prefer_sas, len = 1)
@@ -38,10 +37,8 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
     file_ext <- tools::file_ext(file_name)
 
     if (file_ext == "") {
-      # Get all files in the directory
       candidates <- basename(list.files(dir_path))
 
-      # Find matching RDS files
       rds_match <- grep(
         pattern = paste0("^", file_name, "\\.rds$"),
         x = candidates,
@@ -49,7 +46,6 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
         value = TRUE
       )
 
-      # Find matching SAS files
       sas_match <- grep(
         pattern = paste0("^", file_name, "\\.sas7bdat$"),
         x = candidates,
@@ -57,7 +53,6 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
         value = TRUE
       )
 
-      # Prefer SAS file if it exists, otherwise use RDS
       if (isTRUE(prefer_sas)) {
         if (length(sas_match) > 0) {
           return(file.path(dir_path, sas_match[1]))
@@ -76,7 +71,6 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
         }
       }
     } else {
-      # If an extension is provided, use the exact file name
       if (file.exists(file_path)) {
         return(file_path)
       } else {
@@ -85,7 +79,6 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
     }
   })
 
-  # Normalize all file paths
   return(normalizePath(unlist(file_paths)))
 }
 
@@ -107,16 +100,12 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
 #'
 #' @export
 load_data_files <- function(file_paths) {
-  # Validate input parameters
   checkmate::assert_character(file_paths, min.len = 1)
   checkmate::assert_file_exists(file_paths)
 
-  # Read each file and store in a list
   data_list <- lapply(file_paths, function(file_path) {
-    # Get file extension
     extension <- tools::file_ext(file_path)
 
-    # Read file based on its extension
     if (tolower(extension) == "rds") {
       data <- readRDS(file_path)
     } else if (tolower(extension) == "sas7bdat") {
@@ -125,19 +114,16 @@ load_data_files <- function(file_paths) {
       stop("Unsupported file extension: ", extension)
     }
 
-    # Get file metadata
     meta <- file.info(file_path, extra_cols = FALSE)
     meta[["path"]] <- file_path
     meta[["file_name"]] <- basename(file_path)
 
-    # Add metadata as an attribute to the data
     rownames(data) <- NULL
     attr(data, "meta") <- meta
 
     return(data)
   })
 
-  # Set names of the list elements to the basenames of the file paths
   names(data_list) <- basename(file_paths)
 
   return(data_list)
