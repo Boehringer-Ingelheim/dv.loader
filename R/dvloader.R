@@ -1,9 +1,9 @@
-#' Get NFS Base Path from an Environment Variable
+#' Get Base Path from an Environment Variable
 #'
 #' This function assumes that there is an environment variable called `RXD_DATA` 
-#' which is set to the base path of the NFS directory.
+#' which is set to the base path of the data directory.
 #'
-#' @return [character(1)] The normalized path to the NFS directory.
+#' @return [character(1)] The normalized base path.
 #'
 #' @export
 get_nfs_path <- function() {
@@ -18,12 +18,11 @@ get_nfs_path <- function() {
   return(normalizePath(base_path))
 }
 
-
-#' Get CRE Base Path from an Environment Variable
+#' Get Base Path from an Environment Variable
 #'
 #' This function is an alias for `get_nfs_path()` to maintain backwards compatibility.  
 #'
-#' @return [character(1)] The normalized path to the CRE directory.
+#' @return [character(1)] The normalized base path.
 #'
 #' @export
 get_cre_path <- get_nfs_path
