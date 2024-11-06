@@ -9,7 +9,6 @@ load_data(
   file_names,
   use_wd = FALSE,
   prefer_sas = FALSE,
-  env_var = "RXD_DATA",
   print_file_paths = FALSE
 )
 }
@@ -21,8 +20,6 @@ load_data(
 \item{use_wd}{[logical(1)] Logical indicating whether to use the current working directory. Default is FALSE.}
 
 \item{prefer_sas}{[logical(1)] Logical indicating whether to prefer SAS7BDAT files over RDS. Default is FALSE.}
-
-\item{env_var}{[character(1)] The environment variable name for the base directory. Default is "RXD_DATA".}
 
 \item{print_file_paths}{[logical(1)] Logical indicating whether to print the directory path and file names.
 Default is FALSE.}
