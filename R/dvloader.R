@@ -66,6 +66,7 @@ load_data <- function(
   checkmate::assert_character(file_names, min.len = 1)
   checkmate::assert_logical(use_wd, len = 1)
   checkmate::assert_logical(prefer_sas, len = 1)
+  checkmate::assert_logical(print_file_paths, len = 1)
 
   if (use_wd) {
     base_dir <- getwd()
