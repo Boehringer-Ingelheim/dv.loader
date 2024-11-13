@@ -1,10 +1,10 @@
 # dv.loader 2.1.0
 
-- Refactored code to improve readability and maintainability.
+- Introduced new `load_data_files()` function that provides flexible loading of data files from any file paths.
 
-- Fixed issue of partial matching when the `file_names` argument contains no file extensions.
+- Updated `load_data()` function to serve as a convenience wrapper around `load_data_files()` for loading files from a single directory.
 
-- Added arguments `env_var` and `print_file_paths` in `load_data()` function to provide more flexibility and control.
+- Added `print_file_paths` option to `load_data()` to display the full paths of loaded files, helping users identify potential file name matching issues.
 
 # dv.loader 2.0.0
 
