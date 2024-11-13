@@ -10,6 +10,6 @@ get_nfs_path()
 [character(1)] The normalized base path.
 }
 \description{
-This function assumes that there is an environment variable called `RXD_DATA` 
+This function assumes that there is an environment variable called `RXD_DATA`
 which is set to the base path of the data directory.
 }
