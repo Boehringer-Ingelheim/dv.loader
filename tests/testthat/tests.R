@@ -53,7 +53,7 @@ test_that(
   {
     actual <- load_data(
       sub_dir = local_test_path,
-      file_names = c("dummyads1.RDS", "dummyads1.sas7bdat"),
+      file_names = c("dummyads1.RDS", "dummyads2.sas7bdat"),
       use_wd = TRUE
     )
     actual <- c(

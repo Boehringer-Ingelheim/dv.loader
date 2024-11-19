@@ -1,21 +1,38 @@
-#' Create a List of Data Frames with Metadata
+#' Get File Paths
 #'
-#' For each file name provided, this function reads the first matching file and its metadata/attributes.
-#' By default, RDS files are preferred over SAS files for faster loading.
-#' The function performs case-insensitive matching of file names.
+#' This function constructs file paths for given file names, handling both RDS and SAS7BDAT files.
+#' It can prioritize SAS files over RDS files based on the `prefer_sas` parameter.
 #'
-#' @param dir_path [character(1)] Directory path where the files are located
-#' @param file_names [character(1+)] Vector of file names
-#' @param prefer_sas [logical(1)] If TRUE, SAS (.sas7bdat) files are preferred over RDS (.rds) files
+#' @param dir_path [character(1)] The directory path where the files are located.
+#' @param file_names [character(1+)] A vector of file names to process.
+#' @param prefer_sas [logical(1)] Whether to prefer SAS files over RDS files. Default is FALSE.
 #'
-#' @return [list] A named list of data frames, where each name is the basename of the corresponding file path.
-create_data_list <- function(dir_path, file_names, prefer_sas = FALSE) {
+#' @return [character] A vector of normalized file paths.
+#'
+#' @examples
+#' \dontrun{
+#' temp_dir <- tempdir()
+#'
+#' file_names <- c("adsl", "adae")
+#'
+#' file.create(file.path(temp_dir, paste0(file_names, ".rds")))
+#' file.create(file.path(temp_dir, paste0(file_names, ".sas7bdat")))
+#'
+#' list.files(temp_dir)
+#'
+#' get_file_paths(dir_path = temp_dir, file_names = file_names)
+#' get_file_paths(dir_path = temp_dir, file_names = file_names, prefer_sas = TRUE)
+#'
+#' unlink(temp_dir, recursive = TRUE)
+#' }
+#'
+#' @export
+get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
   checkmate::assert_character(dir_path, len = 1)
   checkmate::assert_character(file_names, min.len = 1)
   checkmate::assert_logical(prefer_sas, len = 1)
-  checkmate::assert_directory_exists(dir_path)
 
-  data_list <- lapply(file_names, function(x) {
+  file_paths <- lapply(file_names, function(x) {
     extensions <- c("", ".rds", ".sas7bdat")
     if (prefer_sas) {
       extensions <- c("", ".sas7bdat", ".rds")
@@ -46,16 +63,12 @@ create_data_list <- function(dir_path, file_names, prefer_sas = FALSE) {
       stop(paste("create_data_list(): No RDS or SAS files found for", dir_path, x))
     }
 
-    # Load a single data file and get the first element of the list
-    output <- load_data_files(file.path(dir_path, file_name_to_load))[[1]]
-
-    return(output)
+    return(file.path(dir_path, file_name_to_load))
   })
 
-  names(data_list) <- file_names
-
-  return(data_list)
+  return(normalizePath(unlist(file_paths)))
 }
+
 
 
 #' Load Data Files
