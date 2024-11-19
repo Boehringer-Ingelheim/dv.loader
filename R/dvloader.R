@@ -76,14 +76,16 @@ load_data <- function(
 
   dir_path <- if (is.null(sub_dir)) base_dir else file.path(base_dir, sub_dir)
 
-  file_paths <- get_file_paths(dir_path = dir_path, file_names = file_names, prefer_sas = prefer_sas)
-
   if (isTRUE(print_file_paths)) {
     cat("Loading data from", dir_path, "\n")
-    cat("Loading data file(s):", basename(file_paths), "\n")
+    cat("Loading data file(s):", file_names, "\n")
   }
 
-  data_list <- load_data_files(file_paths)
+  data_list <- create_data_list(
+    dir_path = dir_path,
+    file_names = file_names,
+    prefer_sas = prefer_sas
+  )
 
   names(data_list) <- file_names
 

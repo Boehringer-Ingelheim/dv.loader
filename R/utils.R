@@ -1,87 +1,61 @@
-#' Get File Paths
+#' Create a List of Data Frames with Metadata
 #'
-#' This function constructs file paths for given file names, handling both RDS and SAS7BDAT files.
-#' It can prioritize SAS files over RDS files based on the `prefer_sas` parameter.
+#' For each file name provided, this function reads the first matching file and its metadata/attributes.
+#' By default, RDS files are preferred over SAS files for faster loading.
+#' The function performs case-insensitive matching of file names.
 #'
-#' @param dir_path [character(1)] The directory path where the files are located.
-#' @param file_names [character(1+)] A vector of file names to process.
-#' @param prefer_sas [logical(1)] Whether to prefer SAS files over RDS files. Default is FALSE.
+#' @param dir_path [character(1)] Directory path where the files are located
+#' @param file_names [character(1+)] Vector of file names
+#' @param prefer_sas [logical(1)] If TRUE, SAS (.sas7bdat) files are preferred over RDS (.rds) files
 #'
-#' @return [character] A vector of normalized file paths.
-#'
-#' @examples
-#' \dontrun{
-#' temp_dir <- tempdir()
-#'
-#' file_names <- c("adsl", "adae")
-#'
-#' file.create(file.path(temp_dir, paste0(file_names, ".rds")))
-#' file.create(file.path(temp_dir, paste0(file_names, ".sas7bdat")))
-#'
-#' list.files(temp_dir)
-#'
-#' get_file_paths(dir_path = temp_dir, file_names = file_names)
-#' get_file_paths(dir_path = temp_dir, file_names = file_names, prefer_sas = TRUE)
-#'
-#' unlink(temp_dir, recursive = TRUE)
-#' }
-#'
-#' @export
-get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
+#' @return [list] A named list of data frames, where each name is the basename of the corresponding file path.
+create_data_list <- function(dir_path, file_names, prefer_sas = FALSE) {
   checkmate::assert_character(dir_path, len = 1)
   checkmate::assert_character(file_names, min.len = 1)
   checkmate::assert_logical(prefer_sas, len = 1)
+  checkmate::assert_directory_exists(dir_path)
 
-  file_paths <- lapply(file_names, function(file_name) {
-    file_path <- file.path(dir_path, file_name)
-    file_ext <- tools::file_ext(file_name)
+  data_list <- lapply(file_names, function(x) {
+    extensions <- c("", ".rds", ".sas7bdat")
+    if (prefer_sas) {
+      extensions <- c("", ".sas7bdat", ".rds")
+    }
 
-    if (file_ext == "") {
-      candidates <- basename(list.files(dir_path))
+    file_name_to_load <- NULL
 
-      rds_match <- grep(
-        pattern = paste0("^", file_name, "\\.rds$"),
-        x = candidates,
-        ignore.case = TRUE,
-        value = TRUE
-      )
+    candidates <- list.files(dir_path)
+    uppercase_candidates <- Map(toupper, candidates)
 
-      sas_match <- grep(
-        pattern = paste0("^", file_name, "\\.sas7bdat$"),
-        x = candidates,
-        ignore.case = TRUE,
-        value = TRUE
-      )
+    for (ext in extensions) {
+      # Case insensitive file name match
+      uppercase_file_name <- toupper(paste0(x, ext))
 
-      if (isTRUE(prefer_sas)) {
-        if (length(sas_match) > 0) {
-          return(file.path(dir_path, sas_match[1]))
-        } else if (length(rds_match) > 0) {
-          return(file.path(dir_path, rds_match[1]))
-        } else {
-          stop(dir_path, " does not contain SAS or RDS file: ", file_name)
-        }
-      } else if (isFALSE(prefer_sas)) {
-        if (length(rds_match) > 0) {
-          return(file.path(dir_path, rds_match[1]))
-        } else if (length(sas_match) > 0) {
-          return(file.path(dir_path, sas_match[1]))
-        } else {
-          stop(dir_path, " does not contain RDS or SAS file: ", file_name)
-        }
+      match_count <- sum(uppercase_candidates == uppercase_file_name)
+      if (match_count > 1) {
+        stop(paste("create_data_list(): More than one case-insensitive file name match for", dir_path, x))
       }
-    } else {
-      if (file.exists(file_path)) {
-        return(file_path)
-      } else {
-        stop(dir_path, " does not contain: ", file_name)
+
+      index <- match(uppercase_file_name, uppercase_candidates)
+      if (!is.na(index)) {
+        file_name_to_load <- candidates[[index]]
+        break
       }
     }
+
+    if (is.null(file_name_to_load)) {
+      stop(paste("create_data_list(): No RDS or SAS files found for", dir_path, x))
+    }
+
+    # Load a single data file and get the first element of the list
+    output <- load_data_files(file.path(dir_path, file_name_to_load))[[1]]
+
+    return(output)
   })
 
-  return(normalizePath(unlist(file_paths)))
-}
+  names(data_list) <- file_names
 
+  return(data_list)
+}
 
 
 #' Load Data Files
