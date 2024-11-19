@@ -98,7 +98,11 @@ load_data_files <- function(file_paths) {
     return(data)
   })
 
-  names(data_list) <- basename(file_paths)
+  names(data_list) <- tools::file_path_sans_ext(basename(file_paths))
+
+  if (any(duplicated(names(data_list)))) {
+    stop("load_data_files(): Duplicate file names detected. Please ensure all file names are unique.")
+  }
 
   return(data_list)
 }
