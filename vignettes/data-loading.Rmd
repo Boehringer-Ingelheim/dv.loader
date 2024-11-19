@@ -1,0 +1,45 @@
+---
+title: "Data Loading"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data Loading}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The `dv.loader` package simplifies the process of loading data files into R. It can read both `.rds` files (R's native data storage format) and `.sas7bdat` files (SAS data files) into memory. Note that the current version does not include functionality for direct database connections.
+
+The package's primary function is `load_data_files()`, which provides flexible data loading capabilities. This versatile function can load multiple data files from any location on your system - the files can be scattered across different directories or stored together. Unlike the legacy `load_data()` function which requires all files to be in a single subdirectory, `load_data_files()` accepts arbitrary file paths, making it more powerful and flexible for data loading.
+
+Below is an example of how to use `load_data_files()` to load multiple data files from different directories. 
+
+```{r}
+# Create a temporary directory for the example
+temp_dir <- tempdir()
+
+# Create subdirectories for ADAM and SDTM data
+dir.create(file.path(temp_dir, "sub_dir1"))
+dir.create(file.path(temp_dir, "sub_dir2"))
+
+# Save example datasets from pharmaverse packages as RDS files
+saveRDS(iris, file.path(temp_dir, "sub_dir1", "iris.rds"))
+saveRDS(mtcars, file.path(temp_dir, "sub_dir2", "mtcars.rds"))
+
+# Load both data files using load_data_files()
+data_list <- dv.loader::load_data_files(
+  file_paths = c(
+    file.path(temp_dir, "sub_dir1", "iris.rds"),
+    file.path(temp_dir, "sub_dir2", "mtcars.rds")
+  )
+)
+
+# Display the structure of the loaded data
+str(data_list)
+```
