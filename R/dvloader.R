@@ -87,7 +87,5 @@ load_data <- function(
     prefer_sas = prefer_sas
   )
 
-  names(data_list) <- file_names
-
   return(data_list)
 }
