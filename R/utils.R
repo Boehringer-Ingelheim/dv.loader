@@ -49,7 +49,7 @@ get_file_paths <- function(dir_path, file_names, prefer_sas = FALSE) {
 
       match_count <- sum(uppercase_candidates == uppercase_file_name)
       if (match_count > 1) {
-        stop(paste("create_data_list(): More than one case-insensitive file name match for", dir_path, x))
+        stop(paste("get_file_paths(): More than one case-insensitive file name match for", dir_path, x))
       }
 
       index <- match(uppercase_file_name, uppercase_candidates)
