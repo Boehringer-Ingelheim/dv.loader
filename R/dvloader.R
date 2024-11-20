@@ -89,3 +89,65 @@ load_data <- function(
 
   return(data_list)
 }
+
+
+#' Load Data Files
+#'
+#' This function reads data from multiple file paths and returns a list of data frames.
+#' It supports reading RDS and SAS7BDAT files.
+#'
+#' @param file_paths [character(1+)] A vector of file paths to read.
+#'
+#' @return [list] A named list of data frames, where each name corresponds to a loaded file.
+#'
+#' @examples
+#' path <- system.file("examples", "iris.sas7bdat", package = "haven")
+#' data_list <- load_data_files(file_paths = path)
+#' str(data_list)
+#'
+#' @export
+load_data_files <- function(file_paths) {
+  checkmate::assert_character(file_paths, min.len = 1)
+  checkmate::assert_file_exists(file_paths, access = "r", extension = c("rds", "sas7bdat"))
+
+  # Load each file and store in a list
+  data_list <- lapply(file_paths, function(file_path) {
+    extension <- tools::file_ext(file_path)
+
+    data <- switch(tolower(extension),
+      rds = readRDS(file_path),
+      sas7bdat = haven::read_sas(file_path),
+      stop("Unsupported file extension: ", extension)
+    )
+
+    meta <- file.info(file_path, extra_cols = FALSE)
+    meta[["path"]] <- normalizePath(file_path)
+    meta[["file_name"]] <- basename(file_path)
+    row.names(meta) <- NULL
+    attr(data, "meta") <- meta
+
+    return(data)
+  })
+
+  # Set names for the list elements
+  data_list_names <- sapply(seq_along(file_paths), function(i) {
+    if (!is.null(names(file_paths)) && names(file_paths)[i] != "") {
+      names(file_paths)[i]
+    } else {
+      tools::file_path_sans_ext(basename(file_paths[i]))
+    }
+  })
+  names(data_list) <- data_list_names
+
+  # Check for duplicate names
+  if (any(duplicated(names(data_list)))) {
+    dup_names <- unique(names(data_list)[duplicated(names(data_list))])
+    stop(
+      "load_data_files(): Duplicate file names detected: ",
+      paste(dup_names, collapse = ", "),
+      ". Please ensure all file names are unique."
+    )
+  }
+
+  return(data_list)
+}
