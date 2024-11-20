@@ -85,5 +85,7 @@ load_data <- function(
 
   data_list <- load_data_files(file_paths)
 
+  names(data_list) <- file_names
+
   return(data_list)
 }
