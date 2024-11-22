@@ -3,3 +3,4 @@
 export(get_cre_path)
 export(get_nfs_path)
 export(load_data)
+export(load_files)
