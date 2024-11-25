@@ -3,10 +3,11 @@ Type: Package
 Title: Data loading module 
 Version: 2.1.0
 Authors@R: c(
-        person( "Boehringer-Ingelheim Pharma GmbH & Co.KG", role = c("cph", "fnd")),
-        person( given = "Ming", family = "Yang", role = c("aut", "cre"), email = "ming.yang.ext@boehringer-ingelheim.com"),
-        person( given = "Steven", family = "Brooks", role = "aut", email = "steven.brooks@boehringer-ingelheim.com"),
-        person( given = "Sorin", family = "Voicu", role = "aut", email = "sorin.voicu.ext@boehringer-ingelheim.com")
+        person("Boehringer-Ingelheim Pharma GmbH & Co.KG", role = c("cph", "fnd")),
+        person(given = "Ming", family = "Yang", role = c("aut", "cre"), email = "ming.yang.ext@boehringer-ingelheim.com"),
+        person(given = "Miguel", family = "Lechón", role = "aut", email = "miguel.lechon.ext@boehringer-ingelheim.com"),
+        person(given = "Steven", family = "Brooks", role = "aut", email = "steven.brooks@boehringer-ingelheim.com"),
+        person(given = "Sorin", family = "Voicu", role = "aut", email = "sorin.voicu.ext@boehringer-ingelheim.com")
     )
 Description: A package for loading multiple data files, returning a list of data frames with associated metadata, designed to integrate with the modular DaVinci framework.
 License: Apache License (>= 2)
