@@ -14,32 +14,54 @@ knitr::opts_chunk$set(
 )
 ```
 
+This vignette demonstrates how to use the `dv.loader` package to load data files into memory. Currently, the package can be used to load both RDS (`.rds`) and SAS (`.sas7bdat`) data files. 
+
+For demonstration purposes, we will save some RDS data files in a temporary directory.
+
+```{r}
+temp_dir <- tempdir()
+
+saveRDS(cars, file = file.path(temp_dir, "cars.rds"))
+saveRDS(mtcars, file = file.path(temp_dir, "mtcars.rds"))
+```
+
+Let's get started by loading the package. 
+
 ```{r setup}
 library(dv.loader)
 ```
 
-Note: `use_wd = TRUE` can be used to source from local folder. Just set your working directory before using with `setwd()`, or use an explicit path in `sub_dir`.
-
-## Usage: `load_data()`
+In this vignette, we will focus on the newly added `load_files()` function instead of the legacy `load_data()` function. The `load_files()` function reads each file and returns a named list of data frames along with associated metadata. By default, the names in the list will be derived from the file names (without extensions).
 
 ```{r}
-test_data_path <- "../tests/testthat/inst/extdata"
-data_list <- load_data(
-  sub_dir = test_data_path,
-  file_names = "dummyads2",
-  use_wd = TRUE
+data_list <- load_files(
+  file_paths = c(
+    file.path(temp_dir, "cars.rds"),
+    file.path(temp_dir, "mtcars.rds")
+  )
 )
 
-
-class(data_list)
-
-class(data_list[["dummyads2"]])
-
-head(data_list[["dummyads2"]])
+names(data_list)
 ```
 
-Get the dataframe's metadata through its attributes:
+The returned data list contains two data frames named `cars` and `mtcars`. The metadata for each data frame can be accessed using the `meta` attribute. For example, the metadata for the `cars` data frame can be accessed as follows:
 
 ```{r}
-attr(data_list[["dummyads2"]], "meta")
+attr(data_list[["cars"]], "meta")
 ```
+
+Unlike the legacy `load_data()` function, the `load_files()` function can load data files from different directories and allows you to customize the names of the data frames in the returned list by providing **named** file paths.
+
+```{r}
+data_list2 <- dv.loader::load_files(
+  file_paths = c(
+    "cars (rds)" = file.path(temp_dir, "cars.rds"),
+    "iris (sas)" = system.file("examples", "iris.sas7bdat", package = "haven")
+  )
+)
+
+names(data_list2)
+```
+
+
+
