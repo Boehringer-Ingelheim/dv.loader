@@ -1,3 +1,7 @@
+# dv.loader 2.1.0
+
+- Added `load_files()` to load data using explicit file paths.
+
 # dv.loader 2.0.0
 
 - GitHub release with QC report
