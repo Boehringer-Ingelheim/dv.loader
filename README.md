@@ -1,30 +1,75 @@
 # Data Loading
 
-The {dv.loader} package provides a simple interface for loading data from a network file storage folder or 
-locally. It is designed to be used with `.RDS` and `.sas7bdat` file formats.
-The package provides a simple function, `load_data()`, which loads R and SAS data files into memory. 
-Loading data from SQL databases is not yet supported. The function returns a list named by the file names passed, 
-and containing data frames, along with metadata for that table. By default, the function will look for files in a
-sub-directory `sub_dir` of the base path defined by a environment variable "RXD_DATA". You can check if the base path
-is set by running `Sys.getenv("RXD_DATA")`. A single file or multiple files can be loaded at once. 
-To make the loading process faster for large datasets, it is suggested that '.sas7bdat' files are converted to 
-'.RDS' files. The function will prefer '.RDS' files over '.sas7bdat' files by default.
+The `dv.loader` package provides functionality for loading `.rds` and `.sas7bdat` data files into R. It offers two main functions:
+
+- `load_data()`: A legacy function that loads data files from a specified subdirectory of the base path defined by the environment variable "RXD_DATA".
+- `load_files()`: A newer function that provides more flexibility by accepting file paths directly and supports custom names for the returned data list.
+
+NOTE: The `load_files()` function is recommended for its enhanced capabilities and flexibility.
 
 ## Installation
+
+The `dv.loader` package is available on GitHub. To install it, you can use the following commands:
 
 ```r
 if (!require("remotes")) install.packages("remotes")
 remotes::install_github("Boehringer-Ingelheim/dv.loader")
 ```
 
-## Basic usage
+After installation, you can load the package using:
 
 ```r
-# getting data from a network file storage folder
-dv.loader::load_data(sub_dir = "subdir1/subdir2", file_names = c("adsl", "adae"))
+library(dv.loader)
 ```
 
+## Basic Usage
+
+### Using `load_files()`
+
+Load data files with default names:
+
 ```r
-# getting data locally (e.g., if you have file `./data/adsl.RDS`)
-dv.loader::load_data(sub_dir = "data", file_names = c("adsl"), use_wd = TRUE)
+load_files(
+    file_paths = c(
+        "path/to/file1.rds",
+        "path/to/file2.sas7bdat"
+    )
+)
 ```
+
+Load data files with custom names:
+
+```r
+load_files(
+    file_paths = c(
+        "file1 (rds)" = "path/to/file1.rds",
+        "file2 (sas)" = "path/to/file2.sas7bdat"
+    )
+)
+```
+
+### Using `load_data()`
+
+Set the `RXD_DATA` environment variable:
+
+```r
+Sys.setenv(RXD_DATA = "path/to/data/folder")
+```
+
+Load data from the specified subdirectory relative to `RXD_DATA`:
+
+```r
+# path/to/data/folder/subdir1
+load_data(
+    sub_dir = "subdir1",
+    file_names = c("file1", "file2")
+)
+
+# path/to/data/folder/subdir1/subdir2
+load_data(
+    sub_dir = "subdir1/subdir2",
+    file_names = c("file1", "file2")
+)
+```
+
+For more details, please refer to the package vignettes and function documentation.
