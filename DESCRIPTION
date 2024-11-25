@@ -8,7 +8,7 @@ Authors@R: c(
         person( given = "Steven", family = "Brooks", role = "aut", email = "steven.brooks@boehringer-ingelheim.com"),
         person( given = "Sorin", family = "Voicu", role = "aut", email = "sorin.voicu.ext@boehringer-ingelheim.com")
     )
-Description: This is a module for loading .RDS / .sas7bdat data files from a network file storage environment. It also allows loading data locally.
+Description: A package for loading multiple data files, returning a list of data frames with associated metadata, designed to integrate with the modular DaVinci framework.
 License: Apache License (>= 2)
 Encoding: UTF-8
 LazyData: true
