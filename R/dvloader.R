@@ -84,7 +84,7 @@ load_files <- function(file_paths) {
     } else if (toupper(extension) == "SAS7BDAT") {
       data <- haven::read_sas(path)
     } else {
-      stop("Internal error. Report this message to the maintainer of the `dv.loader` package.")
+      stop("Not supported file type, only .rds or .sas7bdat files can be loaded.")
     }
 
     meta <- file.info(path, extra_cols = FALSE)
