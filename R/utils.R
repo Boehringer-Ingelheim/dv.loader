@@ -58,7 +58,7 @@ create_data_list <- function(file_path, file_names, prefer_sas) {
 #' @keywords internal
 read_file_and_attach_metadata <- function(path) {
   extension <- tools::file_ext(path)
-  
+
   if (toupper(extension) == "RDS") {
     data <- readRDS(path)
   } else if (toupper(extension) == "SAS7BDAT") {
@@ -66,13 +66,13 @@ read_file_and_attach_metadata <- function(path) {
   } else {
     stop("Not supported file type, only .rds or .sas7bdat files can be loaded.")
   }
-  
+
   meta <- file.info(path, extra_cols = FALSE)
   meta[["path"]] <- path
   meta[["file_name"]] <- basename(path)
   row.names(meta) <- NULL
-  
+
   attr(data, "meta") <- meta
-  
+
   return(data)
 }
