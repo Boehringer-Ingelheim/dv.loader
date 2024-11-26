@@ -14,54 +14,76 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette demonstrates how to use the `dv.loader` package to load data files into memory. Currently, the package can be used to load both RDS (`.rds`) and SAS (`.sas7bdat`) data files. 
+The `dv.loader` package simplifies the process of loading data files into R memory. It provides two main functions - `load_data()` and `load_files()` - that can handle two widely used data formats:
 
-For demonstration purposes, we will save some RDS data files in a temporary directory.
+- `.rds` files: R's native data storage format, which efficiently stores R objects in a compressed binary format
+- `.sas7bdat` files: SAS dataset files commonly used in clinical research and other industries
+
+The package is designed to be flexible, allowing you to load data either from a centralized location using environment variables, or by specifying explicit file paths. Each loaded dataset includes metadata about the source file, such as its size, modification time, and location on disk.
+
+To demonstrate the package's capabilities, we'll first create some example `.rds` files in a temporary directory that we can work with.
 
 ```{r}
+# Create a temporary directory for the example data
 temp_dir <- tempdir()
 
+# Save the cars and mtcars datasets to the temporary directory
 saveRDS(cars, file = file.path(temp_dir, "cars.rds"))
 saveRDS(mtcars, file = file.path(temp_dir, "mtcars.rds"))
 ```
 
-Let's get started by loading the package. 
+To begin, we'll need to load the dv.loader package.
 
 ```{r setup}
 library(dv.loader)
 ```
 
-In this vignette, we will focus on the newly added `load_files()` function instead of the legacy `load_data()` function. The `load_files()` function reads each file and returns a named list of data frames along with associated metadata. By default, the names in the list will be derived from the file names (without extensions).
+## Using `load_data()`
+
+The `load_data()` function requires the `RXD_DATA` environment variable to be set to the base directory containing your data files. This variable defines the root path from which subdirectories will be searched.
+
+When you call `load_data()`, it searches the specified subdirectory for data files and returns them as a named list of data frames. Each data frame in the list is named after its source file.
+
+For files that exist in both `.rds` and `.sas7bdat` formats, `load_data()` will load the `.rds` version by default since these are more compact and faster to read. You can override this behavior by setting `prefer_sas = TRUE` to prioritize loading `.sas7bdat` files instead.
 
 ```{r}
-data_list <- load_files(
+# Set the RXD_DATA environment variable to the temporary directory
+Sys.setenv(RXD_DATA = temp_dir)
+
+# Load the data files into a named list of data frames
+data_list1 <- load_data(
+  sub_dir = ".",
+  file_names = c("cars", "mtcars")
+)
+
+# Display the structure of the resulting list
+str(data_list1)
+```
+
+## Using `load_files()`
+
+The `load_files()` function accepts explicit file paths and loads them into a named list of data frames. Each data frame includes metadata as an attribute. If no custom names are provided, the function will use the file names (without paths or extensions) as the list names.
+
+```{r}
+# Load the data files into a named list of data frames
+data_list2 <- load_files(
   file_paths = c(
     file.path(temp_dir, "cars.rds"),
     file.path(temp_dir, "mtcars.rds")
   )
 )
 
-names(data_list)
+# Display the structure of the resulting list
+str(data_list2)
 ```
 
-The returned data list contains two data frames named `cars` and `mtcars`. The metadata for each data frame can be accessed using the `meta` attribute. For example, the metadata for the `cars` data frame can be accessed as follows:
+When using `load_files()`, you can specify files from multiple directories and customize the output list names by providing named arguments in the `file_paths` parameter.
 
 ```{r}
-attr(data_list[["cars"]], "meta")
-```
-
-Unlike the legacy `load_data()` function, the `load_files()` function can load data files from different directories and allows you to customize the names of the data frames in the returned list by providing **named** file paths.
-
-```{r}
-data_list2 <- dv.loader::load_files(
+dv.loader::load_files(
   file_paths = c(
     "cars (rds)" = file.path(temp_dir, "cars.rds"),
     "iris (sas)" = system.file("examples", "iris.sas7bdat", package = "haven")
   )
-)
-
-names(data_list2)
+) |> names()
 ```
-
-
-
