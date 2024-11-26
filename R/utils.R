@@ -36,8 +36,7 @@ create_data_list <- function(file_path, file_names, prefer_sas) {
       stop(paste("create_data_list(): No RDS or SAS files found for", file_path, x))
     }
 
-    output <- read_file(file_path, file_name_to_load)
-
+    output <- read_file_and_attach_metadata(file.path(file_path, file_name_to_load))
     return(output)
   })
 
@@ -47,35 +46,33 @@ create_data_list <- function(file_path, file_names, prefer_sas) {
 }
 
 
-#' Reads RDS/SAS file and metadatas from first 6 items from file.info() its file path
-#' @param file_path a path to a file
-#' @param file_name name of a file
-#' @return a data object with an extra attribute of metadata
-read_file <- function(file_path, file_name) {
-  ext <- tools::file_ext(file_name)
-
-  if (!(toupper(ext) %in% c("RDS", "SAS7BDAT"))) {
-    stop("Usage error: read_file: file_name: file must either be RDS or SAS7BDAT.")
-  }
-
-  is_rds <- toupper(ext) == "RDS"
-
-  file <- file.path(file_path, file_name)
-  file_name <- tools::file_path_sans_ext(file_name)
-
-  # grab file info
-  meta <- file.info(file)[1L:6L]
-  meta[["path"]] <- row.names(meta)
-  meta[["file_name"]] <- file_name
-  meta <- data.frame(meta, stringsAsFactors = FALSE)
-  row.names(meta) <- NULL
-
-  if (is_rds) {
-    out <- readRDS(file)
+#' Read a data file and attach metadata
+#'
+#' Reads an .rds or .sas7bdat file from the given path and attaches metadata about the file
+#' as an attribute.
+#'
+#' @param path [character(1)] Path to the data file to read
+#'
+#' @return A data frame with metadata attached as an attribute named "meta".
+#'
+#' @keywords internal
+read_file_and_attach_metadata <- function(path) {
+  extension <- tools::file_ext(path)
+  
+  if (toupper(extension) == "RDS") {
+    data <- readRDS(path)
+  } else if (toupper(extension) == "SAS7BDAT") {
+    data <- haven::read_sas(path)
   } else {
-    out <- haven::read_sas(file)
+    stop("Not supported file type, only .rds or .sas7bdat files can be loaded.")
   }
-  attr(out, "meta") <- meta
-
-  return(out)
+  
+  meta <- file.info(path, extra_cols = FALSE)
+  meta[["path"]] <- path
+  meta[["file_name"]] <- basename(path)
+  row.names(meta) <- NULL
+  
+  attr(data, "meta") <- meta
+  
+  return(data)
 }

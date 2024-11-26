@@ -76,27 +76,6 @@ load_files <- function(file_paths) {
   checkmate::assert_character(file_paths, min.len = 1)
   checkmate::assert_file_exists(file_paths, access = "r", extension = c("rds", "sas7bdat"))
 
-  read_file_and_attach_metadata <- function(path) {
-    extension <- tools::file_ext(path)
-
-    if (toupper(extension) == "RDS") {
-      data <- readRDS(path)
-    } else if (toupper(extension) == "SAS7BDAT") {
-      data <- haven::read_sas(path)
-    } else {
-      stop("Not supported file type, only .rds or .sas7bdat files can be loaded.")
-    }
-
-    meta <- file.info(path, extra_cols = FALSE)
-    meta[["path"]] <- path
-    meta[["file_name"]] <- basename(path)
-    row.names(meta) <- NULL
-
-    attr(data, "meta") <- meta
-
-    return(data)
-  }
-
   data_list <- lapply(file_paths, read_file_and_attach_metadata)
 
   # Use names provided as arguments
