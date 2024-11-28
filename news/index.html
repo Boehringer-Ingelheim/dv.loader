@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">dv.loader</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,9 @@
       
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.1.0" id="dvloader-210">dv.loader 2.1.0<a class="anchor" aria-label="anchor" href="#dvloader-210"></a></h2>
+<ul><li>Added <code><a href="../reference/load_files.html">load_files()</a></code> to load data using explicit file paths.</li></ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.0.0" id="dvloader-200">dv.loader 2.0.0<a class="anchor" aria-label="anchor" href="#dvloader-200"></a></h2>
 <ul><li>GitHub release with QC report</li>
@@ -103,7 +106,7 @@
 <h2 class="pkg-version" data-toc-text="0.3.1" id="dvloader-031">dv.loader 0.3.1<a class="anchor" aria-label="anchor" href="#dvloader-031"></a></h2>
 <ul><li><p>If you specify <code>useDB = T</code> and there’s an existing database file, then <code><a href="../reference/load_data.html">load_data()</a></code> will connect to it, and return its tables.</p></li>
 <li><p><code><a href="../reference/load_data.html">load_data()</a></code> will check for an existing DB based on the users input for <code>dbFileName</code>. If that is left <code>NULL</code>, then it will use the default name based on <code>studyDir</code>, and if that is <code>NULL</code>, then it will use <code>db</code>. Otherwise, it will just create a new database (if <code>useDB = T</code>).</p></li>
-<li><p>The API to <code><a href="../reference/read_file.html">read_file()</a></code> has changed. No longer need to specify <code>isRDS</code>. The function will figure that out based on the <code>file_name</code> passed in.</p></li>
+<li><p>The API to <code>read_file()</code> has changed. No longer need to specify <code>isRDS</code>. The function will figure that out based on the <code>file_name</code> passed in.</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="dvloader-030">dv.loader 0.3.0<a class="anchor" aria-label="anchor" href="#dvloader-030"></a></h2>

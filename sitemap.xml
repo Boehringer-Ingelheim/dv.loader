@@ -40,6 +40,9 @@
     <loc>/reference/load_data.html</loc>
   </url>
   <url>
-    <loc>/reference/read_file.html</loc>
+    <loc>/reference/load_files.html</loc>
+  </url>
+  <url>
+    <loc>/reference/read_file_and_attach_metadata.html</loc>
   </url>
 </urlset>

@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">dv.loader</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,46 +76,139 @@
 
     
     
+<p>The <code>dv.loader</code> package simplifies the process of loading data files into R memory. It provides two main functions - <code><a href="../reference/load_data.html">load_data()</a></code> and <code><a href="../reference/load_files.html">load_files()</a></code> - that can handle two widely used data formats:</p>
+<ul>
+<li>
+<code>.rds</code> files: R’s native data storage format, which efficiently stores R objects in a compressed binary format</li>
+<li>
+<code>.sas7bdat</code> files: SAS dataset files commonly used in clinical research and other industries</li>
+</ul>
+<p>The package is designed to be flexible, allowing you to load data either from a centralized location using environment variables, or by specifying explicit file paths. Each loaded dataset includes metadata about the source file, such as its size, modification time, and location on disk.</p>
+<p>To demonstrate the package’s capabilities, we’ll first create some example <code>.rds</code> files in a temporary directory that we can work with.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dv.loader</span><span class="op">)</span></span></code></pre></div>
-<p>Note: <code>use_wd = TRUE</code> can be used to source from local folder. Just set your working directory before using with <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd()</a></code>, or use an explicit path in <code>sub_dir</code>.</p>
-<div class="section level2">
-<h2 id="usage-load_data">Usage: <code>load_data()</code><a class="anchor" aria-label="anchor" href="#usage-load_data"></a>
-</h2>
+<code class="sourceCode R"><span><span class="co"># Create a temporary directory for the example data</span></span>
+<span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Save the cars and mtcars datasets to the temporary directory</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">cars</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"cars.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">mtcars</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"mtcars.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>To begin, we’ll need to load the dv.loader package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">test_data_path</span> <span class="op">&lt;-</span> <span class="st">"../tests/testthat/inst/extdata"</span></span>
-<span><span class="va">data_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_data.html">load_data</a></span><span class="op">(</span></span>
-<span>  sub_dir <span class="op">=</span> <span class="va">test_data_path</span>,</span>
-<span>  file_names <span class="op">=</span> <span class="st">"dummyads2"</span>,</span>
-<span>  use_wd <span class="op">=</span> <span class="cn">TRUE</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dv.loader</span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="using-load_data">Using <code>load_data()</code><a class="anchor" aria-label="anchor" href="#using-load_data"></a>
+</h2>
+<p>The <code><a href="../reference/load_data.html">load_data()</a></code> function requires the <code>RXD_DATA</code> environment variable to be set to the base directory containing your data files. This variable defines the root path from which subdirectories will be searched.</p>
+<p>When you call <code><a href="../reference/load_data.html">load_data()</a></code>, it searches the specified subdirectory for data files and returns them as a named list of data frames. Each data frame in the list is named after its source file.</p>
+<p>For files that exist in both <code>.rds</code> and <code>.sas7bdat</code> formats, <code><a href="../reference/load_data.html">load_data()</a></code> will load the <code>.rds</code> version by default since these are more compact and faster to read. You can override this behavior by setting <code>prefer_sas = TRUE</code> to prioritize loading <code>.sas7bdat</code> files instead.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Set the RXD_DATA environment variable to the temporary directory</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>RXD_DATA <span class="op">=</span> <span class="va">temp_dir</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load the data files into a named list of data frames</span></span>
+<span><span class="va">data_list1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_data.html">load_data</a></span><span class="op">(</span></span>
+<span>  sub_dir <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  file_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cars"</span>, <span class="st">"mtcars"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">data_list</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "list"</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">data_list</span><span class="op">[[</span><span class="st">"dummyads2"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tbl_df"     "tbl"        "data.frame"</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data_list</span><span class="op">[[</span><span class="st">"dummyads2"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     STUDYID       USUBJID SUBJID TRTFL PPROTFL TRT01PNDC TRT01PN</span></span>
-<span><span class="co">#&gt; 1 test-0001 test-0001-101    101     Y       Y   BI 10mg   50100</span></span>
-<span><span class="co">#&gt; 2 test-0001 test-0001-101    101     Y       Y   BI 10mg   50100</span></span>
-<span><span class="co">#&gt; 3 test-0001 test-0001-101    101     Y       Y   BI 10mg   50100</span></span>
-<span><span class="co">#&gt; 4 test-0001 test-0001-101    101     Y       Y   BI 10mg   50100</span></span>
-<span><span class="co">#&gt; 5 test-0001 test-0001-102    102     Y       Y   Placebo    2000</span></span>
-<span><span class="co">#&gt; 6 test-0001 test-0001-102    102     Y       Y   Placebo    2000</span></span></code></pre></div>
-<p>Get the dataframe’s metadata through its attributes:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data_list</span><span class="op">[[</span><span class="st">"dummyads2"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"meta"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   size isdir mode               mtime               ctime               atime</span></span>
-<span><span class="co">#&gt; 1  449 FALSE  644 2024-07-08 05:22:03 2024-07-08 05:22:03 2024-07-08 05:22:03</span></span>
-<span><span class="co">#&gt;                                                                              path</span></span>
-<span><span class="co">#&gt; 1 /__w/dv.loader/dv.loader/vignettes/../tests/testthat/inst/extdata/dummyads2.RDS</span></span>
-<span><span class="co">#&gt;   file_name</span></span>
-<span><span class="co">#&gt; 1 dummyads2</span></span></code></pre></div>
+<span><span class="co"># Display the structure of the resulting list</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data_list1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 2</span></span>
+<span><span class="co">#&gt;  $ cars  :'data.frame':  50 obs. of  2 variables:</span></span>
+<span><span class="co">#&gt;   ..$ speed: num [1:50] 4 4 7 7 8 9 10 10 10 11 ...</span></span>
+<span><span class="co">#&gt;   ..$ dist : num [1:50] 2 10 4 22 16 10 18 26 34 17 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  8 variables:</span></span>
+<span><span class="co">#&gt;   .. ..$ size     : num 289</span></span>
+<span><span class="co">#&gt;   .. ..$ isdir    : logi FALSE</span></span>
+<span><span class="co">#&gt;   .. ..$ mode     : 'octmode' int 644</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2024-11-28 10:11:03"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2024-11-28 10:11:03"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2024-11-28 10:11:03"</span></span>
+<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpjC6516/./cars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ file_name: chr "cars.rds"</span></span>
+<span><span class="co">#&gt;  $ mtcars:'data.frame':  32 obs. of  11 variables:</span></span>
+<span><span class="co">#&gt;   ..$ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...</span></span>
+<span><span class="co">#&gt;   ..$ cyl : num [1:32] 6 6 4 6 8 6 8 4 4 6 ...</span></span>
+<span><span class="co">#&gt;   ..$ disp: num [1:32] 160 160 108 258 360 ...</span></span>
+<span><span class="co">#&gt;   ..$ hp  : num [1:32] 110 110 93 110 175 105 245 62 95 123 ...</span></span>
+<span><span class="co">#&gt;   ..$ drat: num [1:32] 3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...</span></span>
+<span><span class="co">#&gt;   ..$ wt  : num [1:32] 2.62 2.88 2.32 3.21 3.44 ...</span></span>
+<span><span class="co">#&gt;   ..$ qsec: num [1:32] 16.5 17 18.6 19.4 17 ...</span></span>
+<span><span class="co">#&gt;   ..$ vs  : num [1:32] 0 0 1 1 0 1 0 1 1 1 ...</span></span>
+<span><span class="co">#&gt;   ..$ am  : num [1:32] 1 1 1 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">#&gt;   ..$ gear: num [1:32] 4 4 4 3 3 3 3 4 4 4 ...</span></span>
+<span><span class="co">#&gt;   ..$ carb: num [1:32] 4 4 1 1 2 1 4 2 2 4 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  8 variables:</span></span>
+<span><span class="co">#&gt;   .. ..$ size     : num 1225</span></span>
+<span><span class="co">#&gt;   .. ..$ isdir    : logi FALSE</span></span>
+<span><span class="co">#&gt;   .. ..$ mode     : 'octmode' int 644</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2024-11-28 10:11:03"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2024-11-28 10:11:03"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2024-11-28 10:11:03"</span></span>
+<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpjC6516/./mtcars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ file_name: chr "mtcars.rds"</span></span></code></pre></div>
 </div>
-  </main>
+<div class="section level2">
+<h2 id="using-load_files">Using <code>load_files()</code><a class="anchor" aria-label="anchor" href="#using-load_files"></a>
+</h2>
+<p>The <code><a href="../reference/load_files.html">load_files()</a></code> function accepts explicit file paths and loads them into a named list of data frames. Each data frame includes metadata as an attribute. If no custom names are provided, the function will use the file names (without paths or extensions) as the list names.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load the data files into a named list of data frames</span></span>
+<span><span class="va">data_list2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_files.html">load_files</a></span><span class="op">(</span></span>
+<span>  file_paths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"cars.rds"</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"mtcars.rds"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Display the structure of the resulting list</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data_list2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 2</span></span>
+<span><span class="co">#&gt;  $ cars  :'data.frame':  50 obs. of  2 variables:</span></span>
+<span><span class="co">#&gt;   ..$ speed: num [1:50] 4 4 7 7 8 9 10 10 10 11 ...</span></span>
+<span><span class="co">#&gt;   ..$ dist : num [1:50] 2 10 4 22 16 10 18 26 34 17 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  8 variables:</span></span>
+<span><span class="co">#&gt;   .. ..$ size     : num 289</span></span>
+<span><span class="co">#&gt;   .. ..$ isdir    : logi FALSE</span></span>
+<span><span class="co">#&gt;   .. ..$ mode     : 'octmode' int 644</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2024-11-28 10:11:03"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2024-11-28 10:11:03"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2024-11-28 10:11:03"</span></span>
+<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpjC6516/cars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ file_name: chr "cars.rds"</span></span>
+<span><span class="co">#&gt;  $ mtcars:'data.frame':  32 obs. of  11 variables:</span></span>
+<span><span class="co">#&gt;   ..$ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...</span></span>
+<span><span class="co">#&gt;   ..$ cyl : num [1:32] 6 6 4 6 8 6 8 4 4 6 ...</span></span>
+<span><span class="co">#&gt;   ..$ disp: num [1:32] 160 160 108 258 360 ...</span></span>
+<span><span class="co">#&gt;   ..$ hp  : num [1:32] 110 110 93 110 175 105 245 62 95 123 ...</span></span>
+<span><span class="co">#&gt;   ..$ drat: num [1:32] 3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...</span></span>
+<span><span class="co">#&gt;   ..$ wt  : num [1:32] 2.62 2.88 2.32 3.21 3.44 ...</span></span>
+<span><span class="co">#&gt;   ..$ qsec: num [1:32] 16.5 17 18.6 19.4 17 ...</span></span>
+<span><span class="co">#&gt;   ..$ vs  : num [1:32] 0 0 1 1 0 1 0 1 1 1 ...</span></span>
+<span><span class="co">#&gt;   ..$ am  : num [1:32] 1 1 1 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">#&gt;   ..$ gear: num [1:32] 4 4 4 3 3 3 3 4 4 4 ...</span></span>
+<span><span class="co">#&gt;   ..$ carb: num [1:32] 4 4 1 1 2 1 4 2 2 4 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  8 variables:</span></span>
+<span><span class="co">#&gt;   .. ..$ size     : num 1225</span></span>
+<span><span class="co">#&gt;   .. ..$ isdir    : logi FALSE</span></span>
+<span><span class="co">#&gt;   .. ..$ mode     : 'octmode' int 644</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2024-11-28 10:11:03"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2024-11-28 10:11:03"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2024-11-28 10:11:03"</span></span>
+<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpjC6516/mtcars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ file_name: chr "mtcars.rds"</span></span></code></pre></div>
+<p>When using <code><a href="../reference/load_files.html">load_files()</a></code>, you can specify files from multiple directories and customize the output list names by providing named arguments in the <code>file_paths</code> parameter.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">dv.loader</span><span class="fu">::</span><span class="fu"><a href="../reference/load_files.html">load_files</a></span><span class="op">(</span></span>
+<span>  file_paths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"cars (rds)"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"cars.rds"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"iris (sas)"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"iris.sas7bdat"</span>, package <span class="op">=</span> <span class="st">"haven"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "cars (rds)" "iris (sas)"</span></span></code></pre></div>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
