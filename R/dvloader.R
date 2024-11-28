@@ -59,3 +59,41 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
 
   return(data_list)
 }
+
+#' Load data files from explicit paths
+#'
+#' Read data from provided paths and return it as a list of data frames.
+#' Supports both .rds and .sas7bdat formats.
+#'
+#' @param file_paths [character(1+)] Files to read. Optionally named.
+#'
+#' @return [list] A named list of data frames, where each name is either:
+#'  - the name associated to the element in the `file_paths` argument, or, if not provided...
+#'  - the name of the file itself, after stripping it of its leading path and trailing extension
+#'
+#' @export
+load_files <- function(file_paths) {
+  checkmate::assert_character(file_paths, min.len = 1)
+  checkmate::assert_file_exists(file_paths, access = "r", extension = c("rds", "sas7bdat"))
+
+  data_list <- lapply(file_paths, read_file_and_attach_metadata)
+
+  # Use names provided as arguments
+  arg_names <- names(file_paths)
+  if (is.null(arg_names)) arg_names <- rep("", length(file_paths))
+  names(data_list) <- arg_names
+
+  # If names are not provided, fall back to file names without leading path or trailing extension
+  empty_name_indices <- which(arg_names == "")
+  names(data_list)[empty_name_indices] <- tools::file_path_sans_ext(basename(file_paths[empty_name_indices]))
+
+  dup_indices <- duplicated(names(data_list))
+  if (any(dup_indices)) {
+    stop(sprintf(
+      "Duplicate entries detected (%s). Please review `file_paths` argument.",
+      paste(names(data_list)[dup_indices], collapse = ", ")
+    ))
+  }
+
+  return(data_list)
+}
