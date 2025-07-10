@@ -1,3 +1,7 @@
+# dv.loader 2.1.0-9000
+
+- Faster loading of large SAS files from high latency media (e.g. network shares).
+
 # dv.loader 2.1.0
 
 - Added `load_files()` to load data using explicit file paths.
