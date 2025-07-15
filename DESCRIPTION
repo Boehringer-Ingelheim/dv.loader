@@ -1,7 +1,7 @@
 Package: dv.loader
 Type: Package
 Title: Data loading module 
-Version: 2.1.0
+Version: 2.1.1
 Authors@R: c(
         person( "Boehringer-Ingelheim Pharma GmbH & Co.KG", role = c("cph", "fnd")),
         person( given = "Ming", family = "Yang", role = c("aut", "cre"), email = "ming.yang.ext@boehringer-ingelheim.com"),

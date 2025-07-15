@@ -57,17 +57,20 @@ create_data_list <- function(file_path, file_names, prefer_sas) {
 #'
 #' @keywords internal
 read_file_and_attach_metadata <- function(path) {
+  meta <- file.info(path, extra_cols = FALSE)
   extension <- tools::file_ext(path)
 
   if (toupper(extension) == "RDS") {
     data <- readRDS(path)
   } else if (toupper(extension) == "SAS7BDAT") {
+    # Preload file into OS file cache to get faster loads on high-latency media (e.g. network shares)
+    readBin(path, raw(), meta[["size"]]) # The return value goes unasigned on purpose
+
     data <- haven::read_sas(path)
   } else {
     stop("Not supported file type, only .rds or .sas7bdat files can be loaded.")
   }
 
-  meta <- file.info(path, extra_cols = FALSE)
   meta[["path"]] <- path
   meta[["file_name"]] <- basename(path)
   row.names(meta) <- NULL
