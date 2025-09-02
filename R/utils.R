@@ -64,8 +64,10 @@ read_file_and_attach_metadata <- function(path) {
     data <- readRDS(path)
   } else if (toupper(extension) == "SAS7BDAT") {
     # Preload file into OS file cache to get faster loads on high-latency media (e.g. network shares)
-    readBin(path, raw(), meta[["size"]]) # The return value goes unasigned on purpose
-
+    try( # If the file is too large to fit into memory, the caching fails instantly and silently
+      readBin(path, raw(), meta[["size"]]), # The return value goes unasigned on purpose
+      silent = TRUE
+    )
     data <- haven::read_sas(path)
   } else {
     stop("Not supported file type, only .rds or .sas7bdat files can be loaded.")
