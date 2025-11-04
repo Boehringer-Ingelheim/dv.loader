@@ -1,4 +1,4 @@
-# dv.loader 2.1.1-9000
+# dv.loader 2.1.2
 
 - Prevent remote file caching from interrupting load process in case file does not fit into memory.
 
