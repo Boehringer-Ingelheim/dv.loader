@@ -8,8 +8,8 @@
 <title>Loading Data into Memory • dv.loader</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Loading Data into Memory">
 </head>
 <body>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">dv.loader</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -129,13 +129,13 @@ faster to read. You can override this behavior by setting
 <span><span class="co">#&gt;   ..$ speed: num [1:50] 4 4 7 7 8 9 10 10 10 11 ...</span></span>
 <span><span class="co">#&gt;   ..$ dist : num [1:50] 2 10 4 22 16 10 18 26 34 17 ...</span></span>
 <span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  8 variables:</span></span>
-<span><span class="co">#&gt;   .. ..$ size     : num 289</span></span>
+<span><span class="co">#&gt;   .. ..$ size     : num 288</span></span>
 <span><span class="co">#&gt;   .. ..$ isdir    : logi FALSE</span></span>
 <span><span class="co">#&gt;   .. ..$ mode     : 'octmode' int 644</span></span>
-<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2025-07-15 09:12:40"</span></span>
-<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2025-07-15 09:12:40"</span></span>
-<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2025-07-15 09:12:40"</span></span>
-<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpY9zViA/./cars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
+<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpfXzmmQ/./cars.rds"</span></span>
 <span><span class="co">#&gt;   .. ..$ file_name: chr "cars.rds"</span></span>
 <span><span class="co">#&gt;  $ mtcars:'data.frame':  32 obs. of  11 variables:</span></span>
 <span><span class="co">#&gt;   ..$ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...</span></span>
@@ -153,10 +153,10 @@ faster to read. You can override this behavior by setting
 <span><span class="co">#&gt;   .. ..$ size     : num 1225</span></span>
 <span><span class="co">#&gt;   .. ..$ isdir    : logi FALSE</span></span>
 <span><span class="co">#&gt;   .. ..$ mode     : 'octmode' int 644</span></span>
-<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2025-07-15 09:12:40"</span></span>
-<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2025-07-15 09:12:40"</span></span>
-<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2025-07-15 09:12:40"</span></span>
-<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpY9zViA/./mtcars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
+<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpfXzmmQ/./mtcars.rds"</span></span>
 <span><span class="co">#&gt;   .. ..$ file_name: chr "mtcars.rds"</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -183,13 +183,13 @@ list names.</p>
 <span><span class="co">#&gt;   ..$ speed: num [1:50] 4 4 7 7 8 9 10 10 10 11 ...</span></span>
 <span><span class="co">#&gt;   ..$ dist : num [1:50] 2 10 4 22 16 10 18 26 34 17 ...</span></span>
 <span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  8 variables:</span></span>
-<span><span class="co">#&gt;   .. ..$ size     : num 289</span></span>
+<span><span class="co">#&gt;   .. ..$ size     : num 288</span></span>
 <span><span class="co">#&gt;   .. ..$ isdir    : logi FALSE</span></span>
 <span><span class="co">#&gt;   .. ..$ mode     : 'octmode' int 644</span></span>
-<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2025-07-15 09:12:40"</span></span>
-<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2025-07-15 09:12:40"</span></span>
-<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2025-07-15 09:12:40"</span></span>
-<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpY9zViA/cars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
+<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpfXzmmQ/cars.rds"</span></span>
 <span><span class="co">#&gt;   .. ..$ file_name: chr "cars.rds"</span></span>
 <span><span class="co">#&gt;  $ mtcars:'data.frame':  32 obs. of  11 variables:</span></span>
 <span><span class="co">#&gt;   ..$ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...</span></span>
@@ -207,10 +207,10 @@ list names.</p>
 <span><span class="co">#&gt;   .. ..$ size     : num 1225</span></span>
 <span><span class="co">#&gt;   .. ..$ isdir    : logi FALSE</span></span>
 <span><span class="co">#&gt;   .. ..$ mode     : 'octmode' int 644</span></span>
-<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2025-07-15 09:12:40"</span></span>
-<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2025-07-15 09:12:40"</span></span>
-<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2025-07-15 09:12:40"</span></span>
-<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpY9zViA/mtcars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
+<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpfXzmmQ/mtcars.rds"</span></span>
 <span><span class="co">#&gt;   .. ..$ file_name: chr "mtcars.rds"</span></span></code></pre></div>
 <p>When using <code><a href="../reference/load_files.html">load_files()</a></code>, you can specify files from
 multiple directories and customize the output list names by providing
@@ -235,7 +235,7 @@ named arguments in the <code>file_paths</code> parameter.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer>
