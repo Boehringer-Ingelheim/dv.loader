@@ -1,3 +1,7 @@
+# dv.loader 2.1.2
+
+- Prevent remote file caching from interrupting load process in case file does not fit into memory.
+
 # dv.loader 2.1.1
 
 - Faster loading of large SAS files from high latency media (e.g. network shares).
