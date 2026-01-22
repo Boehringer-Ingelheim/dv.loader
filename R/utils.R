@@ -1,10 +1,26 @@
 #' For each file name provided, reads in the first matching file and its meta data/attributes.
 #' Preference is given to RDS because its faster
-#' @param file_path the folder where the files are
+#' @param sub_dir A relative directory/folder that will be appended to a base path defined by `Sys.getenv("RXD_DATA")`.
+#' If the argument is left as NULL, the function will load data from the working directory `getwd()`.
 #' @param file_names CDISC names for the files
+#' @param use_wd for "use working directory" - a flag used when importing local files
+#' not on NFS - default value is FALSE
 #' @param prefer_sas if TRUE, imports .sas7bdat files first instead of .RDS files
 #' @return returns a list of dataframes with metadata as an attribute on each dataframe
-collect_data_list_paths <- function(file_path, file_names, prefer_sas) {
+collect_data_list_paths <- function(sub_dir, file_names, use_wd, prefer_sas) {
+  
+  file_path <- "" # will be built using args
+
+  if (is.null(sub_dir)) {
+    file_path <- getwd()
+  } else {
+    if (use_wd) {
+      file_path <- file.path(getwd(), sub_dir)
+    } else {
+      file_path <- file.path(get_cre_path(), sub_dir)
+    }
+  }
+  
   data_list <- sapply(file_names, function(x) {
     extensions <- c("", ".rds", ".sas7bdat")
     if (prefer_sas) {

@@ -38,24 +38,12 @@ get_cre_path <- get_nfs_path
 #' )
 #' }
 load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE, reduce_memory_footprint = TRUE) {
-  if (is.null(file_names)) {
+  if (length(file_names) == 0) {
     stop("Usage: load_data: file_names: Must supply at least one file name")
   }
 
-  study_path <- "" # will be built using args
-
-  if (is.null(sub_dir)) {
-    study_path <- getwd()
-  } else {
-    if (use_wd) {
-      study_path <- file.path(getwd(), sub_dir)
-    } else {
-      study_path <- file.path(get_cre_path(), sub_dir)
-    }
-  }
-
   # create the output
-  paths <- collect_data_list_paths(study_path, file_names, prefer_sas)
+  paths <- collect_data_list_paths(sub_dir, file_names, use_wd, prefer_sas)
   data_list <- load_files(file_paths = paths, reduce_memory_footprint = reduce_memory_footprint)
 
   return(data_list)
