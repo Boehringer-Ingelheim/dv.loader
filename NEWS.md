@@ -1,3 +1,7 @@
+# dv.loader 2.1.2-9000
+
+- Use leaner data types for columns that allow it.
+
 # dv.loader 2.1.2
 
 - Prevent remote file caching from interrupting load process in case file does not fit into memory.
