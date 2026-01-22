@@ -22,7 +22,7 @@ collect_data_list_paths <- function(file_path, file_names, prefer_sas) {
 
       match_count <- sum(uppercase_candidates == uppercase_file_name)
       if (match_count > 1) {
-        stop(paste("create_data_list(): More than one case-insensitive file name match for", file_path, x))
+        stop(paste("collect_data_list_paths(): More than one case-insensitive file name match for", file_path, x))
       }
 
       index <- match(uppercase_file_name, uppercase_candidates)
@@ -33,7 +33,7 @@ collect_data_list_paths <- function(file_path, file_names, prefer_sas) {
     }
 
     if (is.null(file_name_to_load)) {
-      stop(paste("create_data_list(): No RDS or SAS files found for", file_path, x))
+      stop(paste("collect_data_list_paths(): No RDS or SAS files found for", file_path, x))
     }
 
     output <- file.path(file_path, file_name_to_load)
@@ -44,20 +44,6 @@ collect_data_list_paths <- function(file_path, file_names, prefer_sas) {
 
   return(data_list)
 }
-
-#' For each file name provided, reads in the first matching file and its meta data/attributes.
-#' Preference is given to RDS because its faster
-#' @param file_path the folder where the files are
-#' @param file_names CDISC names for the files
-#' @param prefer_sas if TRUE, imports .sas7bdat files first instead of .RDS files
-#' @param reduce_memory_footprint TODO: describe
-#' @return returns a list of dataframes with metadata as an attribute on each dataframe
-create_data_list <- function(file_path, file_names, prefer_sas, reduce_memory_footprint = TRUE) {
-  paths <- collect_data_list_paths(file_path, file_names, prefer_sas)
-  data_list <- load_files(file_paths = paths, reduce_memory_footprint = reduce_memory_footprint)
-  return(data_list)
-}
-
 
 #' Read a data file and attach metadata
 #'

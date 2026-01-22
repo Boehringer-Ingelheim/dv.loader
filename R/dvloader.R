@@ -55,7 +55,8 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
   }
 
   # create the output
-  data_list <- create_data_list(study_path, file_names, prefer_sas, reduce_memory_footprint = reduce_memory_footprint)
+  paths <- collect_data_list_paths(study_path, file_names, prefer_sas)
+  data_list <- load_files(file_paths = paths, reduce_memory_footprint = reduce_memory_footprint)
 
   return(data_list)
 }
