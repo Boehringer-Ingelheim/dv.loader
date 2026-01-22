@@ -11,6 +11,5 @@ navbar:
       href: articles/qc.html
 home:
   title: dv.loader
-  links:
-  - text: Browse source code
-    href: https://github.com/Boehringer-Ingelheim/dv.loader
+  
+url: https://boehringer-ingelheim.github.io/dv.loader

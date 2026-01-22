@@ -7,7 +7,7 @@
 read_file_and_attach_metadata(path)
 }
 \arguments{
-\item{path}{[character(1)] Path to the data file to read}
+\item{path}{\verb{[character(1)]} Path to the data file to read}
 }
 \value{
 A data frame with metadata attached as an attribute named "meta".

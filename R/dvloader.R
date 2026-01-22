@@ -65,9 +65,9 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
 #' Read data from provided paths and return it as a list of data frames.
 #' Supports both .rds and .sas7bdat formats.
 #'
-#' @param file_paths [character(1+)] Files to read. Optionally named.
+#' @param file_paths `[character(1+)]` Files to read. Optionally named.
 #'
-#' @return [list] A named list of data frames, where each name is either:
+#' @return `[list]` A named list of data frames, where each name is either:
 #'  - the name associated to the element in the `file_paths` argument, or, if not provided...
 #'  - the name of the file itself, after stripping it of its leading path and trailing extension
 #'

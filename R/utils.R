@@ -51,7 +51,7 @@ create_data_list <- function(file_path, file_names, prefer_sas) {
 #' Reads an .rds or .sas7bdat file from the given path and attaches metadata about the file
 #' as an attribute.
 #'
-#' @param path [character(1)] Path to the data file to read
+#' @param path `[character(1)]` Path to the data file to read
 #'
 #' @return A data frame with metadata attached as an attribute named "meta".
 #'

@@ -7,12 +7,14 @@
 load_files(file_paths)
 }
 \arguments{
-\item{file_paths}{[character(1+)] Files to read. Optionally named.}
+\item{file_paths}{\verb{[character(1+)]} Files to read. Optionally named.}
 }
 \value{
-[list] A named list of data frames, where each name is either:
- - the name associated to the element in the `file_paths` argument, or, if not provided...
- - the name of the file itself, after stripping it of its leading path and trailing extension
+\verb{[list]} A named list of data frames, where each name is either:
+\itemize{
+\item the name associated to the element in the \code{file_paths} argument, or, if not provided...
+\item the name of the file itself, after stripping it of its leading path and trailing extension
+}
 }
 \description{
 Read data from provided paths and return it as a list of data frames.
