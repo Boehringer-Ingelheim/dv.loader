@@ -72,11 +72,16 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
 #'  - the name of the file itself, after stripping it of its leading path and trailing extension
 #'
 #' @export
-load_files <- function(file_paths) {
+load_files <- function(file_paths, reduce_memory_footprint = TRUE) {
   checkmate::assert_character(file_paths, min.len = 1)
   checkmate::assert_file_exists(file_paths, access = "r", extension = c("rds", "sas7bdat"))
 
-  data_list <- lapply(file_paths, read_file_and_attach_metadata)
+  data_list <- list()
+  for (path in file_paths){
+    df <- read_file_and_attach_metadata(path)
+    if (isTRUE(reduce_memory_footprint)) df <- reduce_memory_use(df)
+    data_list[[path]] <- df
+  }
 
   # Use names provided as arguments
   arg_names <- names(file_paths)
@@ -96,4 +101,70 @@ load_files <- function(file_paths) {
   }
 
   return(data_list)
+}
+
+reduce_memory_use <- function(df) {
+  known_allowed_classes <- c("Date", "difftime", "POSIXct", "POSIXt")
+ 
+  input_size <- as.integer(utils::object.size(df))
+  mapped_column_indices <- integer(0)
+  
+  for (i_col in seq_len(ncol(df))){
+    col_data <- df[[i_col]]
+    
+    saved_attr <- attributes(col_data)
+    attributes(col_data) <- NULL
+    if (length(saved_attr[["class"]]) > 0 && !length(intersect(known_allowed_classes, saved_attr[["class"]]))) next
+    
+    if (is.character(col_data)) {
+      df[[i_col]] <- as.factor(col_data)
+    } else if (inherits(col_data, "numeric")) {
+      integer_values <- as.integer(col_data)
+      numeric_values <- as.numeric(integer_values)
+      if (identical(numeric_values, col_data)) {
+        df[[i_col]] <- integer_values
+      }
+    } else {
+      browser() # TODO: Remove for release
+      next
+    }
+    # TODO? Recommend dropping single-valued columns?
+    
+    mapped_column_indices <- c(mapped_column_indices, i_col)
+    
+    # if there are repeats, newest attribute value prevails
+    attributes(df[[i_col]]) <- append(saved_attr, attributes(df[[i_col]]))
+  }
+ 
+  if (length(mapped_column_indices)) {
+    attr(df, "dv.loader_encoding_report") <- 
+      list(original_size_in_bytes = input_size, mapped_column_indices = mapped_column_indices)
+  }
+  
+  return(df)
+}
+
+memory_use_report <- function(df) {
+  integer_as_human_readable_size <- function(v) {
+    return(capture.output(
+      print(structure(report$original_size_in_bytes - current_size, class = "object_size"), 
+            units = "auto", standard = "IEC")
+    ))
+  }
+  
+  res <- "No data was remapped"
+  
+  report <- attr(df, "dv.loader_encoding_report")
+  mapped_column_indices <- report[["mapped_column_indices"]]
+  if (length(mapped_column_indices)) {
+    mapped_columns <- paste(names(df)[mapped_column_indices], collapse = ", ")
+    original_size <- report[["original_size_in_bytes"]]
+    current_size <- as.integer(utils::object.size(df))
+    res <- sprintf("Saved %s (%.2f%%) after re-encoding columns: %s.", 
+                   integer_as_human_readable_size(original_size - current_size),
+                   100 * (original_size - current_size) / original_size,
+                   mapped_columns)
+  }
+  
+  return(res)
 }
