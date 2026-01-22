@@ -63,7 +63,7 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
 #' @export
 load_files <- function(file_paths, reduce_memory_footprint = TRUE) {
   checkmate::assert_character(file_paths, min.len = 1)
-  checkmate::assert_file_exists(file_paths, access = "r", extension = c("rds", "sas7bdat"))
+  checkmate::assert_file_exists(file_paths, access = "r", extension = c(".rds", ".sas7bdat"))
 
   data_list <- list()
   for (path in file_paths){

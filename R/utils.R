@@ -85,7 +85,7 @@ read_file_and_attach_metadata <- function(path) {
     )
     data <- haven::read_sas(path)
   } else {
-    stop("Not supported file type, only .rds or .sas7bdat files can be loaded.")
+    stop(sprintf("Unrecognized extension for file `.%s`. dv.loader supports only `.rds` and `.sas7bdat` files. ", path))
   }
 
   meta[["path"]] <- path
