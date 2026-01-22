@@ -37,7 +37,7 @@ get_cre_path <- get_nfs_path
 #'   use_wd = TRUE
 #' )
 #' }
-load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE) {
+load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE, reduce_memory_footprint = TRUE) {
   if (is.null(file_names)) {
     stop("Usage: load_data: file_names: Must supply at least one file name")
   }
@@ -55,7 +55,7 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
   }
 
   # create the output
-  data_list <- create_data_list(study_path, file_names, prefer_sas) # nolint
+  data_list <- create_data_list(study_path, file_names, prefer_sas, reduce_memory_footprint = reduce_memory_footprint)
 
   return(data_list)
 }

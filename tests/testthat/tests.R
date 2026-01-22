@@ -109,7 +109,8 @@ test_that(
       sub_dir = local_test_path,
       file_names = local_file_names[2],
       use_wd = TRUE,
-      prefer_sas = TRUE
+      prefer_sas = TRUE,
+      reduce_memory_footprint = FALSE
     )
 
     actual <- actual[[1]]

@@ -4,8 +4,8 @@
 #' @param file_names CDISC names for the files
 #' @param prefer_sas if TRUE, imports .sas7bdat files first instead of .RDS files
 #' @return returns a list of dataframes with metadata as an attribute on each dataframe
-create_data_list <- function(file_path, file_names, prefer_sas) {
-  data_list <- lapply(file_names, function(x) {
+collect_data_list_paths <- function(file_path, file_names, prefer_sas) {
+  data_list <- sapply(file_names, function(x) {
     extensions <- c("", ".rds", ".sas7bdat")
     if (prefer_sas) {
       extensions <- c("", ".sas7bdat", ".rds")
@@ -36,12 +36,25 @@ create_data_list <- function(file_path, file_names, prefer_sas) {
       stop(paste("create_data_list(): No RDS or SAS files found for", file_path, x))
     }
 
-    output <- read_file_and_attach_metadata(file.path(file_path, file_name_to_load))
+    output <- file.path(file_path, file_name_to_load)
     return(output)
   })
 
   names(data_list) <- file_names
 
+  return(data_list)
+}
+
+#' For each file name provided, reads in the first matching file and its meta data/attributes.
+#' Preference is given to RDS because its faster
+#' @param file_path the folder where the files are
+#' @param file_names CDISC names for the files
+#' @param prefer_sas if TRUE, imports .sas7bdat files first instead of .RDS files
+#' @param reduce_memory_footprint TODO: describe
+#' @return returns a list of dataframes with metadata as an attribute on each dataframe
+create_data_list <- function(file_path, file_names, prefer_sas, reduce_memory_footprint = TRUE) {
+  paths <- collect_data_list_paths(file_path, file_names, prefer_sas)
+  data_list <- load_files(file_paths = paths, reduce_memory_footprint = reduce_memory_footprint)
   return(data_list)
 }
 
