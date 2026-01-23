@@ -105,7 +105,7 @@ load_files <- function(file_paths, reduce_memory_footprint = TRUE) {
 reduce_data_frame_memory_footprint <- function(df) {
   known_allowed_classes <- c("Date", "difftime", "POSIXct", "POSIXt")
  
-  input_size <- as.integer(utils::object.size(df))
+  input_size <- as.integer(utils::object.size(structure(df, meta = NULL)))
   mapped_column_indices <- integer(0)
   
   for (i_col in seq_len(ncol(df))){
@@ -136,8 +136,8 @@ reduce_data_frame_memory_footprint <- function(df) {
   }
  
   if (length(mapped_column_indices)) {
-    attr(df, "dv.loader_encoding_report") <- 
-      list(original_size_in_bytes = input_size, mapped_column_indices = mapped_column_indices)
+    attr(df, 'meta')[["original_memory_footprint_in_bytes"]] <- input_size
+    attr(df, 'meta')[["remapped_column_indices"]] <- list(mapped_column_indices)
   }
   
   return(df)
@@ -153,21 +153,19 @@ reduce_data_frame_memory_footprint <- function(df) {
 memory_use_report <- function(df) {
   integer_as_human_readable_size <- function(v) {
     return(capture.output(
-      print(structure(report$original_size_in_bytes - current_size, class = "object_size"), 
-            units = "auto", standard = "IEC")
+      print(structure(v, class = "object_size"),  units = "auto", standard = "IEC")
     ))
   }
   
   res <- "No data was remapped"
   
-  report <- attr(df, "dv.loader_encoding_report")
-  attr(df, "dv.loader_encoding_report") <- NULL     # exclude report data from the report itself
+  meta <- attr(df, "meta")
   
-  mapped_column_indices <- report[["mapped_column_indices"]]
+  mapped_column_indices <- meta[["remapped_column_indices"]][[1]]
   if (length(mapped_column_indices)) {
     mapped_columns <- paste(names(df)[mapped_column_indices], collapse = ", ")
-    original_size <- report[["original_size_in_bytes"]]
-    current_size <- as.integer(utils::object.size(df))
+    original_size <- meta[["original_memory_footprint_in_bytes"]]
+    current_size <- as.integer(utils::object.size(structure(df, meta = NULL)))
     res <- sprintf("Saved %s (%.2f%%) after re-encoding columns: %s.", 
                    integer_as_human_readable_size(original_size - current_size),
                    100 * (original_size - current_size) / original_size,

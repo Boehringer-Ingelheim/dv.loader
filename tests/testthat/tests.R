@@ -138,7 +138,7 @@ test_that(
       use_wd = TRUE
     )
     actual_meta <- attr(actual[[1]], "meta")
-    expect_equal(
+    expect_in(
       c(
         "size", "isdir", "mode",
         "mtime", "ctime", "atime",
