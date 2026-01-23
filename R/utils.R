@@ -83,7 +83,7 @@ read_file_and_attach_metadata <- function(path) {
       readBin(path, raw(), meta[["size"]]), # The return value goes unassigned on purpose
       silent = TRUE
     )
-    data <- haven::read_sas(path)
+    data <- as.data.frame(haven::read_sas(path))
   } else {
     stop(sprintf("Unrecognized extension for file `.%s`. dv.loader supports only `.rds` and `.sas7bdat` files. ", path))
   }

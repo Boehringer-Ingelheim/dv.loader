@@ -118,7 +118,7 @@ test_that(
     attr(actual, "meta") <- NULL
     attr(actual, "label") <- "dummyads2"
 
-    expected <- haven::read_sas(file.path(local_test_path, local_test_files[2]))
+    expected <- as.data.frame(haven::read_sas(file.path(local_test_path, local_test_files[2])))
     attr(expected, "label") <- "dummyads2"
 
     expect_equal(

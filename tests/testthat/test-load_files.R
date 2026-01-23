@@ -11,7 +11,7 @@ test_that("load_files() correctly loads both RDS and SAS files", {
   expect_equal(data_list[["dummyads1"]], readRDS(rds_file), ignore_attr = "meta")
 
   # Verify SAS file contents match direct reading
-  expect_equal(data_list[["dummyads2"]], haven::read_sas(sas_file), ignore_attr = "meta")
+  expect_equal(data_list[["dummyads2"]], as.data.frame(haven::read_sas(sas_file)), ignore_attr = "meta")
 
   # Create expected metadata for comparison
   rds_metadata <- cbind(

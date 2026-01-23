@@ -1,6 +1,7 @@
 # dv.loader 2.1.2-9000
 
 - Use leaner data types for columns that allow it.
+- Return objects of type `data.frame` instead of `tibble` for SAS files.
 
 # dv.loader 2.1.2
 
