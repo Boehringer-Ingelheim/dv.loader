@@ -49,6 +49,42 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
   return(data_list)
 }
 
+#' Read a data file and attach metadata
+#'
+#' Reads an .rds or .sas7bdat file from the given path and attaches metadata about the file
+#' as an attribute.
+#'
+#' @param path `[character(1)]` Path to the data file to read
+#'
+#' @return A data frame with metadata attached as an attribute named "meta".
+#'
+#' @keywords internal
+read_file_and_attach_metadata <- function(path) {
+  meta <- file.info(path, extra_cols = FALSE)
+  extension <- tools::file_ext(path)
+
+  if (toupper(extension) == "RDS") {
+    data <- readRDS(path)
+  } else if (toupper(extension) == "SAS7BDAT") {
+    # Preload file into OS file cache to get faster loads on high-latency media (e.g. network shares)
+    try( # If the file is too large to fit into memory, the caching fails instantly and silently
+      readBin(path, raw(), meta[["size"]]), # The return value goes unassigned on purpose
+      silent = TRUE
+    )
+    data <- as.data.frame(haven::read_sas(path))
+  } else {
+    stop(sprintf("Unrecognized extension for file `.%s`. dv.loader supports only `.rds` and `.sas7bdat` files. ", path))
+  }
+
+  meta[["path"]] <- path
+  meta[["file_name"]] <- basename(path)
+  row.names(meta) <- NULL
+
+  attr(data, "meta") <- meta
+
+  return(data)
+}
+
 #' Load data files from explicit paths
 #'
 #' Read data from provided paths and return it as a list of data frames.
@@ -136,8 +172,8 @@ reduce_data_frame_memory_footprint <- function(df) {
   }
  
   if (length(mapped_column_indices)) {
-    attr(df, 'meta')[["original_memory_footprint_in_bytes"]] <- input_size
-    attr(df, 'meta')[["remapped_column_indices"]] <- list(mapped_column_indices)
+    attr(df, "meta")[["original_memory_footprint_in_bytes"]] <- input_size
+    attr(df, "meta")[["remapped_column_indices"]] <- list(mapped_column_indices)
   }
   
   return(df)
