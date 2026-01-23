@@ -4,7 +4,13 @@
 \alias{load_data}
 \title{Loads data into memory based on study directory and one or more file_names.}
 \usage{
-load_data(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE)
+load_data(
+  sub_dir = NULL,
+  file_names,
+  use_wd = FALSE,
+  prefer_sas = FALSE,
+  reduce_memory_footprint = TRUE
+)
 }
 \arguments{
 \item{sub_dir}{A relative directory/folder that will be appended to a base path defined by \code{Sys.getenv("RXD_DATA")}.

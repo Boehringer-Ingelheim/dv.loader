@@ -68,7 +68,7 @@ load_files <- function(file_paths, reduce_memory_footprint = TRUE) {
   data_list <- list()
   for (path in file_paths){
     df <- read_file_and_attach_metadata(path)
-    if (isTRUE(reduce_memory_footprint)) df <- reduce_memory_use(df)
+    if (isTRUE(reduce_memory_footprint)) df <- reduce_data_frame_memory_footprint(df)
     data_list[[path]] <- df
   }
 
@@ -92,7 +92,17 @@ load_files <- function(file_paths, reduce_memory_footprint = TRUE) {
   return(data_list)
 }
 
-reduce_memory_use <- function(df) {
+#' Transform data.frame columns to use leaner types
+#'
+#' Transforms character columns into factors and numeric content into integer vectors, when it does not
+#' lead to loss of precision.
+#'
+#' @param df `[data.frame]` Data frame to transform
+#'
+#' @return `[data.frame]` Transformed data frame
+#'
+#' @export
+reduce_data_frame_memory_footprint <- function(df) {
   known_allowed_classes <- c("Date", "difftime", "POSIXct", "POSIXt")
  
   input_size <- as.integer(utils::object.size(df))
@@ -133,6 +143,13 @@ reduce_memory_use <- function(df) {
   return(df)
 }
 
+#' Print data remapping report of the transformations performed by `reduce_data_frame_memory_footprint`
+#'
+#' @param df `[data.frame]` Output from `reduce_data_frame_memory_footprint`
+#'
+#' @return `[character(1)]` Report
+#'
+#' @export
 memory_use_report <- function(df) {
   integer_as_human_readable_size <- function(v) {
     return(capture.output(
@@ -144,6 +161,8 @@ memory_use_report <- function(df) {
   res <- "No data was remapped"
   
   report <- attr(df, "dv.loader_encoding_report")
+  attr(df, "dv.loader_encoding_report") <- NULL     # exclude report data from the report itself
+  
   mapped_column_indices <- report[["mapped_column_indices"]]
   if (length(mapped_column_indices)) {
     mapped_columns <- paste(names(df)[mapped_column_indices], collapse = ", ")

@@ -4,7 +4,7 @@
 \alias{load_files}
 \title{Load data files from explicit paths}
 \usage{
-load_files(file_paths)
+load_files(file_paths, reduce_memory_footprint = TRUE)
 }
 \arguments{
 \item{file_paths}{\verb{[character(1+)]} Files to read. Optionally named.}

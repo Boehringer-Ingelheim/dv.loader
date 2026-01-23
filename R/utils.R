@@ -80,7 +80,7 @@ read_file_and_attach_metadata <- function(path) {
   } else if (toupper(extension) == "SAS7BDAT") {
     # Preload file into OS file cache to get faster loads on high-latency media (e.g. network shares)
     try( # If the file is too large to fit into memory, the caching fails instantly and silently
-      readBin(path, raw(), meta[["size"]]), # The return value goes unasigned on purpose
+      readBin(path, raw(), meta[["size"]]), # The return value goes unassigned on purpose
       silent = TRUE
     )
     data <- haven::read_sas(path)
