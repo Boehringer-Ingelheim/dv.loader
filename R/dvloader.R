@@ -104,7 +104,29 @@ load_files <- function(file_paths, reduce_memory_footprint = TRUE) {
   data_list <- list()
   for (path in file_paths){
     df <- read_file_and_attach_metadata(path)
-    if (isTRUE(reduce_memory_footprint)) df <- reduce_data_frame_memory_footprint(df)
+
+    if (isTRUE(reduce_memory_footprint)) {
+      t0 <- Sys.time()
+      
+      input_size <- as.integer(utils::object.size(structure(df, meta = NULL)))
+      mapped_column_indices <- integer(0)
+      
+      for (i_col in seq_len(ncol(df))){
+        data_and_summary <- reduce_column_memory_footprint(df[[i_col]])
+        df[[i_col]] <- data_and_summary[["data"]]
+        if (length(data_and_summary[["summary"]])) mapped_column_indices <- c(mapped_column_indices, i_col)
+      }
+      
+      t1 <- Sys.time()
+      
+      if (length(mapped_column_indices)) {
+        attr(df, "meta")[["original_memory_footprint_in_bytes"]] <- input_size
+        attr(df, "meta")[["remapped_column_indices"]] <- list(mapped_column_indices)
+        attr(df, "meta")[["remapping_time"]] <- t1 - t0
+      }
+      
+    }
+    
     data_list[[path]] <- df
   }
 
@@ -138,45 +160,37 @@ load_files <- function(file_paths, reduce_memory_footprint = TRUE) {
 #' @return `[data.frame]` Transformed data frame
 #'
 #' @export
-reduce_data_frame_memory_footprint <- function(df) {
+reduce_column_memory_footprint <- function(col_data) {
+  res <- list(data = col_data, summary = character(0))
+
   known_allowed_classes <- c("Date", "difftime", "POSIXct", "POSIXt")
  
-  input_size <- as.integer(utils::object.size(structure(df, meta = NULL)))
-  mapped_column_indices <- integer(0)
-  
-  for (i_col in seq_len(ncol(df))){
-    col_data <- df[[i_col]]
-    
-    saved_attr <- attributes(col_data)
-    attributes(col_data) <- NULL
-    if (length(saved_attr[["class"]]) > 0 && !length(intersect(known_allowed_classes, saved_attr[["class"]]))) next
-    
-    if (is.character(col_data)) {
-      df[[i_col]] <- as.factor(col_data)
-    } else if (inherits(col_data, "numeric")) {
-      integer_values <- as.integer(col_data)
-      numeric_values <- as.numeric(integer_values)
-      if (identical(numeric_values, col_data)) {
-        df[[i_col]] <- integer_values
-      }
-    } else {
-      browser() # TODO: Remove for release
-      next
+  saved_attr <- attributes(col_data)
+  attributes(col_data) <- NULL
+  if (length(saved_attr[["class"]]) > 0 && !length(intersect(known_allowed_classes, saved_attr[["class"]]))) {
+    return(res)
+  }
+
+  if (is.character(col_data)) {
+    col_data <- as.factor(col_data)
+  } else if (inherits(unclass(col_data), "numeric")) {
+    integer_values <- as.integer(col_data)
+    numeric_values <- as.numeric(integer_values)
+    if (identical(numeric_values, col_data)) {
+      col_data <- integer_values
     }
-    # TODO? Recommend dropping single-valued columns?
-    
-    mapped_column_indices <- c(mapped_column_indices, i_col)
-    
-    # if there are repeats, newest attribute value prevails
-    attributes(df[[i_col]]) <- append(saved_attr, attributes(df[[i_col]]))
+  } else {
+    return(res)
   }
- 
-  if (length(mapped_column_indices)) {
-    attr(df, "meta")[["original_memory_footprint_in_bytes"]] <- input_size
-    attr(df, "meta")[["remapped_column_indices"]] <- list(mapped_column_indices)
-  }
+  # TODO? Recommend dropping single-valued columns entirely? 
   
-  return(df)
+  # if there are repeats, newest attribute value prevails
+  attributes(col_data) <- append(saved_attr, attributes(col_data))
+
+  res[["data"]] <- col_data
+  res[["summary"]] <- "Mapped"
+
+  return(res)
 }
 
 #' Print data remapping report of the transformations performed by `reduce_data_frame_memory_footprint`
@@ -202,10 +216,10 @@ memory_use_report <- function(df) {
     mapped_columns <- paste(names(df)[mapped_column_indices], collapse = ", ")
     original_size <- meta[["original_memory_footprint_in_bytes"]]
     current_size <- as.integer(utils::object.size(structure(df, meta = NULL)))
-    res <- sprintf("Saved %s (%.2f%%) after re-encoding columns: %s.", 
+    res <- sprintf("Saved %s (%.2f%%) after re-encoding columns: %s in %.2f seconds", 
                    integer_as_human_readable_size(original_size - current_size),
                    100 * (original_size - current_size) / original_size,
-                   mapped_columns)
+                   mapped_columns, meta[["remapping_time"]])
   }
   
   return(res)
