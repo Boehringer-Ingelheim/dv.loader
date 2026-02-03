@@ -108,7 +108,7 @@ load_files <- function(file_paths, reduce_memory_footprint = TRUE) {
     if (isTRUE(reduce_memory_footprint)) {
       t0 <- Sys.time()
       
-      input_size <- as.integer(utils::object.size(structure(df, meta = NULL)))
+      input_size <- as.numeric(utils::object.size(structure(df, meta = NULL)))
       mapped_column_indices <- integer(0)
       
       for (i_col in seq_len(ncol(df))){
@@ -124,7 +124,6 @@ load_files <- function(file_paths, reduce_memory_footprint = TRUE) {
         attr(df, "meta")[["remapped_column_indices"]] <- list(mapped_column_indices)
         attr(df, "meta")[["remapping_time"]] <- t1 - t0
       }
-      
     }
     
     data_list[[path]] <- df
@@ -172,7 +171,7 @@ reduce_column_memory_footprint <- function(col_data) {
   }
 
   if (is.character(col_data)) {
-    col_data <- as.factor(col_data)
+    col_data <- character_to_factor(col_data)
   } else if (inherits(unclass(col_data), "numeric")) {
     integer_values <- as.integer(col_data)
     numeric_values <- as.numeric(integer_values)
@@ -201,7 +200,7 @@ reduce_column_memory_footprint <- function(col_data) {
 #'
 #' @export
 memory_use_report <- function(df) {
-  integer_as_human_readable_size <- function(v) {
+  numeric_as_human_readable_size <- function(v) {
     return(capture.output(
       print(structure(v, class = "object_size"),  units = "auto", standard = "IEC")
     ))
@@ -215,9 +214,9 @@ memory_use_report <- function(df) {
   if (length(mapped_column_indices)) {
     mapped_columns <- paste(names(df)[mapped_column_indices], collapse = ", ")
     original_size <- meta[["original_memory_footprint_in_bytes"]]
-    current_size <- as.integer(utils::object.size(structure(df, meta = NULL)))
+    current_size <- as.numeric(utils::object.size(structure(df, meta = NULL)))
     res <- sprintf("Saved %s (%.2f%%) after re-encoding columns: %s in %.2f seconds", 
-                   integer_as_human_readable_size(original_size - current_size),
+                   numeric_as_human_readable_size(original_size - current_size),
                    100 * (original_size - current_size) / original_size,
                    mapped_columns, meta[["remapping_time"]])
   }
