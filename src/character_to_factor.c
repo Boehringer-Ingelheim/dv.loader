@@ -1,4 +1,4 @@
-#include <stdint.h> // uint32_t
+#include <stdint.h> // int32_t
 #include <stdlib.h> // NULL, qsort
 
 #define R_NO_REMAP
@@ -8,105 +8,106 @@
 #include <Rinternals.h>
 
 typedef struct{
-  SEXP value;
-  int order;
-  int position_in_hash;
-} ValueOrderPosition;
+  uint32_t index_into_g_values;
+  uint32_t position_in_hash;
+} ValuePosition;
+
+typedef union{ // mutually exclusive uses
+  SEXP v;
+  int32_t level;
+} ValueLevel;
+
+static SEXP *g_values = 0;
 
 static int compare_value_and_order(const void *vop1_, const void *vop2_){
-  ValueOrderPosition *vop1 = (ValueOrderPosition *)vop1_;
-  ValueOrderPosition *vop2 = (ValueOrderPosition *)vop2_;
-  char *v1 = (char *)R_CHAR(vop1->value);
-  char *v2 = (char *)R_CHAR(vop2->value);
+  ValuePosition *vop1 = (ValuePosition *)vop1_;
+  ValuePosition *vop2 = (ValuePosition *)vop2_;
+  char *v1 = (char *)R_CHAR(g_values[vop1->index_into_g_values]);
+  char *v2 = (char *)R_CHAR(g_values[vop2->index_into_g_values]);
   int res = strcmp(v1, v2);
   return res;
 }
 
-static ValueOrderPosition *g_vop = 0;
-static int g_vop_allocated_count = 0;
-
-static uint32_t *g_hash_table = 0;
-static int g_hash_table_allocated_count = 0;
+// We assume the string pointers are uniformly distributed. We discard the lower three bits
+// (which should be set to zero due to 64-bit alignment) and mask to get in the range of the hash table
+#define HASH(v, mask) (((uintptr_t)(v))>>3) & mask // assumes equidistributed values
 
 static SEXP character_to_factor(SEXP v){
   int prot = 0;
   
-  int count = LENGTH(v);
-  int hash_table_entry_count = 256;
-  while(hash_table_entry_count < 2*count) hash_table_entry_count *= 2;
+  int v_count = LENGTH(v);
 
-  if(g_hash_table_allocated_count < hash_table_entry_count){
-    g_hash_table = (uint32_t *)realloc(g_hash_table, hash_table_entry_count * sizeof(uint32_t));
-    g_hash_table_allocated_count = hash_table_entry_count;
+  ValueLevel *hash_table = 0; int mask = 0; {
+    // Hash table with a power of two number of elements larger than the amount of input elements
+    int hash_table_entry_count = 256; {
+      float hash_table_size_factor = 1.f; // TODO? Make it dependent on `v_count`
+      while(hash_table_entry_count < hash_table_size_factor*v_count) hash_table_entry_count <<= 1;
+    }
+    hash_table = calloc(hash_table_entry_count, sizeof(hash_table[0]));
+    mask = hash_table_entry_count-1;
   }
-  memset(g_hash_table, 0, hash_table_entry_count * sizeof(uint32_t));
 
-  // worst-case we use all the positions 
-  if(count < hash_table_entry_count){
-    g_vop = (ValueOrderPosition *)realloc(g_vop, count * sizeof(ValueOrderPosition));
-    g_vop_allocated_count = count;
-  }
-  // NOTE: g_vop does not need clearing
+  // Helper structure to sort the levels after we've collected them
+  ValuePosition *vp = malloc(v_count*sizeof(vp[0])); // malloc because uninitialized is OK
 
   int unique_value_count = 0;
-  
-  SEXP res = PROTECT(Rf_allocVector(INTSXP, count)); prot += 1;
+
+  /* preallocate NA to simplify the rest of the program */ {
+    unique_value_count += 1;
+    hash_table[HASH(R_NaString, mask)].v = R_NaString;
+  }
+
+  SEXP res = PROTECT(Rf_allocVector(INTSXP, v_count)); prot += 1;
   int *resp = INTEGER(res);
 
   SEXP *pv = (SEXP*)STRING_PTR(v);
+  g_values = pv;
   SEXP *cur_pv = pv;
 
-  int mask = hash_table_entry_count-1;
-  for(int i = 0; i < count; i += 1, cur_pv += 1){
-    // We assume the string pointers are uniformly distributed, discard the lower three bytes
-    // (which should be set to zero due to 64-bit alignment) and mask to get in the range of our table
-    int id = (((uintptr_t)*cur_pv)>>3) & mask; // 3: alignment to 8 bytes
-    
-    while(g_hash_table[id]){
-      if(pv[g_hash_table[id]-1] == *cur_pv) goto after;
+  for(int i = 0; i < v_count; i += 1, cur_pv += 1){
+    int id = HASH(*cur_pv, mask);
+                                               
+    while(hash_table[id].v){
+      if(hash_table[id].v == *cur_pv) goto after;
       id = (id+1) & mask;
     }
 
-    g_vop[unique_value_count].value = *cur_pv;
-    g_vop[unique_value_count].order = unique_value_count;
-    g_vop[unique_value_count].position_in_hash = id;
-    g_hash_table[id] = i+1;
+    vp[unique_value_count].index_into_g_values = i;
+    vp[unique_value_count].position_in_hash = id;
+    hash_table[id].v = *cur_pv;
     unique_value_count += 1;
+
     after:
-    resp[i] = id;
+    resp[i] = id; // use the result vector to cache the hash slot
   }
 
-  qsort(g_vop, unique_value_count, sizeof(g_vop[0]), compare_value_and_order);
- 
-  int NA_is_present = 0;
-  for(int i = 0, v = 1; i < unique_value_count; i += 1, v += 1){
-    g_hash_table[g_vop[i].position_in_hash] = v;
+  // byte-wise sorting (does not take encoding or locale into account) that leaves NA as the 0th element
+  qsort(vp+1, unique_value_count-1, sizeof(vp[0]), compare_value_and_order);
 
-    if(g_vop[i].value == R_NaString){
-      NA_is_present = 1;
-      g_hash_table[g_vop[i].position_in_hash] = R_NaInt;
-      v -= 1;
-    }
+  /* Rewrite the hash contents to return the factor level asociated to a hashed SEXP address */ {
+    // We stop using the `v` field of the hash_table _union_ and start using the `level` field instead
+    hash_table[HASH(R_NaString, mask)].level = R_NaInt;
+    for(int i = 1; i < unique_value_count; i += 1) hash_table[vp[i].position_in_hash].level = i;
   }
 
-  for(int i = 0; i < count; i += 1) resp[i] = g_hash_table[resp[i]];
+  // Use the cached hashes to resolve the levels
+  for(int i = 0; i < v_count; i += 1) resp[i] = hash_table[resp[i]].level;
 
-  /* Attach levels */ {
-    SEXP levels = PROTECT(Rf_allocVector(STRSXP, unique_value_count-NA_is_present)); prot += 1;
+  /* Attach the level attribute to the output vector and tag it as a proper factor */ {
+    SEXP levels = PROTECT(Rf_allocVector(STRSXP, unique_value_count-1)); prot += 1;
 
-    for(int i = 0, j = 0; i < unique_value_count-NA_is_present; i+=1, j+=1){
-      if(g_vop[j].value == R_NaString){
-        i -= 1;
-        continue;
-      }
-      SET_STRING_ELT(levels, i, g_vop[j].value);
+    for(int i = 1; i < unique_value_count; i+=1){
+      SET_STRING_ELT(levels, i-1, g_values[vp[i].index_into_g_values]);
     }
 
     Rf_setAttrib(res, R_LevelsSymbol, levels);
-    SEXP classV = PROTECT(Rf_allocVector(STRSXP,1)); prot += 1;
-    SET_STRING_ELT(classV, 0, Rf_mkChar("factor"));
-    Rf_classgets(res, classV);
+    SEXP class = PROTECT(Rf_allocVector(STRSXP, 1)); prot += 1;
+    SET_STRING_ELT(class, 0, Rf_mkChar("factor"));
+    Rf_classgets(res, class);
   }
+
+  free(vp);
+  free(hash_table);
   
   UNPROTECT(prot);
   return res;
