@@ -66,9 +66,24 @@ read_file_and_attach_metadata <- function(path) {
   if (toupper(extension) == "RDS") {
     data <- readRDS(path)
   } else if (toupper(extension) == "SAS7BDAT") {
+    preload_file_in_chunks <- function(path, file_size) {
+      bytes_left <- file_size
+      chunk_size <- 1024**3 # read at most 1 GiB each time
+      con <- file(path, "rb")
+      on.exit(close(con))
+      
+      while (bytes_left > 0L) {
+        bytes_read <- length(readBin(con, raw(), n = min(chunk_size, bytes_left)))
+        if (bytes_read == 0L) break
+        bytes_left <- bytes_left - chunk_size
+      }
+      
+      return(NULL)
+    }
+    
     # Preload file into OS file cache to get faster loads on high-latency media (e.g. network shares)
     try( # If the file is too large to fit into memory, the caching fails instantly and silently
-      readBin(path, raw(), meta[["size"]]), # The return value goes unassigned on purpose
+      preload_file_in_chunks(path, meta[["size"]]),
       silent = TRUE
     )
     data <- as.data.frame(haven::read_sas(path))
