@@ -1,5 +1,5 @@
 #' @noRd
-#' @useDynLib dv.loader, .registration = TRUE, .fixes = "C_"
+#' @useDynLib dv.loader, .registration = TRUE
 #' @keywords internal
 character_to_factor <- function(v) {
   stopifnot(is.character(v))

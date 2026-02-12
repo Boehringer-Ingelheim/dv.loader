@@ -32,7 +32,7 @@ static int compare_value_and_order(const void *vop1_, const void *vop2_){
 // (which should be set to zero due to 64-bit alignment) and mask to get in the range of the hash table
 #define HASH(v, mask) (((uintptr_t)(v))>>3) & mask // assumes equidistributed values
 
-static SEXP character_to_factor(SEXP v){
+static SEXP C_character_to_factor(SEXP v){
   int prot = 0;
   
   int v_count = LENGTH(v);
@@ -114,7 +114,7 @@ static SEXP character_to_factor(SEXP v){
 }
 
 static R_CallMethodDef CallEntries[] = {
-  {"character_to_factor", (DL_FUNC) &character_to_factor, 1},
+  {"C_character_to_factor", (DL_FUNC) &C_character_to_factor, 1},
   {NULL, NULL, 0}
 };
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/dvloader.R
 \name{load_data}
 \alias{load_data}
-\title{Loads data into memory based on study directory and one or more file_names.}
+\title{Loads data into memory based on study directory and one or more file names}
 \usage{
 load_data(
   sub_dir = NULL,
@@ -36,7 +36,7 @@ If FALSE, this function respects the original types returned by the underlying c
 a list of dataframes
 }
 \description{
-Loads data into memory based on study directory and one or more file_names.
+Loads data into memory based on study directory and one or more file names
 }
 \examples{
 \dontrun{
