@@ -22,8 +22,15 @@ This is the only required argument.}
 \item{use_wd}{for "use working directory" - a flag used when importing local files
 not on NFS - default value is FALSE}
 
-\item{prefer_sas}{if set to TRUE, imports sas7bdat files first before looking for
-RDS files (the opposite of default behavior)}
+\item{prefer_sas}{if TRUE, imports .sas7bdat files first instead of .RDS files}
+
+\item{reduce_memory_footprint}{\verb{[logical(1)]}
+
+If TRUE, character variables are mapped into factors and floating-point
+variables are mapped into integers, as long as the conversion does not lead to loss of precision.
+
+If FALSE, this function respects the original types returned by the underlying calls to \code{base::readRDS} and
+\code{haven::read_sas}.}
 }
 \value{
 a list of dataframes

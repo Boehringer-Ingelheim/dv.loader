@@ -17,15 +17,11 @@ get_nfs_path <- function() {
 #' @export
 get_cre_path <- get_nfs_path
 
-#' Loads data into memory based on study directory and one or more file_names.
-#' @param sub_dir A relative directory/folder that will be appended to a base path defined by `Sys.getenv("RXD_DATA")`.
-#' If the argument is left as NULL, the function will load data from the working directory `getwd()`.
+#' Loads data into memory based on study directory and one or more file names
+#' @inheritParams collect_data_list_paths
 #' @param file_names Study file or file_names name(s) - can be a vector of strings.
 #' This is the only required argument.
-#' @param use_wd for "use working directory" - a flag used when importing local files
-#' not on NFS - default value is FALSE
-#' @param prefer_sas if set to TRUE, imports sas7bdat files first before looking for
-#' RDS files (the opposite of default behavior)
+#' @inheritParams load_files
 #' @return a list of dataframes
 #' @export
 #' @examples
@@ -106,6 +102,14 @@ read_file_and_attach_metadata <- function(path) {
 #' Supports both .rds and .sas7bdat formats.
 #'
 #' @param file_paths `[character(1+)]` Files to read. Optionally named.
+#' 
+#' @param reduce_memory_footprint `[logical(1)]` 
+#' 
+#' If TRUE, character variables are mapped into factors and floating-point
+#' variables are mapped into integers, as long as the conversion does not lead to loss of precision.
+#' 
+#' If FALSE, this function respects the original types returned by the underlying calls to `base::readRDS` and 
+#' `haven::read_sas`.
 #'
 #' @return `[list]` A named list of data frames, where each name is either:
 #'  - the name associated to the element in the `file_paths` argument, or, if not provided...

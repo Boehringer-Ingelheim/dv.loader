@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{collect_data_list_paths}
 \alias{collect_data_list_paths}
-\title{For each file name provided, reads in the first matching file and its meta data/attributes.
-Preference is given to RDS because its faster}
+\title{Collect file paths based on file names without extensions}
 \usage{
 collect_data_list_paths(sub_dir, file_names, use_wd, prefer_sas)
 }
@@ -22,6 +21,6 @@ not on NFS - default value is FALSE}
 returns a list of dataframes with metadata as an attribute on each dataframe
 }
 \description{
-For each file name provided, reads in the first matching file and its meta data/attributes.
-Preference is given to RDS because its faster
+Constructs a list of file paths based on an input vector of file names without extensions.
+Preference is given to \code{.rds} files, if present, over \code{.sas7bdat} files.
 }
