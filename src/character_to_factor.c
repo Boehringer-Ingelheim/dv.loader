@@ -38,10 +38,12 @@ static SEXP C_character_to_factor(SEXP v){
   int v_count = LENGTH(v);
 
   ValueLevel *hash_table = 0; int mask = 0; {
-    // Hash table with a power of two number of elements larger than the amount of input elements
+    // Hash table with a power of two number of elements larger than the amount of input elements +
+    // 1 slot reserved for the NA value
     int hash_table_entry_count = 256; {
       float hash_table_size_factor = 1.f; // TODO? Make it dependent on `v_count`
-      while(hash_table_entry_count < hash_table_size_factor*v_count) hash_table_entry_count <<= 1;
+      int NA_slot = 1; 
+      while(hash_table_entry_count < hash_table_size_factor*(v_count+NA_slot)) hash_table_entry_count <<= 1;
     }
     hash_table = calloc(hash_table_entry_count, sizeof(hash_table[0]));
     mask = hash_table_entry_count-1;
@@ -50,13 +52,6 @@ static SEXP C_character_to_factor(SEXP v){
   // Helper structure to sort the levels after we've collected them
   ValuePosition *vp = malloc(v_count*sizeof(vp[0])); // malloc because uninitialized is OK
 
-  int unique_value_count = 0;
-
-  /* preallocate NA to simplify the rest of the program */ {
-    unique_value_count += 1;
-    hash_table[HASH(R_NaString, mask)].v = R_NaString;
-  }
-
   SEXP res = PROTECT(Rf_allocVector(INTSXP, v_count)); prot += 1;
   int *resp = INTEGER(res);
 
@@ -64,6 +59,9 @@ static SEXP C_character_to_factor(SEXP v){
   g_values = pv;
   SEXP *cur_pv = pv;
 
+  hash_table[HASH(R_NaString, mask)].v = R_NaString; // preallocate NA to simplify the rest of the program
+                                                     
+  int unique_value_count = 0;
   for(int i = 0; i < v_count; i += 1, cur_pv += 1){
     int id = HASH(*cur_pv, mask);
                                                
@@ -82,22 +80,22 @@ static SEXP C_character_to_factor(SEXP v){
   }
 
   // byte-wise sorting (does not take encoding or locale into account) that leaves NA as the 0th element
-  qsort(vp+1, unique_value_count-1, sizeof(vp[0]), compare_value_and_order);
+  qsort(vp, unique_value_count, sizeof(vp[0]), compare_value_and_order);
 
   /* Rewrite the hash contents to return the factor level asociated to a hashed SEXP address */ {
     // We stop using the `v` field of the hash_table _union_ and start using the `level` field instead
     hash_table[HASH(R_NaString, mask)].level = R_NaInt;
-    for(int i = 1; i < unique_value_count; i += 1) hash_table[vp[i].position_in_hash].level = i;
+    for(int i = 0; i < unique_value_count; i += 1) hash_table[vp[i].position_in_hash].level = i+1;
   }
 
   // Use the cached hashes to resolve the levels
   for(int i = 0; i < v_count; i += 1) resp[i] = hash_table[resp[i]].level;
 
   /* Attach the level attribute to the output vector and tag it as a proper factor */ {
-    SEXP levels = PROTECT(Rf_allocVector(STRSXP, unique_value_count-1)); prot += 1;
+    SEXP levels = PROTECT(Rf_allocVector(STRSXP, unique_value_count)); prot += 1;
 
-    for(int i = 1; i < unique_value_count; i+=1){
-      SET_STRING_ELT(levels, i-1, g_values[vp[i].index_into_g_values]);
+    for(int i = 0; i < unique_value_count; i+=1){
+      SET_STRING_ELT(levels, i, g_values[vp[i].index_into_g_values]);
     }
 
     Rf_setAttrib(res, R_LevelsSymbol, levels);
