@@ -188,6 +188,8 @@ reduce_column_memory_footprint <- function(col_data) {
   if (is.character(col_data)) {
     col_data <- character_to_factor(col_data)
   } else if (inherits(unclass(col_data), "numeric")) {
+    # TODO: It may be faster to write a C function that checks whether the original data fits in signed 32-bit integers
+    # TODO: Recommend dropping single-valued columns entirely? 
     integer_values <- as.integer(col_data)
     numeric_values <- as.numeric(integer_values)
     if (identical(numeric_values, col_data)) {
@@ -196,7 +198,6 @@ reduce_column_memory_footprint <- function(col_data) {
   } else {
     return(res)
   }
-  # TODO? Recommend dropping single-valued columns entirely? 
   
   # if there are repeats, newest attribute value prevails
   attributes(col_data) <- append(saved_attr, attributes(col_data))
