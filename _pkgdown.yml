@@ -11,6 +11,18 @@ navbar:
       href: articles/qc.html
 home:
   title: dv.loader
-  links:
-  - text: Browse source code
-    href: https://github.com/Boehringer-Ingelheim/dv.loader
+  
+url: https://boehringer-ingelheim.github.io/dv.loader
+
+reference:
+  - title: Main functions
+  - contents: 
+    - load_data
+    - load_files
+  - title: Helper functions
+  - contents: 
+    - collect_data_list_paths
+    - get_nfs_path
+    - get_cre_path
+    - reduce_column_memory_footprint
+    - memory_use_report

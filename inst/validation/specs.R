@@ -9,5 +9,6 @@ specs <- specs_list(
   "file_extensions" = "checks for valid file extensions",
   "data_integrity" = "ensures data is loaded correctly",
   "meta_data" = "reads metadata from the items of file.info()",
-  "prefer_sas" = "loads a SAS or RDS file based on the prefer_sas flag"
+  "prefer_sas" = "loads a SAS or RDS file based on the prefer_sas flag",
+  "leaner_data_types" = "maps character variables to factors and numeric variables to integer when feasible"
 )

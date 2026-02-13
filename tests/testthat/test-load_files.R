@@ -2,7 +2,7 @@ test_that("load_files() correctly loads both RDS and SAS files", {
   rds_file <- "inst/extdata/dummyads1.RDS"
   sas_file <- "inst/extdata/dummyads2.sas7bdat"
 
-  data_list <- load_files(file_paths = c(rds_file, sas_file))
+  data_list <- load_files(file_paths = c(rds_file, sas_file), reduce_memory_footprint = FALSE)
 
   # Check that default names are correctly assigned based on filenames
   expect_equal(names(data_list), c("dummyads1", "dummyads2"))
@@ -11,7 +11,7 @@ test_that("load_files() correctly loads both RDS and SAS files", {
   expect_equal(data_list[["dummyads1"]], readRDS(rds_file), ignore_attr = "meta")
 
   # Verify SAS file contents match direct reading
-  expect_equal(data_list[["dummyads2"]], haven::read_sas(sas_file), ignore_attr = "meta")
+  expect_equal(data_list[["dummyads2"]], as.data.frame(haven::read_sas(sas_file)), ignore_attr = "meta")
 
   # Create expected metadata for comparison
   rds_metadata <- cbind(

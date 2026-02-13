@@ -109,7 +109,8 @@ test_that(
       sub_dir = local_test_path,
       file_names = local_file_names[2],
       use_wd = TRUE,
-      prefer_sas = TRUE
+      prefer_sas = TRUE,
+      reduce_memory_footprint = FALSE
     )
 
     actual <- actual[[1]]
@@ -117,7 +118,7 @@ test_that(
     attr(actual, "meta") <- NULL
     attr(actual, "label") <- "dummyads2"
 
-    expected <- haven::read_sas(file.path(local_test_path, local_test_files[2]))
+    expected <- as.data.frame(haven::read_sas(file.path(local_test_path, local_test_files[2])))
     attr(expected, "label") <- "dummyads2"
 
     expect_equal(
@@ -137,7 +138,7 @@ test_that(
       use_wd = TRUE
     )
     actual_meta <- attr(actual[[1]], "meta")
-    expect_equal(
+    expect_in(
       c(
         "size", "isdir", "mode",
         "mtime", "ctime", "atime",
