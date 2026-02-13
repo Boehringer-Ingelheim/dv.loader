@@ -16,12 +16,10 @@ url: https://boehringer-ingelheim.github.io/dv.loader
 
 reference:
   - title: Main functions
-  - desc: Main functions to call the modules
   - contents: 
     - load_data
     - load_files
   - title: Helper functions
-  - desc: Main functions to call the modules
   - contents: 
     - collect_data_list_paths
     - get_nfs_path

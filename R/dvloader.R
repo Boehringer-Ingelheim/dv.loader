@@ -194,10 +194,12 @@ reduce_column_memory_footprint <- function(col_data) {
   } else if (inherits(unclass(col_data), "numeric")) {
     # TODO: It may be faster to write a C function that checks whether the original data fits in signed 32-bit integers
     # TODO: Recommend dropping single-valued columns entirely? 
-    integer_values <- as.integer(col_data)
+    integer_values <- suppressWarnings(as.integer(col_data))
     numeric_values <- as.numeric(integer_values)
     if (identical(numeric_values, col_data)) {
       col_data <- integer_values
+    } else {
+      return(res)
     }
   } else {
     return(res)

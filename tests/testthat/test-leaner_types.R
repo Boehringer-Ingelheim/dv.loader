@@ -38,3 +38,35 @@ test_that("Output of character_to_factor is identical to that of base::as.factor
   
   set.seed(rng_seed) # restore old RNG state, just in case
 })
+
+test_that("reduce_column_memory_footprint transforms known reduceable types" |> vdoc[["add_spec"]](specs$leaner_data_types), {
+  tests <- list()
+  tests[["character"]] <- list(character(0), TRUE)
+  tests[["integer"]] <- list(integer(0), FALSE)
+  tests[["numeric"]] <- list(numeric(0), TRUE)
+  tests[["fractional numeric"]] <- list(c(.5), FALSE)
+  tests[["largest integer"]] <- list(c(2**31-1), TRUE)
+  tests[["one past the largest integer"]] <- list(c(2**31), FALSE)
+  tests[["smallest integer"]] <- list(c(-2**31+1), TRUE)
+  tests[["one past the smallest integer"]] <- list(c(-2**31), FALSE)
+  tests[["Date"]] <- list(as.Date(0), TRUE)
+  tests[["difftime"]] <- list(as.Date(1)-as.Date(0), TRUE)
+  tests[["POSIXct"]] <- list(as.POSIXct(0), TRUE)
+  tests[["unknown class"]] <- list(structure(1, class = 'unknown_class'), FALSE)
+  
+  for(i in seq_along(tests)){
+    desc <- names(tests)[[i]]
+    test <- tests[[i]]
+    test_input <- test[[1]]
+    test_expected_outcome <- test[[2]]
+    test_output <- dv.loader::reduce_column_memory_footprint(test_input)
+    
+    # conversion does not drop attributes
+    lost_attributes <- setdiff(attributes(test_input), attributes(test_output[["data"]]))
+    expect_length(lost_attributes, 0)
+   
+    # mapping behaves as expected
+    outcome <- identical(test_output[["summary"]], "Mapped")
+    expect_identical(outcome, test_expected_outcome, info = sprintf('Issue in test: "%s"', desc))
+  }
+})
