@@ -2,17 +2,17 @@
 % Please edit documentation in R/dvloader.R
 \name{reduce_column_memory_footprint}
 \alias{reduce_column_memory_footprint}
-\title{Transform data.frame columns to use leaner types}
+\title{Transform data.frame column to use leaner types}
 \usage{
 reduce_column_memory_footprint(col_data)
 }
 \arguments{
-\item{df}{\verb{[data.frame]} Data frame to transform}
+\item{col_data}{Vector to transform}
 }
 \value{
-\verb{[data.frame]} Transformed data frame
+Transformed vector
 }
 \description{
-Transforms character columns into factors and numeric content into integer vectors, when it does not
+Transforms a character column into a factor or a numeric column into integer, when the transformation does not
 lead to loss of precision.
 }

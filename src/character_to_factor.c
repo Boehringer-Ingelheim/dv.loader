@@ -7,6 +7,13 @@
 #include <R.h>
 #include <Rinternals.h>
 
+#include <Rversion.h>
+#if R_VERSION >= R_Version(4, 4, 2)
+#define GET_STRING_PTR STRING_PTR_RO
+#else
+#define GET_STRING_PTR STRING_PTR
+#endif
+
 typedef struct{
   uint32_t index_into_g_values;
   uint32_t position_in_hash;
@@ -55,7 +62,7 @@ static SEXP C_character_to_factor(SEXP v){
   SEXP res = PROTECT(Rf_allocVector(INTSXP, v_count)); prot += 1;
   int *resp = INTEGER(res);
 
-  SEXP *pv = (SEXP*)STRING_PTR(v);
+  SEXP *pv = (SEXP *)GET_STRING_PTR(v);
   g_values = pv;
   SEXP *cur_pv = pv;
 

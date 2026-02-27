@@ -168,14 +168,14 @@ load_files <- function(file_paths, reduce_memory_footprint = TRUE) {
   return(data_list)
 }
 
-#' Transform data.frame columns to use leaner types
+#' Transform data.frame column to use leaner types
 #'
-#' Transforms character columns into factors and numeric content into integer vectors, when it does not
+#' Transforms a character column into a factor or a numeric column into integer, when the transformation does not
 #' lead to loss of precision.
 #'
-#' @param df `[data.frame]` Data frame to transform
+#' @param col_data Vector to transform
 #'
-#' @return `[data.frame]` Transformed data frame
+#' @return Transformed vector
 #'
 #' @export
 reduce_column_memory_footprint <- function(col_data) {
@@ -223,7 +223,7 @@ reduce_column_memory_footprint <- function(col_data) {
 #' @export
 memory_use_report <- function(df) {
   numeric_as_human_readable_size <- function(v) {
-    return(capture.output(
+    return(utils::capture.output(
       print(structure(v, class = "object_size"),  units = "auto", standard = "IEC")
     ))
   }
