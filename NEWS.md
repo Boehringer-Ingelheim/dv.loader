@@ -1,8 +1,4 @@
-# dv.loader 2.1.2-9001
-
-- Tweaks to satisfy checks [REMOVE THIS ITEM WHEN GOING TO MAIN]
-
-# dv.loader 2.1.2-9000
+# dv.loader 2.2.0
 
 - Use leaner data types for columns that allow it.
 - Return objects of type `data.frame` instead of `tibble` for SAS files.
