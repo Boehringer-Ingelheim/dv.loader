@@ -4,15 +4,25 @@
 \alias{load_files}
 \title{Load data files from explicit paths}
 \usage{
-load_files(file_paths)
+load_files(file_paths, reduce_memory_footprint = TRUE)
 }
 \arguments{
-\item{file_paths}{[character(1+)] Files to read. Optionally named.}
+\item{file_paths}{\verb{[character(1+)]} Files to read. Optionally named.}
+
+\item{reduce_memory_footprint}{\verb{[logical(1)]}
+
+If TRUE, character variables are mapped into factors and floating-point
+variables are mapped into integers, as long as the conversion does not lead to loss of precision.
+
+If FALSE, this function respects the original types returned by the underlying calls to \code{base::readRDS} and
+\code{haven::read_sas}.}
 }
 \value{
-[list] A named list of data frames, where each name is either:
- - the name associated to the element in the `file_paths` argument, or, if not provided...
- - the name of the file itself, after stripping it of its leading path and trailing extension
+\verb{[list]} A named list of data frames, where each name is either:
+\itemize{
+\item the name associated to the element in the \code{file_paths} argument, or, if not provided...
+\item the name of the file itself, after stripping it of its leading path and trailing extension
+}
 }
 \description{
 Read data from provided paths and return it as a list of data frames.

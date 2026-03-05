@@ -1,3 +1,8 @@
+# dv.loader 2.2.0
+
+- Use leaner data types for columns that allow it.
+- Return objects of type `data.frame` instead of `tibble` for SAS files.
+
 # dv.loader 2.1.2
 
 - Prevent remote file caching from interrupting load process in case file does not fit into memory.

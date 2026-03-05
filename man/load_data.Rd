@@ -2,13 +2,19 @@
 % Please edit documentation in R/dvloader.R
 \name{load_data}
 \alias{load_data}
-\title{Loads data into memory based on study directory and one or more file_names.}
+\title{Loads data into memory based on study directory and one or more file names}
 \usage{
-load_data(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE)
+load_data(
+  sub_dir = NULL,
+  file_names,
+  use_wd = FALSE,
+  prefer_sas = FALSE,
+  reduce_memory_footprint = TRUE
+)
 }
 \arguments{
-\item{sub_dir}{A relative directory/folder that will be appended to a base path defined by `Sys.getenv("RXD_DATA")`.
-If the argument is left as NULL, the function will load data from the working directory `getwd()`.}
+\item{sub_dir}{A relative directory/folder that will be appended to a base path defined by \code{Sys.getenv("RXD_DATA")}.
+If the argument is left as NULL, the function will load data from the working directory \code{getwd()}.}
 
 \item{file_names}{Study file or file_names name(s) - can be a vector of strings.
 This is the only required argument.}
@@ -16,14 +22,21 @@ This is the only required argument.}
 \item{use_wd}{for "use working directory" - a flag used when importing local files
 not on NFS - default value is FALSE}
 
-\item{prefer_sas}{if set to TRUE, imports sas7bdat files first before looking for
-RDS files (the opposite of default behavior)}
+\item{prefer_sas}{if TRUE, imports .sas7bdat files first instead of .RDS files}
+
+\item{reduce_memory_footprint}{\verb{[logical(1)]}
+
+If TRUE, character variables are mapped into factors and floating-point
+variables are mapped into integers, as long as the conversion does not lead to loss of precision.
+
+If FALSE, this function respects the original types returned by the underlying calls to \code{base::readRDS} and
+\code{haven::read_sas}.}
 }
 \value{
 a list of dataframes
 }
 \description{
-Loads data into memory based on study directory and one or more file_names.
+Loads data into memory based on study directory and one or more file names
 }
 \examples{
 \dontrun{

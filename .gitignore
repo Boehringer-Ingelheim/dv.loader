@@ -6,5 +6,8 @@
 *.sqlite-journal
 *.rds
 .vscode
+*.o
+*.so
+*.swp
 docs
 pkgdown
