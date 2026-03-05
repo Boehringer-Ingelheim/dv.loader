@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">dv.loader</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,6 +44,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/Boehringer-Ingelheim/dv.loader/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -60,7 +61,7 @@
       <h1>Loading Data into Memory</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/Boehringer-Ingelheim/dv.loader/blob/main/vignettes/loading-data-into-memory.Rmd" class="external-link"><code>vignettes/loading-data-into-memory.Rmd</code></a></small>
       <div class="d-none name"><code>loading-data-into-memory.Rmd</code></div>
     </div>
 
@@ -95,7 +96,7 @@ work with.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">mtcars</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"mtcars.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>To begin, we’ll need to load the dv.loader package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dv.loader</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Boehringer-Ingelheim/dv.loader" class="external-link">dv.loader</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="using-load_data">Using <code>load_data()</code><a class="anchor" aria-label="anchor" href="#using-load_data"></a>
 </h2>
@@ -126,38 +127,48 @@ faster to read. You can override this behavior by setting
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data_list1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
 <span><span class="co">#&gt;  $ cars  :'data.frame':  50 obs. of  2 variables:</span></span>
-<span><span class="co">#&gt;   ..$ speed: num [1:50] 4 4 7 7 8 9 10 10 10 11 ...</span></span>
-<span><span class="co">#&gt;   ..$ dist : num [1:50] 2 10 4 22 16 10 18 26 34 17 ...</span></span>
-<span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  8 variables:</span></span>
-<span><span class="co">#&gt;   .. ..$ size     : num 288</span></span>
-<span><span class="co">#&gt;   .. ..$ isdir    : logi FALSE</span></span>
-<span><span class="co">#&gt;   .. ..$ mode     : 'octmode' int 644</span></span>
-<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
-<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
-<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
-<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpfXzmmQ/./cars.rds"</span></span>
-<span><span class="co">#&gt;   .. ..$ file_name: chr "cars.rds"</span></span>
+<span><span class="co">#&gt;   ..$ speed: int [1:50] 4 4 7 7 8 9 10 10 10 11 ...</span></span>
+<span><span class="co">#&gt;   ..$ dist : int [1:50] 2 10 4 22 16 10 18 26 34 17 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  11 variables:</span></span>
+<span><span class="co">#&gt;   .. ..$ size                              : num 289</span></span>
+<span><span class="co">#&gt;   .. ..$ isdir                             : logi FALSE</span></span>
+<span><span class="co">#&gt;   .. ..$ mode                              : 'octmode' int 644</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"</span></span>
+<span><span class="co">#&gt;   .. ..$ path                              : chr "/tmp/RtmpF6A3bo/./cars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ file_name                         : chr "cars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ original_memory_footprint_in_bytes: num 1648</span></span>
+<span><span class="co">#&gt;   .. ..$ remapped_column_indices           :List of 1</span></span>
+<span><span class="co">#&gt;   .. .. ..$ : int [1:2] 1 2</span></span>
+<span><span class="co">#&gt;   .. ..$ remapping_time                    : 'difftime' num 0.000194311141967773</span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "units")= chr "secs"</span></span>
 <span><span class="co">#&gt;  $ mtcars:'data.frame':  32 obs. of  11 variables:</span></span>
 <span><span class="co">#&gt;   ..$ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...</span></span>
-<span><span class="co">#&gt;   ..$ cyl : num [1:32] 6 6 4 6 8 6 8 4 4 6 ...</span></span>
+<span><span class="co">#&gt;   ..$ cyl : int [1:32] 6 6 4 6 8 6 8 4 4 6 ...</span></span>
 <span><span class="co">#&gt;   ..$ disp: num [1:32] 160 160 108 258 360 ...</span></span>
-<span><span class="co">#&gt;   ..$ hp  : num [1:32] 110 110 93 110 175 105 245 62 95 123 ...</span></span>
+<span><span class="co">#&gt;   ..$ hp  : int [1:32] 110 110 93 110 175 105 245 62 95 123 ...</span></span>
 <span><span class="co">#&gt;   ..$ drat: num [1:32] 3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...</span></span>
 <span><span class="co">#&gt;   ..$ wt  : num [1:32] 2.62 2.88 2.32 3.21 3.44 ...</span></span>
 <span><span class="co">#&gt;   ..$ qsec: num [1:32] 16.5 17 18.6 19.4 17 ...</span></span>
-<span><span class="co">#&gt;   ..$ vs  : num [1:32] 0 0 1 1 0 1 0 1 1 1 ...</span></span>
-<span><span class="co">#&gt;   ..$ am  : num [1:32] 1 1 1 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">#&gt;   ..$ gear: num [1:32] 4 4 4 3 3 3 3 4 4 4 ...</span></span>
-<span><span class="co">#&gt;   ..$ carb: num [1:32] 4 4 1 1 2 1 4 2 2 4 ...</span></span>
-<span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  8 variables:</span></span>
-<span><span class="co">#&gt;   .. ..$ size     : num 1225</span></span>
-<span><span class="co">#&gt;   .. ..$ isdir    : logi FALSE</span></span>
-<span><span class="co">#&gt;   .. ..$ mode     : 'octmode' int 644</span></span>
-<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
-<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
-<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
-<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpfXzmmQ/./mtcars.rds"</span></span>
-<span><span class="co">#&gt;   .. ..$ file_name: chr "mtcars.rds"</span></span></code></pre></div>
+<span><span class="co">#&gt;   ..$ vs  : int [1:32] 0 0 1 1 0 1 0 1 1 1 ...</span></span>
+<span><span class="co">#&gt;   ..$ am  : int [1:32] 1 1 1 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">#&gt;   ..$ gear: int [1:32] 4 4 4 3 3 3 3 4 4 4 ...</span></span>
+<span><span class="co">#&gt;   ..$ carb: int [1:32] 4 4 1 1 2 1 4 2 2 4 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  11 variables:</span></span>
+<span><span class="co">#&gt;   .. ..$ size                              : num 1225</span></span>
+<span><span class="co">#&gt;   .. ..$ isdir                             : logi FALSE</span></span>
+<span><span class="co">#&gt;   .. ..$ mode                              : 'octmode' int 644</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"</span></span>
+<span><span class="co">#&gt;   .. ..$ path                              : chr "/tmp/RtmpF6A3bo/./mtcars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ file_name                         : chr "mtcars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ original_memory_footprint_in_bytes: num 7208</span></span>
+<span><span class="co">#&gt;   .. ..$ remapped_column_indices           :List of 1</span></span>
+<span><span class="co">#&gt;   .. .. ..$ : int [1:6] 2 4 8 9 10 11</span></span>
+<span><span class="co">#&gt;   .. ..$ remapping_time                    : 'difftime' num 0.000293731689453125</span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "units")= chr "secs"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="using-load_files">Using <code>load_files()</code><a class="anchor" aria-label="anchor" href="#using-load_files"></a>
@@ -180,38 +191,48 @@ list names.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data_list2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
 <span><span class="co">#&gt;  $ cars  :'data.frame':  50 obs. of  2 variables:</span></span>
-<span><span class="co">#&gt;   ..$ speed: num [1:50] 4 4 7 7 8 9 10 10 10 11 ...</span></span>
-<span><span class="co">#&gt;   ..$ dist : num [1:50] 2 10 4 22 16 10 18 26 34 17 ...</span></span>
-<span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  8 variables:</span></span>
-<span><span class="co">#&gt;   .. ..$ size     : num 288</span></span>
-<span><span class="co">#&gt;   .. ..$ isdir    : logi FALSE</span></span>
-<span><span class="co">#&gt;   .. ..$ mode     : 'octmode' int 644</span></span>
-<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
-<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
-<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
-<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpfXzmmQ/cars.rds"</span></span>
-<span><span class="co">#&gt;   .. ..$ file_name: chr "cars.rds"</span></span>
+<span><span class="co">#&gt;   ..$ speed: int [1:50] 4 4 7 7 8 9 10 10 10 11 ...</span></span>
+<span><span class="co">#&gt;   ..$ dist : int [1:50] 2 10 4 22 16 10 18 26 34 17 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  11 variables:</span></span>
+<span><span class="co">#&gt;   .. ..$ size                              : num 289</span></span>
+<span><span class="co">#&gt;   .. ..$ isdir                             : logi FALSE</span></span>
+<span><span class="co">#&gt;   .. ..$ mode                              : 'octmode' int 644</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"</span></span>
+<span><span class="co">#&gt;   .. ..$ path                              : chr "/tmp/RtmpF6A3bo/cars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ file_name                         : chr "cars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ original_memory_footprint_in_bytes: num 1648</span></span>
+<span><span class="co">#&gt;   .. ..$ remapped_column_indices           :List of 1</span></span>
+<span><span class="co">#&gt;   .. .. ..$ : int [1:2] 1 2</span></span>
+<span><span class="co">#&gt;   .. ..$ remapping_time                    : 'difftime' num 0.000106573104858398</span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "units")= chr "secs"</span></span>
 <span><span class="co">#&gt;  $ mtcars:'data.frame':  32 obs. of  11 variables:</span></span>
 <span><span class="co">#&gt;   ..$ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...</span></span>
-<span><span class="co">#&gt;   ..$ cyl : num [1:32] 6 6 4 6 8 6 8 4 4 6 ...</span></span>
+<span><span class="co">#&gt;   ..$ cyl : int [1:32] 6 6 4 6 8 6 8 4 4 6 ...</span></span>
 <span><span class="co">#&gt;   ..$ disp: num [1:32] 160 160 108 258 360 ...</span></span>
-<span><span class="co">#&gt;   ..$ hp  : num [1:32] 110 110 93 110 175 105 245 62 95 123 ...</span></span>
+<span><span class="co">#&gt;   ..$ hp  : int [1:32] 110 110 93 110 175 105 245 62 95 123 ...</span></span>
 <span><span class="co">#&gt;   ..$ drat: num [1:32] 3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...</span></span>
 <span><span class="co">#&gt;   ..$ wt  : num [1:32] 2.62 2.88 2.32 3.21 3.44 ...</span></span>
 <span><span class="co">#&gt;   ..$ qsec: num [1:32] 16.5 17 18.6 19.4 17 ...</span></span>
-<span><span class="co">#&gt;   ..$ vs  : num [1:32] 0 0 1 1 0 1 0 1 1 1 ...</span></span>
-<span><span class="co">#&gt;   ..$ am  : num [1:32] 1 1 1 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">#&gt;   ..$ gear: num [1:32] 4 4 4 3 3 3 3 4 4 4 ...</span></span>
-<span><span class="co">#&gt;   ..$ carb: num [1:32] 4 4 1 1 2 1 4 2 2 4 ...</span></span>
-<span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  8 variables:</span></span>
-<span><span class="co">#&gt;   .. ..$ size     : num 1225</span></span>
-<span><span class="co">#&gt;   .. ..$ isdir    : logi FALSE</span></span>
-<span><span class="co">#&gt;   .. ..$ mode     : 'octmode' int 644</span></span>
-<span><span class="co">#&gt;   .. ..$ mtime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
-<span><span class="co">#&gt;   .. ..$ ctime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
-<span><span class="co">#&gt;   .. ..$ atime    : POSIXct[1:1], format: "2025-11-06 08:20:26"</span></span>
-<span><span class="co">#&gt;   .. ..$ path     : chr "/tmp/RtmpfXzmmQ/mtcars.rds"</span></span>
-<span><span class="co">#&gt;   .. ..$ file_name: chr "mtcars.rds"</span></span></code></pre></div>
+<span><span class="co">#&gt;   ..$ vs  : int [1:32] 0 0 1 1 0 1 0 1 1 1 ...</span></span>
+<span><span class="co">#&gt;   ..$ am  : int [1:32] 1 1 1 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">#&gt;   ..$ gear: int [1:32] 4 4 4 3 3 3 3 4 4 4 ...</span></span>
+<span><span class="co">#&gt;   ..$ carb: int [1:32] 4 4 1 1 2 1 4 2 2 4 ...</span></span>
+<span><span class="co">#&gt;   ..- attr(*, "meta")='data.frame':  1 obs. of  11 variables:</span></span>
+<span><span class="co">#&gt;   .. ..$ size                              : num 1225</span></span>
+<span><span class="co">#&gt;   .. ..$ isdir                             : logi FALSE</span></span>
+<span><span class="co">#&gt;   .. ..$ mode                              : 'octmode' int 644</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"</span></span>
+<span><span class="co">#&gt;   .. ..$ path                              : chr "/tmp/RtmpF6A3bo/mtcars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ file_name                         : chr "mtcars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ original_memory_footprint_in_bytes: num 7208</span></span>
+<span><span class="co">#&gt;   .. ..$ remapped_column_indices           :List of 1</span></span>
+<span><span class="co">#&gt;   .. .. ..$ : int [1:6] 2 4 8 9 10 11</span></span>
+<span><span class="co">#&gt;   .. ..$ remapping_time                    : 'difftime' num 0.000264883041381836</span></span>
+<span><span class="co">#&gt;   .. .. ..- attr(*, "units")= chr "secs"</span></span></code></pre></div>
 <p>When using <code><a href="../reference/load_files.html">load_files()</a></code>, you can specify files from
 multiple directories and customize the output list names by providing
 named arguments in the <code>file_paths</code> parameter.</p>
@@ -235,7 +256,7 @@ named arguments in the <code>file_paths</code> parameter.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
