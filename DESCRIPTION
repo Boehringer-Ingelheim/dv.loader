@@ -1,7 +1,7 @@
 Package: dv.loader
 Type: Package
 Title: Data loading module 
-Version: 2.2.0
+Version: 2.2.0-9000
 Authors@R: c(
         person( "Boehringer-Ingelheim Pharma GmbH & Co.KG", role = c("cph", "fnd")),
         person( given = "Ming", family = "Yang", role = c("aut", "cre"), email = "ming.yang.ext@boehringer-ingelheim.com"),
@@ -21,7 +21,7 @@ Suggests:
     testthat,
     knitr,
     rmarkdown
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://github.com/Boehringer-Ingelheim/dv.loader, https://boehringer-ingelheim.github.io/dv.loader
