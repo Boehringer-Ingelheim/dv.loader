@@ -4,7 +4,7 @@
 \alias{load_files}
 \title{Load data files from explicit paths}
 \usage{
-load_files(file_paths, reduce_memory_footprint = TRUE)
+load_files(file_paths, reduce_memory_footprint = TRUE, encoding = NULL)
 }
 \arguments{
 \item{file_paths}{\verb{[character(1+)]} Files to read. Optionally named.}
@@ -16,6 +16,10 @@ variables are mapped into integers, as long as the conversion does not lead to l
 
 If FALSE, this function respects the original types returned by the underlying calls to \code{base::readRDS} and
 \code{haven::read_sas}.}
+
+\item{encoding}{\verb{[character(1) | NULL]} Character encoding to use when reading
+\code{.sas7bdat} files. A value of \code{NULL} (the default) uses the encoding declared
+in the file. Ignored for \code{.rds} files.}
 }
 \value{
 \verb{[list]} A named list of data frames, where each name is either:
