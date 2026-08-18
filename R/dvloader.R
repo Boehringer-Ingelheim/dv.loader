@@ -33,14 +33,14 @@ get_cre_path <- get_nfs_path
 #'   use_wd = TRUE
 #' )
 #' }
-load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE, reduce_memory_footprint = TRUE) {
+load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE, reduce_memory_footprint = TRUE, encoding = NULL) {
   if (length(file_names) == 0) {
     stop("Usage: load_data: file_names: Must supply at least one file name")
   }
 
   # create the output
   paths <- collect_data_list_paths(sub_dir, file_names, use_wd, prefer_sas)
-  data_list <- load_files(file_paths = paths, reduce_memory_footprint = reduce_memory_footprint)
+  data_list <- load_files(file_paths = paths, reduce_memory_footprint = reduce_memory_footprint, encoding = encoding)
 
   return(data_list)
 }
@@ -51,11 +51,14 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
 #' as an attribute.
 #'
 #' @param path `[character(1)]` Path to the data file to read
+#' @param encoding `[character(1) | NULL]` Character encoding to use when reading
+#' `.sas7bdat` files. A value of `NULL` (the default) uses the encoding declared
+#' in the file. Ignored for `.rds` files.
 #'
 #' @return A data frame with metadata attached as an attribute named "meta".
 #'
 #' @keywords internal
-read_file_and_attach_metadata <- function(path) {
+read_file_and_attach_metadata <- function(path, encoding = NULL) {
   meta <- file.info(path, extra_cols = FALSE)
   extension <- tools::file_ext(path)
 
@@ -82,7 +85,7 @@ read_file_and_attach_metadata <- function(path) {
       preload_file_in_chunks(path, meta[["size"]]),
       silent = TRUE
     )
-    data <- as.data.frame(haven::read_sas(path))
+    data <- as.data.frame(haven::read_sas(path, encoding = encoding))
   } else {
     stop(sprintf("Unrecognized extension for file `.%s`. dv.loader supports only `.rds` and `.sas7bdat` files. ", path))
   }
@@ -110,19 +113,23 @@ read_file_and_attach_metadata <- function(path) {
 #' 
 #' If FALSE, this function respects the original types returned by the underlying calls to `base::readRDS` and 
 #' `haven::read_sas`.
+#' @param encoding `[character(1) | NULL]` Character encoding to use when reading
+#' `.sas7bdat` files. A value of `NULL` (the default) uses the encoding declared
+#' in the file. Ignored for `.rds` files.
 #'
 #' @return `[list]` A named list of data frames, where each name is either:
 #'  - the name associated to the element in the `file_paths` argument, or, if not provided...
 #'  - the name of the file itself, after stripping it of its leading path and trailing extension
 #'
 #' @export
-load_files <- function(file_paths, reduce_memory_footprint = TRUE) {
+load_files <- function(file_paths, reduce_memory_footprint = TRUE, encoding = NULL) {
   checkmate::assert_character(file_paths, min.len = 1)
   checkmate::assert_file_exists(file_paths, access = "r", extension = c(".rds", ".sas7bdat"))
+  checkmate::assert_string(encoding, null.ok = TRUE)
 
   data_list <- list()
   for (path in file_paths){
-    df <- read_file_and_attach_metadata(path)
+    df <- read_file_and_attach_metadata(path, encoding = encoding)
 
     if (isTRUE(reduce_memory_footprint)) {
       t0 <- Sys.time()

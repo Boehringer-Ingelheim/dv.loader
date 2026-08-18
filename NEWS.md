@@ -1,3 +1,8 @@
+# dv.loader 2.2.0-9000
+
+- Added `encoding` argument to `load_data()` and `load_files()` to override the
+  character encoding used when reading `.sas7bdat` files.
+
 # dv.loader 2.2.0
 
 - Use leaner data types for columns that allow it.

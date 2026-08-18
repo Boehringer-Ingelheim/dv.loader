@@ -51,6 +51,41 @@ test_that("load_files() properly validates file extensions", {
   )
 })
 
+test_that("load_files() forwards the encoding argument to haven::read_sas", {
+  sas_file <- "inst/extdata/dummyads2.sas7bdat"
+
+  expect_equal(
+    load_files(sas_file, reduce_memory_footprint = FALSE, encoding = "UTF-8"),
+    load_files(sas_file, reduce_memory_footprint = FALSE),
+    ignore_attr = "meta"
+  )
+
+  expect_error(
+    load_files(sas_file, reduce_memory_footprint = FALSE, encoding = "invalid-encoding"),
+    "File has an unsupported character set"
+  )
+})
+
+test_that("load_files() validates the encoding argument", {
+  sas_file <- "inst/extdata/dummyads2.sas7bdat"
+
+  expect_error(
+    load_files(sas_file, encoding = 1),
+    "Must be of type 'string'"
+  )
+  expect_error(
+    load_files(sas_file, encoding = c("UTF-8", "latin1")),
+    "Must have length 1"
+  )
+})
+
+test_that("load_files() ignores the encoding argument for RDS files", {
+  rds_file <- "inst/extdata/dummyads1.RDS"
+
+  data_list <- load_files(rds_file, reduce_memory_footprint = FALSE, encoding = "latin1")
+  expect_equal(data_list[["dummyads1"]], readRDS(rds_file), ignore_attr = "meta")
+})
+
 test_that("load_files() can return both default and custom names for loaded data", {
   # Check that duplicate names are caught and error is thrown
   expect_error(
