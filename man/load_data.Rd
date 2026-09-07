@@ -9,7 +9,8 @@ load_data(
   file_names,
   use_wd = FALSE,
   prefer_sas = FALSE,
-  reduce_memory_footprint = TRUE
+  reduce_memory_footprint = TRUE,
+  encoding = NULL
 )
 }
 \arguments{
@@ -31,6 +32,10 @@ variables are mapped into integers, as long as the conversion does not lead to l
 
 If FALSE, this function respects the original types returned by the underlying calls to \code{base::readRDS} and
 \code{haven::read_sas}.}
+
+\item{encoding}{\verb{[character(1) | NULL]} Character encoding to use when reading
+\code{.sas7bdat} files. A value of \code{NULL} (the default) uses the encoding declared
+in the file. Ignored for \code{.rds} files.}
 }
 \value{
 a list of dataframes

@@ -4,10 +4,14 @@
 \alias{read_file_and_attach_metadata}
 \title{Read a data file and attach metadata}
 \usage{
-read_file_and_attach_metadata(path)
+read_file_and_attach_metadata(path, encoding = NULL)
 }
 \arguments{
 \item{path}{\verb{[character(1)]} Path to the data file to read}
+
+\item{encoding}{\verb{[character(1) | NULL]} Character encoding to use when reading
+\code{.sas7bdat} files. A value of \code{NULL} (the default) uses the encoding declared
+in the file. Ignored for \code{.rds} files.}
 }
 \value{
 A data frame with metadata attached as an attribute named "meta".
