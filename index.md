@@ -18,7 +18,6 @@ The `dv.loader` package is available on GitHub. To install it, you can
 use the following commands:
 
 ``` r
-
 if (!require("remotes")) install.packages("remotes")
 remotes::install_github("Boehringer-Ingelheim/dv.loader")
 ```
@@ -26,7 +25,6 @@ remotes::install_github("Boehringer-Ingelheim/dv.loader")
 After installation, you can load the package using:
 
 ``` r
-
 library(dv.loader)
 ```
 
@@ -46,7 +44,6 @@ meaning `.rds` files are preferred due to their smaller file size and
 faster loading time.
 
 ``` r
-
 # Set the RXD_DATA environment variable
 Sys.setenv(RXD_DATA = "path/to/data/folder")
 
@@ -73,7 +70,6 @@ extensions for the data files you want to load. You can optionally
 provide custom names for the data frames in the returned list.
 
 ``` r
-
 # Load data files with default names
 load_files(
     file_paths = c(

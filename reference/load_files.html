@@ -9,7 +9,7 @@ Supports both .rds and .sas7bdat formats."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">dv.loader</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,7 @@ Supports both .rds and .sas7bdat formats.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">load_files</span><span class="op">(</span><span class="va">file_paths</span>, reduce_memory_footprint <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">load_files</span><span class="op">(</span><span class="va">file_paths</span>, reduce_memory_footprint <span class="op">=</span> <span class="cn">TRUE</span>, encoding <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -65,6 +65,12 @@ Supports both .rds and .sas7bdat formats.</p>
 variables are mapped into integers, as long as the conversion does not lead to loss of precision.</p>
 <p>If FALSE, this function respects the original types returned by the underlying calls to <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">base::readRDS</a></code> and
 <code><a href="https://haven.tidyverse.org/reference/read_sas.html" class="external-link">haven::read_sas</a></code>.</p></dd>
+
+
+<dt id="arg-encoding">encoding<a class="anchor" aria-label="anchor" href="#arg-encoding"></a></dt>
+<dd><p><code>[character(1) | NULL]</code> Character encoding to use when reading
+<code>.sas7bdat</code> files. A value of <code>NULL</code> (the default) uses the encoding declared
+in the file. Ignored for <code>.rds</code> files.</p></dd>
 
 </dl></div>
     <div class="section level2">

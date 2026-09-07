@@ -6,7 +6,7 @@ Supports both .rds and .sas7bdat formats.
 ## Usage
 
 ``` r
-load_files(file_paths, reduce_memory_footprint = TRUE)
+load_files(file_paths, reduce_memory_footprint = TRUE, encoding = NULL)
 ```
 
 ## Arguments
@@ -27,6 +27,12 @@ load_files(file_paths, reduce_memory_footprint = TRUE)
   underlying calls to
   [`base::readRDS`](https://rdrr.io/r/base/readRDS.html) and
   [`haven::read_sas`](https://haven.tidyverse.org/reference/read_sas.html).
+
+- encoding:
+
+  `[character(1) | NULL]` Character encoding to use when reading
+  `.sas7bdat` files. A value of `NULL` (the default) uses the encoding
+  declared in the file. Ignored for `.rds` files.
 
 ## Value
 

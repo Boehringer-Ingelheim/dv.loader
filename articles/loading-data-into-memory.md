@@ -22,7 +22,6 @@ To demonstrate the package’s capabilities, we’ll first create some
 example `.rds` files in a temporary directory that we can work with.
 
 ``` r
-
 # Create a temporary directory for the example data
 temp_dir <- tempdir()
 
@@ -34,7 +33,6 @@ saveRDS(mtcars, file = file.path(temp_dir, "mtcars.rds"))
 To begin, we’ll need to load the dv.loader package.
 
 ``` r
-
 library(dv.loader)
 ```
 
@@ -59,7 +57,6 @@ faster to read. You can override this behavior by setting
 `prefer_sas = TRUE` to prioritize loading `.sas7bdat` files instead.
 
 ``` r
-
 # Set the RXD_DATA environment variable to the temporary directory
 Sys.setenv(RXD_DATA = temp_dir)
 
@@ -79,15 +76,15 @@ str(data_list1)
 #>   .. ..$ size                              : num 289
 #>   .. ..$ isdir                             : logi FALSE
 #>   .. ..$ mode                              : 'octmode' int 644
-#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"
-#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"
-#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"
-#>   .. ..$ path                              : chr "/tmp/RtmpF6A3bo/./cars.rds"
+#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
+#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
+#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
+#>   .. ..$ path                              : chr "/tmp/RtmpP6BqG3/./cars.rds"
 #>   .. ..$ file_name                         : chr "cars.rds"
 #>   .. ..$ original_memory_footprint_in_bytes: num 1648
 #>   .. ..$ remapped_column_indices           :List of 1
 #>   .. .. ..$ : int [1:2] 1 2
-#>   .. ..$ remapping_time                    : 'difftime' num 0.000194311141967773
+#>   .. ..$ remapping_time                    : 'difftime' num 0.000146865844726562
 #>   .. .. ..- attr(*, "units")= chr "secs"
 #>  $ mtcars:'data.frame':  32 obs. of  11 variables:
 #>   ..$ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
@@ -105,15 +102,15 @@ str(data_list1)
 #>   .. ..$ size                              : num 1225
 #>   .. ..$ isdir                             : logi FALSE
 #>   .. ..$ mode                              : 'octmode' int 644
-#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"
-#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"
-#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"
-#>   .. ..$ path                              : chr "/tmp/RtmpF6A3bo/./mtcars.rds"
+#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
+#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
+#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
+#>   .. ..$ path                              : chr "/tmp/RtmpP6BqG3/./mtcars.rds"
 #>   .. ..$ file_name                         : chr "mtcars.rds"
 #>   .. ..$ original_memory_footprint_in_bytes: num 7208
 #>   .. ..$ remapped_column_indices           :List of 1
 #>   .. .. ..$ : int [1:6] 2 4 8 9 10 11
-#>   .. ..$ remapping_time                    : 'difftime' num 0.000293731689453125
+#>   .. ..$ remapping_time                    : 'difftime' num 0.0001678466796875
 #>   .. .. ..- attr(*, "units")= chr "secs"
 ```
 
@@ -127,7 +124,6 @@ custom names are provided, the function will use the file names (without
 paths or extensions) as the list names.
 
 ``` r
-
 # Load the data files into a named list of data frames
 data_list2 <- load_files(
   file_paths = c(
@@ -146,15 +142,15 @@ str(data_list2)
 #>   .. ..$ size                              : num 289
 #>   .. ..$ isdir                             : logi FALSE
 #>   .. ..$ mode                              : 'octmode' int 644
-#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"
-#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"
-#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"
-#>   .. ..$ path                              : chr "/tmp/RtmpF6A3bo/cars.rds"
+#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
+#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
+#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
+#>   .. ..$ path                              : chr "/tmp/RtmpP6BqG3/cars.rds"
 #>   .. ..$ file_name                         : chr "cars.rds"
 #>   .. ..$ original_memory_footprint_in_bytes: num 1648
 #>   .. ..$ remapped_column_indices           :List of 1
 #>   .. .. ..$ : int [1:2] 1 2
-#>   .. ..$ remapping_time                    : 'difftime' num 0.000106573104858398
+#>   .. ..$ remapping_time                    : 'difftime' num 8.82148742675781e-05
 #>   .. .. ..- attr(*, "units")= chr "secs"
 #>  $ mtcars:'data.frame':  32 obs. of  11 variables:
 #>   ..$ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
@@ -172,15 +168,15 @@ str(data_list2)
 #>   .. ..$ size                              : num 1225
 #>   .. ..$ isdir                             : logi FALSE
 #>   .. ..$ mode                              : 'octmode' int 644
-#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"
-#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"
-#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-03-05 15:10:23"
-#>   .. ..$ path                              : chr "/tmp/RtmpF6A3bo/mtcars.rds"
+#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
+#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
+#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
+#>   .. ..$ path                              : chr "/tmp/RtmpP6BqG3/mtcars.rds"
 #>   .. ..$ file_name                         : chr "mtcars.rds"
 #>   .. ..$ original_memory_footprint_in_bytes: num 7208
 #>   .. ..$ remapped_column_indices           :List of 1
 #>   .. .. ..$ : int [1:6] 2 4 8 9 10 11
-#>   .. ..$ remapping_time                    : 'difftime' num 0.000264883041381836
+#>   .. ..$ remapping_time                    : 'difftime' num 0.000219583511352539
 #>   .. .. ..- attr(*, "units")= chr "secs"
 ```
 
@@ -190,7 +186,6 @@ you can specify files from multiple directories and customize the output
 list names by providing named arguments in the `file_paths` parameter.
 
 ``` r
-
 dv.loader::load_files(
   file_paths = c(
     "cars (rds)" = file.path(temp_dir, "cars.rds"),

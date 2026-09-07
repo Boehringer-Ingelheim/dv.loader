@@ -1,5 +1,14 @@
 # Changelog
 
+## dv.loader 2.3.0
+
+- Added `encoding` argument to
+  [`load_data()`](https://boehringer-ingelheim.github.io/dv.loader/reference/load_data.md)
+  and
+  [`load_files()`](https://boehringer-ingelheim.github.io/dv.loader/reference/load_files.md)
+  to override the character encoding used when reading `.sas7bdat`
+  files.
+
 ## dv.loader 2.2.0
 
 - Use leaner data types for columns that allow it.

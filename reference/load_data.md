@@ -11,7 +11,8 @@ load_data(
   file_names,
   use_wd = FALSE,
   prefer_sas = FALSE,
-  reduce_memory_footprint = TRUE
+  reduce_memory_footprint = TRUE,
+  encoding = NULL
 )
 ```
 
@@ -50,6 +51,12 @@ load_data(
   underlying calls to
   [`base::readRDS`](https://rdrr.io/r/base/readRDS.html) and
   [`haven::read_sas`](https://haven.tidyverse.org/reference/read_sas.html).
+
+- encoding:
+
+  `[character(1) | NULL]` Character encoding to use when reading
+  `.sas7bdat` files. A value of `NULL` (the default) uses the encoding
+  declared in the file. Ignored for `.rds` files.
 
 ## Value
 
