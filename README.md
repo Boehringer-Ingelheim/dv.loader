@@ -1,6 +1,7 @@
 # Data Loading
 
-The `dv.loader` package provides two functions for loading `.rds` and `.sas7bdat` files into R.
+The `dv.loader` package provides two functions for loading `.parquet`, `.rds`,
+and `.sas7bdat` files into R.
 
 - `load_data()`: loads data files from a specified subdirectory of the base path defined by the environment variable "RXD_DATA". This function is useful when working with data files stored in a centralized location.
 - `load_files()`: accepts explicit file paths to load data files from any location on your system. You can optionally provide custom names for the data frames in the returned list.
@@ -24,7 +25,7 @@ library(dv.loader)
 
 ### Using `load_data()`
 
-The `load_data()` function loads data from the specified subdirectory relative to `RXD_DATA`. For the `file_names` argument, you can optionally specify the file extensions in the names. If not provided, the function will attempt to search for `.rds` and `.sas7bdat` files in the subdirectory and decide which one to load based on the `prefer_sas` argument when both file types are present. By default, `prefer_sas` is `FALSE`, meaning `.rds` files are preferred due to their smaller file size and faster loading time.
+The `load_data()` function loads data from the specified subdirectory relative to `RXD_DATA`. For the `file_names` argument, you can optionally specify the file extensions in the names. If not provided, the function searches for `.parquet`, `.rds`, and `.sas7bdat` files in the subdirectory. By default, `.parquet` files are preferred, followed by `.rds` and `.sas7bdat`; set `prefer_rds = TRUE` or `prefer_sas = TRUE` to override this order. These options are mutually exclusive.
 
 ```r
 # Set the RXD_DATA environment variable
@@ -40,13 +41,14 @@ load_data(
 # Load data from path/to/data/folder/subdir1/subdir2
 load_data(
     sub_dir = "subdir1/subdir2",
-    file_names = c("file1.rds", "file2.sas7bdat"),
+    file_names = c("file1.parquet", "file2.sas7bdat"),
+    prefer_rds = TRUE
 )
 ```
 
 ### Using `load_files()`
 
-The `load_files()` function requires you to provide explicit file paths including the file extensions for the data files you want to load. You can optionally provide custom names for the data frames in the returned list.
+The `load_files()` function requires you to provide explicit file paths including the file extensions for the data files you want to load. Supported extensions are `.parquet`, `.rds`, and `.sas7bdat`. You can optionally provide custom names for the data frames in the returned list.
 
 
 ```r

@@ -33,13 +33,19 @@ get_cre_path <- get_nfs_path
 #'   use_wd = TRUE
 #' )
 #' }
-load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE, reduce_memory_footprint = TRUE, encoding = NULL) {
+load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE, prefer_rds = FALSE, reduce_memory_footprint = TRUE, encoding = NULL) {
   if (length(file_names) == 0) {
     stop("Usage: load_data: file_names: Must supply at least one file name")
   }
 
   # create the output
-  paths <- collect_data_list_paths(sub_dir, file_names, use_wd, prefer_sas)
+  paths <- collect_data_list_paths(
+    sub_dir = sub_dir,
+    file_names = file_names,
+    use_wd = use_wd,
+    prefer_sas = prefer_sas,
+    prefer_rds = prefer_rds
+  )
   data_list <- load_files(file_paths = paths, reduce_memory_footprint = reduce_memory_footprint, encoding = encoding)
 
   return(data_list)
@@ -86,8 +92,10 @@ read_file_and_attach_metadata <- function(path, encoding = NULL) {
       silent = TRUE
     )
     data <- as.data.frame(haven::read_sas(path, encoding = encoding))
+  } else if (toupper(extension) == "PARQUET") {
+    data <- arrow::read_parquet(path)
   } else {
-    stop(sprintf("Unrecognized extension for file `.%s`. dv.loader supports only `.rds` and `.sas7bdat` files. ", path))
+    stop(sprintf("Unrecognized extension for file `.%s`. dv.loader supports only `.parquet`, `.rds` and `.sas7bdat` files. ", path))
   }
 
   meta[["path"]] <- path
@@ -102,7 +110,7 @@ read_file_and_attach_metadata <- function(path, encoding = NULL) {
 #' Load data files from explicit paths
 #'
 #' Read data from provided paths and return it as a list of data frames.
-#' Supports both .rds and .sas7bdat formats.
+#' Supports .rds, .sas7bdat, and .parquet formats.
 #'
 #' @param file_paths `[character(1+)]` Files to read. Optionally named.
 #' 
@@ -124,7 +132,7 @@ read_file_and_attach_metadata <- function(path, encoding = NULL) {
 #' @export
 load_files <- function(file_paths, reduce_memory_footprint = TRUE, encoding = NULL) {
   checkmate::assert_character(file_paths, min.len = 1)
-  checkmate::assert_file_exists(file_paths, access = "r", extension = c(".rds", ".sas7bdat"))
+  checkmate::assert_file_exists(file_paths, access = "r", extension = c(".rds", ".sas7bdat", ".parquet"))
   checkmate::assert_string(encoding, null.ok = TRUE)
 
   data_list <- list()
@@ -221,9 +229,10 @@ reduce_column_memory_footprint <- function(col_data) {
   return(res)
 }
 
-#' Print data remapping report of the transformations performed by `reduce_data_frame_memory_footprint`
+#' Print data remapping report of the transformations performed by
+#' `reduce_column_memory_footprint`
 #'
-#' @param df `[data.frame]` Output from `reduce_data_frame_memory_footprint`
+#' @param df `[data.frame]` Output from `load_files` or `load_data`
 #'
 #' @return `[character(1)]` Report
 #'

@@ -4,7 +4,13 @@
 \alias{collect_data_list_paths}
 \title{Collect file paths based on file names without extensions}
 \usage{
-collect_data_list_paths(sub_dir, file_names, use_wd, prefer_sas)
+collect_data_list_paths(
+  sub_dir,
+  file_names,
+  use_wd,
+  prefer_sas,
+  prefer_rds = FALSE
+)
 }
 \arguments{
 \item{sub_dir}{A relative directory/folder that will be appended to a base path defined by \code{Sys.getenv("RXD_DATA")}.
@@ -15,12 +21,18 @@ If the argument is left as NULL, the function will load data from the working di
 \item{use_wd}{for "use working directory" - a flag used when importing local files
 not on NFS - default value is FALSE}
 
-\item{prefer_sas}{if TRUE, imports .sas7bdat files first instead of .RDS files}
+\item{prefer_sas}{if TRUE, imports \code{.sas7bdat} files first instead of
+\code{.parquet} and \code{.rds} files}
+
+\item{prefer_rds}{if TRUE, imports \code{.rds} files first instead of
+\code{.parquet} and \code{.sas7bdat} files}
 }
 \value{
-returns a list of dataframes with metadata as an attribute on each dataframe
+a character vector of resolved file paths
 }
 \description{
 Constructs a list of file paths based on an input vector of file names without extensions.
-Preference is given to \code{.rds} files, if present, over \code{.sas7bdat} files.
+Preference is given to \code{.parquet} files, if present, over \code{.rds} and
+\code{.sas7bdat} files unless \code{prefer_sas} or \code{prefer_rds} is \code{TRUE}.
+\code{prefer_sas} and \code{prefer_rds} are mutually exclusive.
 }

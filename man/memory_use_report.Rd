@@ -2,16 +2,18 @@
 % Please edit documentation in R/dvloader.R
 \name{memory_use_report}
 \alias{memory_use_report}
-\title{Print data remapping report of the transformations performed by \code{reduce_data_frame_memory_footprint}}
+\title{Print data remapping report of the transformations performed by
+\code{reduce_column_memory_footprint}}
 \usage{
 memory_use_report(df)
 }
 \arguments{
-\item{df}{\verb{[data.frame]} Output from \code{reduce_data_frame_memory_footprint}}
+\item{df}{\verb{[data.frame]} Output from \code{load_files} or \code{load_data}}
 }
 \value{
 \verb{[character(1)]} Report
 }
 \description{
-Print data remapping report of the transformations performed by \code{reduce_data_frame_memory_footprint}
+Print data remapping report of the transformations performed by
+\code{reduce_column_memory_footprint}
 }
