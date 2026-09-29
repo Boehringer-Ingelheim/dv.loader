@@ -37,7 +37,7 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
   if (length(file_names) == 0) {
     stop("Usage: load_data: file_names: Must supply at least one file name")
   }
-
+  
   # create the output
   paths <- collect_data_list_paths(
     sub_dir = sub_dir,
@@ -47,7 +47,7 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
     prefer_rds = prefer_rds
   )
   data_list <- load_files(file_paths = paths, reduce_memory_footprint = reduce_memory_footprint, encoding = encoding)
-
+  
   return(data_list)
 }
 
@@ -135,6 +135,10 @@ load_files <- function(file_paths, reduce_memory_footprint = TRUE, encoding = NU
   checkmate::assert_file_exists(file_paths, access = "r", extension = c(".rds", ".sas7bdat", ".parquet"))
   checkmate::assert_string(encoding, null.ok = TRUE)
 
+  # make sure arrow does not use ALTREP, which makes the reduce memory footprint very slow 
+  old_options <- options(arrow.use_altrep = FALSE)
+  on.exit(do.call(options, old_options), add = TRUE, after = FALSE)
+  
   data_list <- list()
   for (path in file_paths){
     df <- read_file_and_attach_metadata(path, encoding = encoding)
