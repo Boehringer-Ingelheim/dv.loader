@@ -43,7 +43,7 @@ test_that("load_files() correctly loads Parquet files", {
   expect_equal(names(data_list), "dummyads1")
   expect_equal(
     data_list[["dummyads1"]],
-    arrow::read_parquet(parquet_file),
+    as.data.frame(arrow::read_parquet(parquet_file)),
     ignore_attr = "meta"
   )
 
