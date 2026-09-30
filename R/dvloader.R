@@ -93,7 +93,7 @@ read_file_and_attach_metadata <- function(path, encoding = NULL) {
     )
     data <- as.data.frame(haven::read_sas(path, encoding = encoding))
   } else if (toupper(extension) == "PARQUET") {
-    data <- arrow::read_parquet(path)
+    data <- as.data.frame(arrow::read_parquet(path))
   } else {
     stop(sprintf("Unrecognized extension for file `.%s`. dv.loader supports only `.parquet`, `.rds` and `.sas7bdat` files. ", path))
   }
