@@ -9,6 +9,7 @@ load_data(
   file_names,
   use_wd = FALSE,
   prefer_sas = FALSE,
+  prefer_rds = FALSE,
   reduce_memory_footprint = TRUE,
   encoding = NULL
 )
@@ -23,7 +24,11 @@ This is the only required argument.}
 \item{use_wd}{for "use working directory" - a flag used when importing local files
 not on NFS - default value is FALSE}
 
-\item{prefer_sas}{if TRUE, imports .sas7bdat files first instead of .RDS files}
+\item{prefer_sas}{if TRUE, imports \code{.sas7bdat} files first instead of
+\code{.parquet} and \code{.rds} files}
+
+\item{prefer_rds}{if TRUE, imports \code{.rds} files first instead of
+\code{.parquet} and \code{.sas7bdat} files}
 
 \item{reduce_memory_footprint}{\verb{[logical(1)]}
 

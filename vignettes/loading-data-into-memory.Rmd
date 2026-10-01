@@ -14,8 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-The `dv.loader` package simplifies the process of loading data files into R memory. It provides two main functions - `load_data()` and `load_files()` - that can handle two widely used data formats:
+The `dv.loader` package simplifies the process of loading data files into R memory. It provides two main functions - `load_data()` and `load_files()` - that can handle three widely used data formats:
 
+- `.parquet` files: columnar storage files commonly used for analytical workloads
 - `.rds` files: R's native data storage format, which efficiently stores R objects in a compressed binary format
 - `.sas7bdat` files: SAS dataset files commonly used in clinical research and other industries
 
@@ -44,7 +45,7 @@ The `load_data()` function requires the `RXD_DATA` environment variable to be se
 
 When you call `load_data()`, it searches the specified subdirectory for data files and returns them as a named list of data frames. Each data frame in the list is named after its source file.
 
-For files that exist in both `.rds` and `.sas7bdat` formats, `load_data()` will load the `.rds` version by default since these are more compact and faster to read. You can override this behavior by setting `prefer_sas = TRUE` to prioritize loading `.sas7bdat` files instead.
+When multiple supported formats exist for the same file name, `load_data()` prefers `.parquet`, then `.rds`, then `.sas7bdat`. You can override this behavior by setting `prefer_rds = TRUE` or `prefer_sas = TRUE` to prioritize RDS or SAS files, respectively. These options are mutually exclusive.
 
 ```{r}
 # Set the RXD_DATA environment variable to the temporary directory
