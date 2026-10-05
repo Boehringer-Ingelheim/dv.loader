@@ -1,18 +1,27 @@
 #' Collect file paths based on file names without extensions
 #' 
 #' Constructs a list of file paths based on an input vector of file names without extensions.
-#' Preference is given to `.rds` files, if present, over `.sas7bdat` files.
+#' Preference is given to `.parquet` files, if present, over `.rds` and
+#' `.sas7bdat` files unless `prefer_sas` or `prefer_rds` is `TRUE`.
+#' `prefer_sas` and `prefer_rds` are mutually exclusive.
 #' @param sub_dir A relative directory/folder that will be appended to a base path defined by `Sys.getenv("RXD_DATA")`.
 #' If the argument is left as NULL, the function will load data from the working directory `getwd()`.
 #' @param file_names CDISC names for the files
 #' @param use_wd for "use working directory" - a flag used when importing local files
 #' not on NFS - default value is FALSE
-#' @param prefer_sas if TRUE, imports .sas7bdat files first instead of .RDS files
-#' @return returns a list of dataframes with metadata as an attribute on each dataframe
+#' @param prefer_sas if TRUE, imports `.sas7bdat` files first instead of
+#' `.parquet` and `.rds` files
+#' @param prefer_rds if TRUE, imports `.rds` files first instead of
+#' `.parquet` and `.sas7bdat` files
+#' @return a character vector of resolved file paths
 #' 
 #' @export
-collect_data_list_paths <- function(sub_dir, file_names, use_wd, prefer_sas) {
-  
+collect_data_list_paths <- function(sub_dir, file_names, use_wd, prefer_sas, prefer_rds = FALSE) {
+
+  if (isTRUE(prefer_sas) && isTRUE(prefer_rds)) {
+    stop("collect_data_list_paths(): `prefer_sas` and `prefer_rds` cannot both be TRUE")
+  }
+
   file_path <- "" # will be built using args
 
   if (is.null(sub_dir)) {
@@ -26,9 +35,11 @@ collect_data_list_paths <- function(sub_dir, file_names, use_wd, prefer_sas) {
   }
   
   data_list <- sapply(file_names, function(x) {
-    extensions <- c("", ".rds", ".sas7bdat")
+    extensions <- c("", ".parquet", ".rds", ".sas7bdat")
     if (prefer_sas) {
-      extensions <- c("", ".sas7bdat", ".rds")
+      extensions <- c("", ".sas7bdat", ".parquet", ".rds")
+    } else if (prefer_rds) {
+      extensions <- c("", ".rds", ".parquet", ".sas7bdat")
     }
 
     file_name_to_load <- NULL
@@ -53,7 +64,7 @@ collect_data_list_paths <- function(sub_dir, file_names, use_wd, prefer_sas) {
     }
 
     if (is.null(file_name_to_load)) {
-      stop(paste("collect_data_list_paths(): No RDS or SAS files found for", file_path, x))
+      stop(paste("collect_data_list_paths(): No Parquet, RDS or SAS files found for", file_path, x))
     }
 
     output <- file.path(file_path, file_name_to_load)

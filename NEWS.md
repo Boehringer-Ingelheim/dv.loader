@@ -1,3 +1,10 @@
+# dv.loader 2.3.0-9000
+
+- Added a `prefer_rds` argument to `load_data()` for selecting RDS files before
+  Parquet and SAS files when multiple formats are available.
+- Added support for loading `.parquet` files with `load_data()` and
+  `load_files()`.
+
 # dv.loader 2.3.0
 
 - Added `encoding` argument to `load_data()` and `load_files()` to override the

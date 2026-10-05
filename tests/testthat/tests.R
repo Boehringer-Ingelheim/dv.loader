@@ -150,7 +150,7 @@ test_that(
 )
 
 test_that(
-  "loads an RDS file when prefer_sas is FALSE (default) and both SAS and RDS files exist" %>%
+  "loads a Parquet file by default when all supported formats exist" %>%
     vdoc[["add_spec"]](specs$prefer_sas),
   {
     actual <- load_data(
@@ -159,7 +159,37 @@ test_that(
       use_wd = TRUE
     )
     actual <- attr(actual[[1]], "meta")[["path"]]
-    expect_equal(grepl(".RDS$", actual, ignore.case = FALSE), TRUE)
+    expect_equal(grepl(".parquet$", actual, ignore.case = TRUE), TRUE)
+  }
+)
+
+test_that(
+  "loads an RDS file when prefer_rds is TRUE and all supported formats exist",
+  {
+    actual <- load_data(
+      sub_dir = local_test_path,
+      file_names = local_file_names[2],
+      use_wd = TRUE,
+      prefer_rds = TRUE
+    )
+    actual <- attr(actual[[1]], "meta")[["path"]]
+    expect_true(grepl(".RDS$", actual, ignore.case = TRUE))
+  }
+)
+
+test_that(
+  "rejects prefer_sas and prefer_rds when both are TRUE",
+  {
+    expect_error(
+      load_data(
+        sub_dir = local_test_path,
+        file_names = local_file_names[2],
+        use_wd = TRUE,
+        prefer_sas = TRUE,
+        prefer_rds = TRUE
+      ),
+      "prefer_sas.*prefer_rds"
+    )
   }
 )
 
