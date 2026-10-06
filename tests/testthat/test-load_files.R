@@ -32,6 +32,26 @@ test_that("load_files() correctly loads both RDS and SAS files", {
   expect_equal(attr(data_list[["dummyads2"]], "meta"), sas_metadata)
 })
 
+test_that("load_files() correctly loads Parquet files", {
+  parquet_file <- test_path("inst", "extdata", "dummyads1.parquet")
+
+  data_list <- load_files(
+    file_paths = parquet_file,
+    reduce_memory_footprint = FALSE
+  )
+
+  expect_equal(names(data_list), "dummyads1")
+  expect_equal(
+    data_list[["dummyads1"]],
+    as.data.frame(arrow::read_parquet(parquet_file)),
+    ignore_attr = "meta"
+  )
+
+  metadata <- attr(data_list[["dummyads1"]], "meta")
+  expect_equal(metadata[["path"]], parquet_file)
+  expect_equal(metadata[["file_name"]], basename(parquet_file))
+})
+
 test_that("load_files() works with different file extensions", {
   # GitHub Actions (Assertion on 'file_paths' failed: File does not exist)
   expect_error(
