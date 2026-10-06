@@ -5,8 +5,10 @@ into R memory. It provides two main functions -
 [`load_data()`](https://boehringer-ingelheim.github.io/dv.loader/reference/load_data.md)
 and
 [`load_files()`](https://boehringer-ingelheim.github.io/dv.loader/reference/load_files.md) -
-that can handle two widely used data formats:
+that can handle three widely used data formats:
 
+- `.parquet` files: columnar storage files commonly used for analytical
+  workloads
 - `.rds` files: R’s native data storage format, which efficiently stores
   R objects in a compressed binary format
 - `.sas7bdat` files: SAS dataset files commonly used in clinical
@@ -50,11 +52,12 @@ it searches the specified subdirectory for data files and returns them
 as a named list of data frames. Each data frame in the list is named
 after its source file.
 
-For files that exist in both `.rds` and `.sas7bdat` formats,
+When multiple supported formats exist for the same file name,
 [`load_data()`](https://boehringer-ingelheim.github.io/dv.loader/reference/load_data.md)
-will load the `.rds` version by default since these are more compact and
-faster to read. You can override this behavior by setting
-`prefer_sas = TRUE` to prioritize loading `.sas7bdat` files instead.
+prefers `.parquet`, then `.rds`, then `.sas7bdat`. You can override this
+behavior by setting `prefer_rds = TRUE` or `prefer_sas = TRUE` to
+prioritize RDS or SAS files, respectively. These options are mutually
+exclusive.
 
 ``` r
 # Set the RXD_DATA environment variable to the temporary directory
@@ -76,15 +79,15 @@ str(data_list1)
 #>   .. ..$ size                              : num 289
 #>   .. ..$ isdir                             : logi FALSE
 #>   .. ..$ mode                              : 'octmode' int 644
-#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
-#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
-#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
-#>   .. ..$ path                              : chr "/tmp/RtmpP6BqG3/./cars.rds"
+#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"
+#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"
+#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"
+#>   .. ..$ path                              : chr "/tmp/RtmpJoLMUM/./cars.rds"
 #>   .. ..$ file_name                         : chr "cars.rds"
 #>   .. ..$ original_memory_footprint_in_bytes: num 1648
 #>   .. ..$ remapped_column_indices           :List of 1
 #>   .. .. ..$ : int [1:2] 1 2
-#>   .. ..$ remapping_time                    : 'difftime' num 0.000146865844726562
+#>   .. ..$ remapping_time                    : 'difftime' num 0.000181198120117188
 #>   .. .. ..- attr(*, "units")= chr "secs"
 #>  $ mtcars:'data.frame':  32 obs. of  11 variables:
 #>   ..$ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
@@ -102,15 +105,15 @@ str(data_list1)
 #>   .. ..$ size                              : num 1225
 #>   .. ..$ isdir                             : logi FALSE
 #>   .. ..$ mode                              : 'octmode' int 644
-#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
-#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
-#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
-#>   .. ..$ path                              : chr "/tmp/RtmpP6BqG3/./mtcars.rds"
+#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"
+#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"
+#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"
+#>   .. ..$ path                              : chr "/tmp/RtmpJoLMUM/./mtcars.rds"
 #>   .. ..$ file_name                         : chr "mtcars.rds"
 #>   .. ..$ original_memory_footprint_in_bytes: num 7208
 #>   .. ..$ remapped_column_indices           :List of 1
 #>   .. .. ..$ : int [1:6] 2 4 8 9 10 11
-#>   .. ..$ remapping_time                    : 'difftime' num 0.0001678466796875
+#>   .. ..$ remapping_time                    : 'difftime' num 0.000265121459960938
 #>   .. .. ..- attr(*, "units")= chr "secs"
 ```
 
@@ -142,15 +145,15 @@ str(data_list2)
 #>   .. ..$ size                              : num 289
 #>   .. ..$ isdir                             : logi FALSE
 #>   .. ..$ mode                              : 'octmode' int 644
-#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
-#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
-#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
-#>   .. ..$ path                              : chr "/tmp/RtmpP6BqG3/cars.rds"
+#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"
+#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"
+#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"
+#>   .. ..$ path                              : chr "/tmp/RtmpJoLMUM/cars.rds"
 #>   .. ..$ file_name                         : chr "cars.rds"
 #>   .. ..$ original_memory_footprint_in_bytes: num 1648
 #>   .. ..$ remapped_column_indices           :List of 1
 #>   .. .. ..$ : int [1:2] 1 2
-#>   .. ..$ remapping_time                    : 'difftime' num 8.82148742675781e-05
+#>   .. ..$ remapping_time                    : 'difftime' num 0.000110626220703125
 #>   .. .. ..- attr(*, "units")= chr "secs"
 #>  $ mtcars:'data.frame':  32 obs. of  11 variables:
 #>   ..$ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
@@ -168,15 +171,15 @@ str(data_list2)
 #>   .. ..$ size                              : num 1225
 #>   .. ..$ isdir                             : logi FALSE
 #>   .. ..$ mode                              : 'octmode' int 644
-#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
-#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
-#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"
-#>   .. ..$ path                              : chr "/tmp/RtmpP6BqG3/mtcars.rds"
+#>   .. ..$ mtime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"
+#>   .. ..$ ctime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"
+#>   .. ..$ atime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"
+#>   .. ..$ path                              : chr "/tmp/RtmpJoLMUM/mtcars.rds"
 #>   .. ..$ file_name                         : chr "mtcars.rds"
 #>   .. ..$ original_memory_footprint_in_bytes: num 7208
 #>   .. ..$ remapped_column_indices           :List of 1
 #>   .. .. ..$ : int [1:6] 2 4 8 9 10 11
-#>   .. ..$ remapping_time                    : 'difftime' num 0.000219583511352539
+#>   .. ..$ remapping_time                    : 'difftime' num 0.000272035598754883
 #>   .. .. ..- attr(*, "units")= chr "secs"
 ```
 

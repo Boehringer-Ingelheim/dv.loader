@@ -1,5 +1,16 @@
 # Changelog
 
+## dv.loader 2.4.0
+
+- Added a `prefer_rds` argument to
+  [`load_data()`](https://boehringer-ingelheim.github.io/dv.loader/reference/load_data.md)
+  for selecting RDS files before Parquet and SAS files when multiple
+  formats are available.
+- Added support for loading `.parquet` files with
+  [`load_data()`](https://boehringer-ingelheim.github.io/dv.loader/reference/load_data.md)
+  and
+  [`load_files()`](https://boehringer-ingelheim.github.io/dv.loader/reference/load_files.md).
+
 ## dv.loader 2.3.0
 
 - Added `encoding` argument to

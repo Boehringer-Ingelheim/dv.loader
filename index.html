@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">dv.loader</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="data-loading">Data Loading<a class="anchor" aria-label="anchor" href="#data-loading"></a>
 </h1></div>
-<p>The <code>dv.loader</code> package provides two functions for loading <code>.rds</code> and <code>.sas7bdat</code> files into R.</p>
+<p>The <code>dv.loader</code> package provides two functions for loading <code>.parquet</code>, <code>.rds</code>, and <code>.sas7bdat</code> files into R.</p>
 <ul>
 <li>
 <code><a href="reference/load_data.html">load_data()</a></code>: loads data files from a specified subdirectory of the base path defined by the environment variable “RXD_DATA”. This function is useful when working with data files stored in a centralized location.</li>
@@ -82,7 +82,7 @@
 <h3 id="using-load_data">Using <code>load_data()</code>
 <a class="anchor" aria-label="anchor" href="#using-load_data"></a>
 </h3>
-<p>The <code><a href="reference/load_data.html">load_data()</a></code> function loads data from the specified subdirectory relative to <code>RXD_DATA</code>. For the <code>file_names</code> argument, you can optionally specify the file extensions in the names. If not provided, the function will attempt to search for <code>.rds</code> and <code>.sas7bdat</code> files in the subdirectory and decide which one to load based on the <code>prefer_sas</code> argument when both file types are present. By default, <code>prefer_sas</code> is <code>FALSE</code>, meaning <code>.rds</code> files are preferred due to their smaller file size and faster loading time.</p>
+<p>The <code><a href="reference/load_data.html">load_data()</a></code> function loads data from the specified subdirectory relative to <code>RXD_DATA</code>. For the <code>file_names</code> argument, you can optionally specify the file extensions in the names. If not provided, the function searches for <code>.parquet</code>, <code>.rds</code>, and <code>.sas7bdat</code> files in the subdirectory. By default, <code>.parquet</code> files are preferred, followed by <code>.rds</code> and <code>.sas7bdat</code>; set <code>prefer_rds = TRUE</code> or <code>prefer_sas = TRUE</code> to override this order. These options are mutually exclusive.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set the RXD_DATA environment variable</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>RXD_DATA <span class="op">=</span> <span class="st">"path/to/data/folder"</span><span class="op">)</span></span>
@@ -97,14 +97,15 @@
 <span><span class="co"># Load data from path/to/data/folder/subdir1/subdir2</span></span>
 <span><span class="fu"><a href="reference/load_data.html">load_data</a></span><span class="op">(</span></span>
 <span>    sub_dir <span class="op">=</span> <span class="st">"subdir1/subdir2"</span>,</span>
-<span>    file_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"file1.rds"</span>, <span class="st">"file2.sas7bdat"</span><span class="op">)</span>,</span>
+<span>    file_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"file1.parquet"</span>, <span class="st">"file2.sas7bdat"</span><span class="op">)</span>,</span>
+<span>    prefer_rds <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="using-load_files">Using <code>load_files()</code>
 <a class="anchor" aria-label="anchor" href="#using-load_files"></a>
 </h3>
-<p>The <code><a href="reference/load_files.html">load_files()</a></code> function requires you to provide explicit file paths including the file extensions for the data files you want to load. You can optionally provide custom names for the data frames in the returned list.</p>
+<p>The <code><a href="reference/load_files.html">load_files()</a></code> function requires you to provide explicit file paths including the file extensions for the data files you want to load. Supported extensions are <code>.parquet</code>, <code>.rds</code>, and <code>.sas7bdat</code>. You can optionally provide custom names for the data frames in the returned list.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load data files with default names</span></span>
 <span><span class="fu"><a href="reference/load_files.html">load_files</a></span><span class="op">(</span></span>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">dv.loader</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,6 +50,7 @@
 <span>  <span class="va">file_names</span>,</span>
 <span>  use_wd <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  prefer_sas <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  prefer_rds <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  reduce_memory_footprint <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  encoding <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -75,7 +76,13 @@ not on NFS - default value is FALSE</p></dd>
 
 
 <dt id="arg-prefer-sas">prefer_sas<a class="anchor" aria-label="anchor" href="#arg-prefer-sas"></a></dt>
-<dd><p>if TRUE, imports .sas7bdat files first instead of .RDS files</p></dd>
+<dd><p>if TRUE, imports <code>.sas7bdat</code> files first instead of
+<code>.parquet</code> and <code>.rds</code> files</p></dd>
+
+
+<dt id="arg-prefer-rds">prefer_rds<a class="anchor" aria-label="anchor" href="#arg-prefer-rds"></a></dt>
+<dd><p>if TRUE, imports <code>.rds</code> files first instead of
+<code>.parquet</code> and <code>.sas7bdat</code> files</p></dd>
 
 
 <dt id="arg-reduce-memory-footprint">reduce_memory_footprint<a class="anchor" aria-label="anchor" href="#arg-reduce-memory-footprint"></a></dt>

@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">dv.loader</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,8 +70,11 @@
 <p>The <code>dv.loader</code> package simplifies the process of loading
 data files into R memory. It provides two main functions -
 <code><a href="../reference/load_data.html">load_data()</a></code> and <code><a href="../reference/load_files.html">load_files()</a></code> - that can handle
-two widely used data formats:</p>
+three widely used data formats:</p>
 <ul>
+<li>
+<code>.parquet</code> files: columnar storage files commonly used
+for analytical workloads</li>
 <li>
 <code>.rds</code> files: R’s native data storage format, which
 efficiently stores R objects in a compressed binary format</li>
@@ -107,12 +110,12 @@ path from which subdirectories will be searched.</p>
 <p>When you call <code><a href="../reference/load_data.html">load_data()</a></code>, it searches the specified
 subdirectory for data files and returns them as a named list of data
 frames. Each data frame in the list is named after its source file.</p>
-<p>For files that exist in both <code>.rds</code> and
-<code>.sas7bdat</code> formats, <code><a href="../reference/load_data.html">load_data()</a></code> will load the
-<code>.rds</code> version by default since these are more compact and
-faster to read. You can override this behavior by setting
-<code>prefer_sas = TRUE</code> to prioritize loading
-<code>.sas7bdat</code> files instead.</p>
+<p>When multiple supported formats exist for the same file name,
+<code><a href="../reference/load_data.html">load_data()</a></code> prefers <code>.parquet</code>, then
+<code>.rds</code>, then <code>.sas7bdat</code>. You can override this
+behavior by setting <code>prefer_rds = TRUE</code> or
+<code>prefer_sas = TRUE</code> to prioritize RDS or SAS files,
+respectively. These options are mutually exclusive.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set the RXD_DATA environment variable to the temporary directory</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>RXD_DATA <span class="op">=</span> <span class="va">temp_dir</span><span class="op">)</span></span>
@@ -133,15 +136,15 @@ faster to read. You can override this behavior by setting
 <span><span class="co">#&gt;   .. ..$ size                              : num 289</span></span>
 <span><span class="co">#&gt;   .. ..$ isdir                             : logi FALSE</span></span>
 <span><span class="co">#&gt;   .. ..$ mode                              : 'octmode' int 644</span></span>
-<span><span class="co">#&gt;   .. ..$ mtime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"</span></span>
-<span><span class="co">#&gt;   .. ..$ ctime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"</span></span>
-<span><span class="co">#&gt;   .. ..$ atime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"</span></span>
-<span><span class="co">#&gt;   .. ..$ path                              : chr "/tmp/RtmpP6BqG3/./cars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"</span></span>
+<span><span class="co">#&gt;   .. ..$ path                              : chr "/tmp/RtmpJoLMUM/./cars.rds"</span></span>
 <span><span class="co">#&gt;   .. ..$ file_name                         : chr "cars.rds"</span></span>
 <span><span class="co">#&gt;   .. ..$ original_memory_footprint_in_bytes: num 1648</span></span>
 <span><span class="co">#&gt;   .. ..$ remapped_column_indices           :List of 1</span></span>
 <span><span class="co">#&gt;   .. .. ..$ : int [1:2] 1 2</span></span>
-<span><span class="co">#&gt;   .. ..$ remapping_time                    : 'difftime' num 0.000146865844726562</span></span>
+<span><span class="co">#&gt;   .. ..$ remapping_time                    : 'difftime' num 0.000181198120117188</span></span>
 <span><span class="co">#&gt;   .. .. ..- attr(*, "units")= chr "secs"</span></span>
 <span><span class="co">#&gt;  $ mtcars:'data.frame':  32 obs. of  11 variables:</span></span>
 <span><span class="co">#&gt;   ..$ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...</span></span>
@@ -159,15 +162,15 @@ faster to read. You can override this behavior by setting
 <span><span class="co">#&gt;   .. ..$ size                              : num 1225</span></span>
 <span><span class="co">#&gt;   .. ..$ isdir                             : logi FALSE</span></span>
 <span><span class="co">#&gt;   .. ..$ mode                              : 'octmode' int 644</span></span>
-<span><span class="co">#&gt;   .. ..$ mtime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"</span></span>
-<span><span class="co">#&gt;   .. ..$ ctime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"</span></span>
-<span><span class="co">#&gt;   .. ..$ atime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"</span></span>
-<span><span class="co">#&gt;   .. ..$ path                              : chr "/tmp/RtmpP6BqG3/./mtcars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"</span></span>
+<span><span class="co">#&gt;   .. ..$ path                              : chr "/tmp/RtmpJoLMUM/./mtcars.rds"</span></span>
 <span><span class="co">#&gt;   .. ..$ file_name                         : chr "mtcars.rds"</span></span>
 <span><span class="co">#&gt;   .. ..$ original_memory_footprint_in_bytes: num 7208</span></span>
 <span><span class="co">#&gt;   .. ..$ remapped_column_indices           :List of 1</span></span>
 <span><span class="co">#&gt;   .. .. ..$ : int [1:6] 2 4 8 9 10 11</span></span>
-<span><span class="co">#&gt;   .. ..$ remapping_time                    : 'difftime' num 0.0001678466796875</span></span>
+<span><span class="co">#&gt;   .. ..$ remapping_time                    : 'difftime' num 0.000265121459960938</span></span>
 <span><span class="co">#&gt;   .. .. ..- attr(*, "units")= chr "secs"</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -197,15 +200,15 @@ list names.</p>
 <span><span class="co">#&gt;   .. ..$ size                              : num 289</span></span>
 <span><span class="co">#&gt;   .. ..$ isdir                             : logi FALSE</span></span>
 <span><span class="co">#&gt;   .. ..$ mode                              : 'octmode' int 644</span></span>
-<span><span class="co">#&gt;   .. ..$ mtime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"</span></span>
-<span><span class="co">#&gt;   .. ..$ ctime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"</span></span>
-<span><span class="co">#&gt;   .. ..$ atime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"</span></span>
-<span><span class="co">#&gt;   .. ..$ path                              : chr "/tmp/RtmpP6BqG3/cars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"</span></span>
+<span><span class="co">#&gt;   .. ..$ path                              : chr "/tmp/RtmpJoLMUM/cars.rds"</span></span>
 <span><span class="co">#&gt;   .. ..$ file_name                         : chr "cars.rds"</span></span>
 <span><span class="co">#&gt;   .. ..$ original_memory_footprint_in_bytes: num 1648</span></span>
 <span><span class="co">#&gt;   .. ..$ remapped_column_indices           :List of 1</span></span>
 <span><span class="co">#&gt;   .. .. ..$ : int [1:2] 1 2</span></span>
-<span><span class="co">#&gt;   .. ..$ remapping_time                    : 'difftime' num 8.82148742675781e-05</span></span>
+<span><span class="co">#&gt;   .. ..$ remapping_time                    : 'difftime' num 0.000110626220703125</span></span>
 <span><span class="co">#&gt;   .. .. ..- attr(*, "units")= chr "secs"</span></span>
 <span><span class="co">#&gt;  $ mtcars:'data.frame':  32 obs. of  11 variables:</span></span>
 <span><span class="co">#&gt;   ..$ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...</span></span>
@@ -223,15 +226,15 @@ list names.</p>
 <span><span class="co">#&gt;   .. ..$ size                              : num 1225</span></span>
 <span><span class="co">#&gt;   .. ..$ isdir                             : logi FALSE</span></span>
 <span><span class="co">#&gt;   .. ..$ mode                              : 'octmode' int 644</span></span>
-<span><span class="co">#&gt;   .. ..$ mtime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"</span></span>
-<span><span class="co">#&gt;   .. ..$ ctime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"</span></span>
-<span><span class="co">#&gt;   .. ..$ atime                             : POSIXct[1:1], format: "2026-09-07 06:45:24"</span></span>
-<span><span class="co">#&gt;   .. ..$ path                              : chr "/tmp/RtmpP6BqG3/mtcars.rds"</span></span>
+<span><span class="co">#&gt;   .. ..$ mtime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"</span></span>
+<span><span class="co">#&gt;   .. ..$ ctime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"</span></span>
+<span><span class="co">#&gt;   .. ..$ atime                             : POSIXct[1:1], format: "2026-10-06 09:16:45"</span></span>
+<span><span class="co">#&gt;   .. ..$ path                              : chr "/tmp/RtmpJoLMUM/mtcars.rds"</span></span>
 <span><span class="co">#&gt;   .. ..$ file_name                         : chr "mtcars.rds"</span></span>
 <span><span class="co">#&gt;   .. ..$ original_memory_footprint_in_bytes: num 7208</span></span>
 <span><span class="co">#&gt;   .. ..$ remapped_column_indices           :List of 1</span></span>
 <span><span class="co">#&gt;   .. .. ..$ : int [1:6] 2 4 8 9 10 11</span></span>
-<span><span class="co">#&gt;   .. ..$ remapping_time                    : 'difftime' num 0.000219583511352539</span></span>
+<span><span class="co">#&gt;   .. ..$ remapping_time                    : 'difftime' num 0.000272035598754883</span></span>
 <span><span class="co">#&gt;   .. .. ..- attr(*, "units")= chr "secs"</span></span></code></pre></div>
 <p>When using <code><a href="../reference/load_files.html">load_files()</a></code>, you can specify files from
 multiple directories and customize the output list names by providing

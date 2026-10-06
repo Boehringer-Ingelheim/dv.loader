@@ -1,7 +1,7 @@
 # Load data files from explicit paths
 
 Read data from provided paths and return it as a list of data frames.
-Supports both .rds and .sas7bdat formats.
+Supports .rds, .sas7bdat, and .parquet formats.
 
 ## Usage
 

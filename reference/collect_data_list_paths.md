@@ -1,13 +1,20 @@
 # Collect file paths based on file names without extensions
 
 Constructs a list of file paths based on an input vector of file names
-without extensions. Preference is given to `.rds` files, if present,
-over `.sas7bdat` files.
+without extensions. Preference is given to `.parquet` files, if present,
+over `.rds` and `.sas7bdat` files unless `prefer_sas` or `prefer_rds` is
+`TRUE`. `prefer_sas` and `prefer_rds` are mutually exclusive.
 
 ## Usage
 
 ``` r
-collect_data_list_paths(sub_dir, file_names, use_wd, prefer_sas)
+collect_data_list_paths(
+  sub_dir,
+  file_names,
+  use_wd,
+  prefer_sas,
+  prefer_rds = FALSE
+)
 ```
 
 ## Arguments
@@ -30,9 +37,14 @@ collect_data_list_paths(sub_dir, file_names, use_wd, prefer_sas)
 
 - prefer_sas:
 
-  if TRUE, imports .sas7bdat files first instead of .RDS files
+  if TRUE, imports `.sas7bdat` files first instead of `.parquet` and
+  `.rds` files
+
+- prefer_rds:
+
+  if TRUE, imports `.rds` files first instead of `.parquet` and
+  `.sas7bdat` files
 
 ## Value
 
-returns a list of dataframes with metadata as an attribute on each
-dataframe
+a character vector of resolved file paths

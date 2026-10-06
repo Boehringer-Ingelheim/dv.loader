@@ -28,4 +28,4 @@
   :
 
   Print data remapping report of the transformations performed by
-  `reduce_data_frame_memory_footprint`
+  `reduce_column_memory_footprint`

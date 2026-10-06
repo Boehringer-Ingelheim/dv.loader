@@ -11,6 +11,7 @@ load_data(
   file_names,
   use_wd = FALSE,
   prefer_sas = FALSE,
+  prefer_rds = FALSE,
   reduce_memory_footprint = TRUE,
   encoding = NULL
 )
@@ -37,7 +38,13 @@ load_data(
 
 - prefer_sas:
 
-  if TRUE, imports .sas7bdat files first instead of .RDS files
+  if TRUE, imports `.sas7bdat` files first instead of `.parquet` and
+  `.rds` files
+
+- prefer_rds:
+
+  if TRUE, imports `.rds` files first instead of `.parquet` and
+  `.sas7bdat` files
 
 - reduce_memory_footprint:
 
