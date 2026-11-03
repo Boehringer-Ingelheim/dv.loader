@@ -11,7 +11,8 @@ load_data(
   prefer_sas = FALSE,
   prefer_rds = FALSE,
   reduce_memory_footprint = TRUE,
-  encoding = NULL
+  encoding = NULL,
+  sas_empty_strings_to_na = TRUE
 )
 }
 \arguments{
@@ -41,6 +42,9 @@ If FALSE, this function respects the original types returned by the underlying c
 \item{encoding}{\verb{[character(1) | NULL]} Character encoding to use when reading
 \code{.sas7bdat} files. A value of \code{NULL} (the default) uses the encoding declared
 in the file. Ignored for \code{.rds} files.}
+
+\item{sas_empty_strings_to_na}{\verb{[logical(1)]} Convert empty strings (\code{""}) resulting from SAS missing values (\code{" "})
+to \code{NA} missing values. This only applies to SAS datasets.}
 }
 \value{
 a list of dataframes

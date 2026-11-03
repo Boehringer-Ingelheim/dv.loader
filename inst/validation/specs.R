@@ -10,5 +10,6 @@ specs <- specs_list(
   "data_integrity" = "ensures data is loaded correctly",
   "meta_data" = "reads metadata from the items of file.info()",
   "prefer_sas" = "loads a SAS or RDS file based on the prefer_sas flag",
-  "leaner_data_types" = "maps character variables to factors and numeric variables to integer when feasible"
+  "leaner_data_types" = "maps character variables to factors and numeric variables to integer when feasible",
+  "convert_sas_missing" = "converts SAS character missing values to NA"
 )

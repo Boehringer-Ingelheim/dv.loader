@@ -1,3 +1,8 @@
+# dv.loader 2.4.0-9000
+
+- Added `sas_empty_strings_to_na` argument to `load_data()` and `load_files()` to control new
+  functionality that converts SAS character missing values to `NA`.
+
 # dv.loader 2.4.0
 
 - Added a `prefer_rds` argument to `load_data()` for selecting RDS files before
