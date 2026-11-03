@@ -143,3 +143,25 @@ test_that("load_files() can return both default and custom names for loaded data
   )
   expect_equal(names(data_list3), c("rds_dummyads1", "dummyads2"))
 })
+
+test_that("load_files() converts SAS character missing values to NA" |> vdoc[["add_spec"]](specs$convert_sas_missing), {
+  sas_file <- "inst/extdata/missings.sas7bdat"
+  
+  # SAS character missing values converted to NA
+  data_list1 <- load_files(file_paths = c(sas_file), reduce_memory_footprint = FALSE, sas_empty_strings_to_na = TRUE)
+  expect_equal(data_list1[["missings"]][["STUDYID"]], rep("test-0001", 3), ignore_attr = "label")
+  expect_equal(data_list1[["missings"]][["VISIT"]], c("V1", "V2", NA_character_), ignore_attr = "label")
+  expect_equal(data_list1[["missings"]][["AVALC"]], c(NA_character_, "LLQ", NA_character_), ignore_attr = "label")
+  
+  # SAS character missing values not converted to NA
+  data_list2 <- load_files(file_paths = c(sas_file), reduce_memory_footprint = FALSE, sas_empty_strings_to_na = FALSE)
+  expect_equal(data_list2[["missings"]][["STUDYID"]], rep("test-0001", 3), ignore_attr = "label")
+  expect_equal(data_list2[["missings"]][["VISIT"]], c("V1", "V2", ""), ignore_attr = "label")
+  expect_equal(data_list2[["missings"]][["AVALC"]], c("", "LLQ", ""), ignore_attr = "label")
+  
+  # SAS character missing values converted to NA (and convert vars to factor)
+  data_list3 <- load_files(file_paths = c(sas_file), reduce_memory_footprint = TRUE, sas_empty_strings_to_na = TRUE)
+  expect_equal(data_list3[["missings"]][["STUDYID"]], as.factor(rep("test-0001", 3)), ignore_attr = "label")
+  expect_equal(data_list3[["missings"]][["VISIT"]], as.factor(c("V1", "V2", NA_character_)), ignore_attr = "label")
+  expect_equal(data_list3[["missings"]][["AVALC"]], as.factor(c(NA_character_, "LLQ", NA_character_)), ignore_attr = "label")
+})
