@@ -33,7 +33,14 @@ get_cre_path <- get_nfs_path
 #'   use_wd = TRUE
 #' )
 #' }
-load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = FALSE, prefer_rds = FALSE, reduce_memory_footprint = TRUE, encoding = NULL) {
+load_data <- function(sub_dir = NULL,
+                      file_names,
+                      use_wd = FALSE,
+                      prefer_sas = FALSE,
+                      prefer_rds = FALSE,
+                      reduce_memory_footprint = TRUE,
+                      encoding = NULL,
+                      sas_empty_strings_to_na = TRUE) {
   if (length(file_names) == 0) {
     stop("Usage: load_data: file_names: Must supply at least one file name")
   }
@@ -46,7 +53,12 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
     prefer_sas = prefer_sas,
     prefer_rds = prefer_rds
   )
-  data_list <- load_files(file_paths = paths, reduce_memory_footprint = reduce_memory_footprint, encoding = encoding)
+  data_list <- load_files(
+    file_paths = paths,
+    reduce_memory_footprint = reduce_memory_footprint,
+    encoding = encoding,
+    sas_empty_strings_to_na = sas_empty_strings_to_na
+  )
   
   return(data_list)
 }
@@ -60,11 +72,13 @@ load_data <- function(sub_dir = NULL, file_names, use_wd = FALSE, prefer_sas = F
 #' @param encoding `[character(1) | NULL]` Character encoding to use when reading
 #' `.sas7bdat` files. A value of `NULL` (the default) uses the encoding declared
 #' in the file. Ignored for `.rds` files.
+#' @param sas_empty_strings_to_na `[logical(1)]` Convert empty strings (`""`) resulting from SAS missing values (`" "`)
+#' to `NA` missing values. This only applies to SAS datasets.
 #'
 #' @return A data frame with metadata attached as an attribute named "meta".
 #'
 #' @keywords internal
-read_file_and_attach_metadata <- function(path, encoding = NULL) {
+read_file_and_attach_metadata <- function(path, encoding = NULL, sas_empty_strings_to_na = TRUE) {
   meta <- file.info(path, extra_cols = FALSE)
   extension <- tools::file_ext(path)
 
@@ -91,7 +105,17 @@ read_file_and_attach_metadata <- function(path, encoding = NULL) {
       preload_file_in_chunks(path, meta[["size"]]),
       silent = TRUE
     )
+    
     data <- as.data.frame(haven::read_sas(path, encoding = encoding))
+    
+    # Convert SAS empty strings to NA missing values
+    if (sas_empty_strings_to_na) {
+      char_cols <- sapply(data, is.character)
+      data[char_cols] <- lapply(data[char_cols], \(x) {
+        x[x == ""] <- NA_character_
+        x
+      })
+    }
   } else if (toupper(extension) == "PARQUET") {
     data <- as.data.frame(arrow::read_parquet(path))
   } else {
@@ -124,13 +148,15 @@ read_file_and_attach_metadata <- function(path, encoding = NULL) {
 #' @param encoding `[character(1) | NULL]` Character encoding to use when reading
 #' `.sas7bdat` files. A value of `NULL` (the default) uses the encoding declared
 #' in the file. Ignored for `.rds` files.
+#' @param sas_empty_strings_to_na `[logical(1)]` Convert empty strings (`""`) resulting from SAS missing values (`" "`)
+#' to `NA` missing values. This only applies to SAS datasets.
 #'
 #' @return `[list]` A named list of data frames, where each name is either:
 #'  - the name associated to the element in the `file_paths` argument, or, if not provided...
 #'  - the name of the file itself, after stripping it of its leading path and trailing extension
 #'
 #' @export
-load_files <- function(file_paths, reduce_memory_footprint = TRUE, encoding = NULL) {
+load_files <- function(file_paths, reduce_memory_footprint = TRUE, encoding = NULL, sas_empty_strings_to_na = TRUE) {
   checkmate::assert_character(file_paths, min.len = 1)
   checkmate::assert_file_exists(file_paths, access = "r", extension = c(".rds", ".sas7bdat", ".parquet"))
   checkmate::assert_string(encoding, null.ok = TRUE)
@@ -141,7 +167,7 @@ load_files <- function(file_paths, reduce_memory_footprint = TRUE, encoding = NU
   
   data_list <- list()
   for (path in file_paths){
-    df <- read_file_and_attach_metadata(path, encoding = encoding)
+    df <- read_file_and_attach_metadata(path, encoding = encoding, sas_empty_strings_to_na = sas_empty_strings_to_na)
 
     if (isTRUE(reduce_memory_footprint)) {
       t0 <- Sys.time()

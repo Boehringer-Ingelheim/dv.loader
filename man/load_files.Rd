@@ -4,7 +4,12 @@
 \alias{load_files}
 \title{Load data files from explicit paths}
 \usage{
-load_files(file_paths, reduce_memory_footprint = TRUE, encoding = NULL)
+load_files(
+  file_paths,
+  reduce_memory_footprint = TRUE,
+  encoding = NULL,
+  sas_empty_strings_to_na = TRUE
+)
 }
 \arguments{
 \item{file_paths}{\verb{[character(1+)]} Files to read. Optionally named.}
@@ -20,6 +25,9 @@ If FALSE, this function respects the original types returned by the underlying c
 \item{encoding}{\verb{[character(1) | NULL]} Character encoding to use when reading
 \code{.sas7bdat} files. A value of \code{NULL} (the default) uses the encoding declared
 in the file. Ignored for \code{.rds} files.}
+
+\item{sas_empty_strings_to_na}{\verb{[logical(1)]} Convert empty strings (\code{""}) resulting from SAS missing values (\code{" "})
+to \code{NA} missing values. This only applies to SAS datasets.}
 }
 \value{
 \verb{[list]} A named list of data frames, where each name is either:
